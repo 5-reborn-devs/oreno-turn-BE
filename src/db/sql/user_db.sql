@@ -1,3 +1,4 @@
+-- SQLBook: Code
 CREATE TABLE IF NOT EXISTS user
 (
     user_id VARCHAR(255) UNIQUE NOT NULL,
