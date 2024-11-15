@@ -122,3 +122,6 @@ dist
 
 # prisma generated 무시
 **/generated/
+
+# src 빈 폴더 유지
+!src/*
