@@ -9,7 +9,7 @@ import { rooms } from '../../session/session';
 //     roomStateType state = 5
 //  }
 
-export const getRoomListHandler = ({ socket, payloadData }) => {
+export const getRoomListHandler = async ({ socket, payloadData }) => {
   const message = {
     rooms: [...rooms.values()],
   };
