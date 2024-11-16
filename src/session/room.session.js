@@ -12,12 +12,12 @@ export const clearRooms = () => {
   rooms.clear();
 };
 
-export const addUserInRoom = (nickname) => {
-  rooms.users.set(userId, nickname);
+export const addUserInRoom = (token, userData) => {
+  rooms.users.set(token, userData);
 };
 
-export const removeUserInRoom = (userId) => {
-  rooms.users.delete(userId);
+export const removeUserInRoom = (token) => {
+  rooms.users.delete(token);
 };
 
 // message RoomData {
