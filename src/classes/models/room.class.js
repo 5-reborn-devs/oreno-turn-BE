@@ -19,9 +19,13 @@ class Room {
     this.users.push(userData);
   }
 
-  removeUser(token) {
-    // 토큰을 id로 바꾸고
-    // id를 찾아서 slice해서 반환
+  removeUserById(userId) {
+    const index = this.users.findIndex((user) => user.id === userId);
+    if (index != -1) {
+      return this.users.splice(index, 1)[0];
+    } else {
+      return false;
+    }
   }
   // 클래스의 입력값이 맞는지 확인하는 검증이 필요할까?
 }

@@ -33,6 +33,7 @@ export const joinRandomRoomHandler = ({ socket, payload }) => {
   }
 
   socket.write(bufferManager.encoder(PACKET_TYPE.JOIN_ROOM_RESPONSE, message));
+  // S2CJoinRoomNotification
 };
 
 // {
