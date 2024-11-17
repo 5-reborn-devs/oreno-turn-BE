@@ -12,12 +12,10 @@ export const clearRooms = () => {
   rooms.clear();
 };
 
-export const addUserInRoom = (token, userData) => {
-  rooms.users.set(token, userData);
-};
-
-export const removeUserInRoom = (token) => {
-  rooms.users.delete(token);
+export const getEmptyRooms = () => {
+  return [...rooms.values()].filter(
+    (room) => room.maxUserNum >= room.users.length,
+  );
 };
 
 // message RoomData {

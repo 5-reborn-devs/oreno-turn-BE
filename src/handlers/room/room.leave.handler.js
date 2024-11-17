@@ -1,1 +1,1 @@
-export const leaveRoomHandler = () => {};
+export const leaveRoomHandler = ({ socket, payload }) => {};
