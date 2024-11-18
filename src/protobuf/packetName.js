@@ -23,7 +23,7 @@ export const packetNames = {
         AnimationType : 'enum.AnimationType'
     },
     gamePacket : {
-        gamePacket : 'gamePacket.GamePacket'
+        GamePacket : 'gamePacket.GamePacket'
     },
     reqeust : {
         C2SRegisterRequest : 'request.C2SRegisterRequest',
