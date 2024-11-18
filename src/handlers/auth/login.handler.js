@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt';
 import Joi from 'joi';
 
 export const login = async (socket, payload) => {
-  const { email, password } = payload;
+  console.log('test', payload);
   console.log('id', email);
   console.log('password', password);
 };
