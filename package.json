@@ -9,7 +9,8 @@
   "type": "module",
   "scripts": {
     "dev": "node ./src/server.js",
-    "migrate": "node ./src/db/migrations/createSchema.js"
+    "migrate": "node ./src/db/migrations/createSchema.js",
+    "test": "node ./src/tests/test.function.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
