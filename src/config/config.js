@@ -14,7 +14,7 @@ import {
   DB2_PORT,
 } from '../constants/env.js';
 
-import { PACKET_TYPE_LENGTH, PAYLOAD_LENGTH_SIZE, SEQUENCE_SIZE, TOTAL_LENGTH, VERSION_START } from '../constants/header.js';
+import { PACKET_TYPE_LENGTH, PAYLOAD_LENGTH_SIZE, SEQUENCE_SIZE, TOTAL_LENGTH, VERSION_LENGTH } from '../constants/header.js';
 
 export const config = {
   server: {
@@ -27,7 +27,7 @@ export const config = {
   packet: {
     totalLength: TOTAL_LENGTH,
     typeLength: PACKET_TYPE_LENGTH,
-    versionLength: VERSION_START,
+    versionLength: VERSION_LENGTH,
     sequenceLength: SEQUENCE_SIZE,
     payloadLength: PAYLOAD_LENGTH_SIZE,
   },
