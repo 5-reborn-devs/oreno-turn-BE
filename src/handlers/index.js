@@ -1,5 +1,5 @@
 import { PACKET_TYPE } from "../constants/header.js";
-import { register } from "./auth/register.handler.js";
+import { registerHandler } from "./auth/register.handler.js";
 const handlers = {
     // 회원가입 
     [PACKET_TYPE.REGISTER_REQUEST]: {
