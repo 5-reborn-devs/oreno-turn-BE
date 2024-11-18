@@ -1,7 +1,7 @@
 import { PACKET_NUMBER } from '../../constants/header';
 import { getProtoMessages } from '../../init/loadProto';
 import camelCase from 'lodash/camelCase.js';
-import { serializer } from '../../utils/serilaizer';
+import { serializer } from '../serilaizer';
 
 const protoMessages = getProtoMessages();
 const response = protoMessages.gamePacket.GamePacket;
@@ -20,7 +20,7 @@ export const bufferManager = {
     }
   },
   // 보낼 데이터를 디코드해 패킷을 생성함.
-  encoder: (packetType, payloadData) => {
+  sendResponsePacket: (packetType, payloadData) => {
     try {
       const typeName = PACKET_NUMBER[packetType];
       const key = camelCase(typeName);
@@ -29,9 +29,14 @@ export const bufferManager = {
       message[key] = payloadData;
 
       const packet = response.encode(message).finish();
-      return serializer(packet, packetType);
+      const serializedPacket = serializer(packet, packetType);
+      socket.write(serializedPacket);
+
+      console.log(
+        `Sent packet of type ${PACKET_NUMBER[packetType]} to client.`,
+      );
     } catch (error) {
-      throw new Error('message encode and create Packet Error:', error);
+      console.error('Error sending response packet', error);
     }
   },
   failCode: protoMessages.common.GlobalFailCode,

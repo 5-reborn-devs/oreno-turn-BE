@@ -1,4 +1,4 @@
-import { bufferManager } from '../../classes/managers/buffer.manager';
+import { bufferManager } from '../../utils/response/buffer.manager';
 import { PACKET_TYPE } from '../../constants/header';
 import { rooms } from '../../session/session';
 
