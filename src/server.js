@@ -1,19 +1,20 @@
 import net from 'net';
-import { onConnection } from './events/onConnection.js';
 import initServer from './init/index.js';
-
-const HOST = '127.0.0.1'
-const PORT = 3000;
+import { config } from './config/config.js';
+import { onConnection } from './events/onConnection.js';
 
 const server = net.createServer(onConnection);
 
 initServer()
   .then(() => {
-    server.listen(PORT, HOST, () => {
-      console.log(`Sever is on ${HOST}:${PORT}`);
+    server.listen(config.server.port, config.server.host, () => {
+      console.log(
+        `Sever running is on ${config.server.host}:${config.server.port}`,
+      );
+      console.log(server.address());
     });
   })
-  .catch((error) => {
-    console.error(error);
+  .catch((e) => {
+    console.error(e);
     process.exit(1);
   });
