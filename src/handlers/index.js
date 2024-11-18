@@ -1,8 +1,9 @@
 import { PACKET_TYPE } from "../constants/header.js";
 import { register } from "./auth/register.handler.js";
 const handlers = {
+    // 회원가입 
     [PACKET_TYPE.REGISTER_REQUEST]: {
-        handler : register, // 사용하게될 함수명
+        handler : registerHandler, // 사용하게될 함수명
         protoType : 'request.C2SRegisterRequest', // protobuf 타입
     },
     // [PACKET_TYPE.LOGIN_REQUEST]: {
