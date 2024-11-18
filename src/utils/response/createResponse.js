@@ -1,6 +1,6 @@
 import { PACKET_NUMBER } from '../../constants/header.js';
 import { getProtoMessages } from '../../init/loadProto.js';
-import { serializer } from '../serializer.js';
+import { serializer } from '../serilaizer.js';
 
 const sendResponsePacket = (socket, packetType, responseMessage) => {
   try {
