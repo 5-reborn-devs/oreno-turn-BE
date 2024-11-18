@@ -1,8 +1,9 @@
-export const TOTAL_LENGTH = 11; 
-export const PACKET_TYPE_LENGTH = 2; 
+export const TOTAL_LENGTH = 11;
+export const PACKET_TYPE_LENGTH = 2;
 export const SEQUENCE_SIZE = 4;
 export const PAYLOAD_LENGTH_SIZE = 4;
 export const VERSION_LENGTH = 1;
+export const VERSION_START = 3;
 
 export const PACKET_TYPE = {
   // 클라이언트나 서버가 데이터 전송 할 때 파악한 패킷 타입 (핸들러 ID)
