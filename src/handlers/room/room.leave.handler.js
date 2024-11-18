@@ -24,6 +24,8 @@ export const leaveRoomHandler = ({ socket, payloadData }) => {
     } else {
       throw new Error('해당 방에 유저가 존재하지 않습니다');
     }
+    // room 에서 user 제거
+    room.removeUserById(userId);
   } catch (error) {
     message = {
       success: false,
