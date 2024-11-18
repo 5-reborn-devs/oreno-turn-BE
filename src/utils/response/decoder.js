@@ -3,29 +3,16 @@ import { getProtoMessages } from '../../init/loadProto.js';
 import camelCase from 'lodash/camelCase.js';
 
 export const decoder = (packetType, payloadData) => {
-    try {
-        const protoMessages = getProtoMessages();
-        
-        console.log("typeName", payloadData);
-      const typeName = PACKET_NUMBER[packetType]; // 요기
+  try {
+    const protoMessages = getProtoMessages();
+    const GamePacket = protoMessages.gamePacket.GamePacket;
 
-      console.log("pakcetName", payloadData);
-      const packetName = 'C2S' + camelCase('tmp_' + typeName).slice(3);
+    const gamePacket = GamePacket.decode(payloadData);
 
-      console.log("packetName", packetName);
-      if(typeof packetName === 'string'){
-        console.log("string임!");
-      }
-      console.log(protoMessages);
-      console.log(protoMessages.request);
-      console.log('얘가 나올까?', protoMessages.request[packetName]);
+    const request = Object.values(gamePacket)[0];
 
-      const request = protoMessages.request;
-      const request2 = request[packetName];
-      
-    console.log("payload", payloadData);  
-      return request2.decode(payloadData);
-    } catch (error) {
-      console.error(error);
-    }
+    return request;
+  } catch (error) {
+    console.error(error);
   }
+};
