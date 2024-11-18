@@ -1,5 +1,3 @@
-import camelCase from 'lodash/camelCase.js';
-
 const PACKET_TYPE = {
   // 클라이언트나 서버가 데이터 전송 할 때 파악한 패킷 타입 (핸들러 ID)
   // 회원가입 및 로그인
@@ -91,6 +89,6 @@ const PACKET_TYPE = {
 const PACKET_NUMBER = {};
 
 for (const [key, value] of Object.entries(PACKET_TYPE)) {
-  PACKET_NUMBER[value] = camelCase(key);
+  PACKET_NUMBER[value] = key;
 }
 console.log(JSON.stringify(PACKET_NUMBER));
