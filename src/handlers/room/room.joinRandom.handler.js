@@ -20,7 +20,8 @@ export const joinRandomRoomHandler = ({ socket, payload }) => {
     // room 유효검사
 
     const usersInRoom = [...selectedRoom.users]; // 입장 알림을 위해 따로 때 놓음. 얕은 복사
-    selectedRoom.addUser(socket.token);
+    const user = users.get(socket.token);
+    selectedRoom.addUser(user);
     socket.roomId = selectedRoom.id;
 
     message = {
@@ -29,7 +30,6 @@ export const joinRandomRoomHandler = ({ socket, payload }) => {
       failCode: failCode.NONE_FAILCODE,
     };
 
-    const user = users.get(socket.token);
     const notifiaction = { joinUser: user };
     multiCast(usersInRoom, PACKET_TYPE.JOIN_ROOM_NOTIFICATION, notifiaction); // 다른 유저에게 입장을 알림.
   } catch (error) {
