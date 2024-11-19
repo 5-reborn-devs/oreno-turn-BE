@@ -17,13 +17,6 @@
 */
 
 import { config } from '../config/config.js';
-import {
-  TOTAL_LENGTH,
-  PACKET_TYPE_LENGTH,
-  VERSION_LENGTH,
-  SEQUENCE_SIZE,
-  PAYLOAD_LENGTH_SIZE,
-} from '../constants/header.js';
 import { getHandlerByPacketType } from '../handlers/index.js';
 import { decoder } from '../utils/response/decoder.js';
 
