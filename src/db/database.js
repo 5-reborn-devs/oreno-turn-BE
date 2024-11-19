@@ -5,9 +5,9 @@ import { formatDate } from '../utils/dateFormatter.js';
 const database = {
   database: 'USER_DB',
   user: 'root',
-  password: '1234',
+  password: 'rootdemo',
   host: '127.0.0.1',
-  port: '3306',
+  port: '8886',
 };
 
 // 데이터베이스 커넥션 풀 생성 함수
