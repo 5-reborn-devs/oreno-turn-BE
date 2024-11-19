@@ -15,7 +15,13 @@ import {
   DB2_PORT,
 } from '../constants/env.js';
 
-import { PACKET_TYPE_LENGTH, PAYLOAD_LENGTH_SIZE, SEQUENCE_SIZE, TOTAL_LENGTH, VERSION_LENGTH } from '../constants/header.js';
+import {
+  PACKET_TYPE_LENGTH,
+  PAYLOAD_LENGTH_SIZE,
+  SEQUENCE_SIZE,
+  TOTAL_LENGTH,
+  VERSION_LENGTH,
+} from '../constants/header.js';
 
 export const config = {
   server: {
@@ -48,7 +54,9 @@ export const config = {
       port: DB2_PORT,
     },
   },
+  
   auth: {
     key: JWT_SECRET,
   }
 };
+

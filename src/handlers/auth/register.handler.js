@@ -1,7 +1,7 @@
 import { PACKET_TYPE } from '../../constants/header.js';
 import { createUser, findUserByUserEmail } from '../../db/user/user.db.js';
 import { v4 as uuidv4 } from 'uuid';
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcrypt';
 import Joi from 'joi';
 import sendResponsePacket from '../../utils/response/createResponse.js';
 import { getProtoMessages } from '../../init/loadProto.js';
@@ -64,4 +64,14 @@ export const registerHandler = async (socket, payload) => {
         console.error(`검증오류: ${err}`);
     }
 
+    const registerResponse = {
+      success: true,
+      message: '회원가입에 성공했습니다!',
+    };
+    sendResponsePacket(socket, PACKET_TYPE.REGISTER_RESPONSE, {
+      registerResponse,
+    });
+  } catch (err) {
+    console.error(`검증오류: ${err}`);
+  }
 };

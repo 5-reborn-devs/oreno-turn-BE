@@ -14,8 +14,15 @@ export const clearRooms = () => {
 
 export const getEmptyRooms = () => {
   return [...rooms.values()].filter(
-    (room) => room.maxUserNum >= room.users.length,
+    (room) => room.maxUserNum > room.users.length,
   );
+};
+
+export const getUsersWithoutMe = (roomId, userId) => {
+  const room = rooms.get(roomId);
+  const users = [...room.users];
+
+  return users.filter((user) => user.id != userId);
 };
 
 // message RoomData {
