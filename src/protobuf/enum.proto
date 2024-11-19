@@ -6,10 +6,10 @@ package enum;
     실패 코드
 */
 enum GlobalFailCode {
-    NONE_FAILCODE = 0;
-    UNKNOWN_ERROR = 1;
-    INVALID_REQUEST = 2;
-    AUTHENTICATION_FAILED = 3;
+    NONE_FAILCODE = 0; 
+    UNKNOWN_ERROR = 1; 
+    INVALID_REQUEST = 2; 
+    AUTHENTICATION_FAILED = 3; 
     CREATE_ROOM_FAILED = 4;
     JOIN_ROOM_FAILED = 5;
     LEAVE_ROOM_FAILED = 6;

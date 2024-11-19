@@ -2,6 +2,7 @@ import {
   HOST,
   PORT,
   CLIENT_VERSION,
+  JWT_SECRET,
   DB1_NAME,
   DB1_USER,
   DB1_PASSWORD,
@@ -53,4 +54,9 @@ export const config = {
       port: DB2_PORT,
     },
   },
+  
+  auth: {
+    key: JWT_SECRET,
+  }
 };
+

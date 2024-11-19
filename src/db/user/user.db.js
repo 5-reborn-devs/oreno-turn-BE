@@ -3,8 +3,8 @@ import { toCamelCase } from '../../utils/transformCase.js';
 import dbPool from '../database.js';
 
 // 왜 리스트에 넣었다가 [0]로 빼는 것일까..
-export const findUserByUserID = async (userId) => {
-  const [rows] = await dbPool.query(SQL_QUERIES.FIND_USER_BY_USER_ID, [userId]);
+export const findUserByUserEmail = async (userEmail) => {
+  const [rows] = await dbPool.query(SQL_QUERIES.FIND_USER_BY_USER_EMAIL, [userEmail]);
   return toCamelCase(rows[0]);
 };
 
