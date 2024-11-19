@@ -1,7 +1,7 @@
 import Room from '../../classes/models/room.class.js';
 import { PACKET_TYPE } from '../../constants/header.js';
 import { rooms, users } from '../../session/session.js';
-import sendResponsePacket from '../../utils/response/createResponse.js';
+import { sendResponsePacket } from '../../utils/response/createResponse.js';
 import { getFailCode } from '../../utils/response/failCode.js';
 
 let count = 0;

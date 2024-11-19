@@ -1,18 +1,16 @@
 import { PACKET_TYPE } from '../../constants/header.js';
 import { getProtoMessages } from '../../init/loadProto.js';
 import { rooms } from '../../session/session.js';
-import sendResponsePacket from '../../utils/response/createResponse.js';
+import { sendResponsePacket } from '../../utils/response/createResponse.js';
+import User from '../../classes/models/user.class.js';
 
 export const gameStart = (socket) => {
   const protoMesages = getProtoMessages();
 
-  const roomId = socket.roomId;
-  const room = rooms.get(roomId);
-
   let gameStartResponse;
 
   // gameState
-  let currentPhase = protoMesages.enum.PhaseType.DAY;
+  let currentPhase = protoMesages.enum.PhaseType.DAY; // 낮
   let nextPhaseAt = Date.now() + 180000; // 3분후에 넥스트 페이즈 타입으로 이동
   const gameState = {
     phaseType: currentPhase,
@@ -23,10 +21,17 @@ export const gameStart = (socket) => {
   const users = {};
   // characterPositions
   const characterPositions = [];
-  let positionKeys = Object.keys(R1NDOM_POSITIONS);
+  let positionKeys = Object.keys(RANDOM_POSITIONS);
 
+  const roomId = socket.roomId;
+  const room = rooms.get(roomId);
   room.users.forEach((user, index) => {
-    users[user.userId] = user;
+    const userData = new User(user.userId, user.nickname, user.character);
+    users[user.userId] = {
+      id: userData.id,
+      nickname: userData.nickname,
+      character: userData.character,
+    };
     const positionKey = positionKeys[index % positionKeys.length];
     characterPositions.push({
       id: user.userId,

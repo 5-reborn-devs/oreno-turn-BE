@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
 import Joi from 'joi';
 import { getProtoMessages } from '../../init/loadProto.js';
-import sendResponsePacket from '../../utils/response/createResponse.js';
+import { sendResponsePacket } from '../../utils/response/createResponse.js';
 import User from '../../classes/models/user.class.js';
 
 export const login = async (socket, payload) => {
@@ -22,7 +22,5 @@ export const login = async (socket, payload) => {
     UserData: user,
     failCode: protoMesages.enum.GlobalFailCode.NONE_FAILCODE,
   };
-  sendResponsePacket(socket, PACKET_TYPE.LOGIN_RESPONSE, {
-    loginResponse,
-  });
+  sendResponsePacket(socket, PACKET_TYPE.LOGIN_RESPONSE, loginResponse);
 };
