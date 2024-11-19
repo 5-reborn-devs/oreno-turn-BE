@@ -16,10 +16,10 @@ const handlers = {
     handler: login, // 사용하게될 함수명
     protoType: 'request.C2SLoginRequest', // protobuf 타입
   },
-  [PACKET_TYPE.USE_CARD_REQUEST]: {
-      handler : register, // 사용하게될 함수명
-      protoType : 'request.C2SCreateRoomRequest', // protobuf 타입
-  },
+  // [PACKET_TYPE.USE_CARD_REQUEST]: {
+  //     handler : register, // 사용하게될 함수명
+  //     protoType : 'request.C2SCreateRoomRequest', // protobuf 타입
+  // },
   // [PACKET_TYPE.GET_ROOM_LIST_REQUEST]: {
   //     handler : register, // 사용하게될 함수명
   //     protoType : 'request.C2SGetRoomListRequest', // protobuf 타입
