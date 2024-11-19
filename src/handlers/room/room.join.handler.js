@@ -1,19 +1,36 @@
-import { bufferManager } from '../../classes/managers/buffer.manager';
 import { PACKET_TYPE } from '../../constants/header';
+import { rooms, users } from '../../session/session';
+import sendResponsePacket, {
+  multiCast,
+} from '../../utils/response/createResponse';
+import { getFailCode } from '../../utils/response/failCode';
 
 // {
-//     repeated RoomData rooms = 1
+//     int32 roomId = 1;
 //  }
 
 export const joinRoomHandler = ({ socket, payload }) => {
-  const failCode = bufferManager.failCode;
+  const { roomId } = payload;
+  const failCode = getFailCode();
   let message;
+
   try {
+    const room = rooms.get(roomId);
+
+    const user = users.get(socket.token);
+    room.addUser(user);
+    socket.roomId = roomId;
+
     message = {
       success: true,
-      room: rooms[roomId],
+      room: room,
       failCode: failCode.NONE_FAILCODE,
     };
+
+    const notifiaction = { joinUser: user };
+
+    const usersInRoom = [...room.users];
+    multiCast(usersInRoom, PACKET_TYPE.JOIN_ROOM_NOTIFICATION, notifiaction);
   } catch (error) {
     message = {
       success: false,
@@ -24,8 +41,7 @@ export const joinRoomHandler = ({ socket, payload }) => {
     console.error(error);
   }
 
-  socket.write(bufferManager.encoder(PACKET_TYPE.JOIN_ROOM_RESPONSE, message));
-  // S2CJoinRoomNotification
+  sendResponsePacket(socket, PACKET_TYPE.JOIN_ROOM_RESPONSE, message);
 };
 
 // {

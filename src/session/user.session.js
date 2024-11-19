@@ -8,7 +8,7 @@ export const getUserBySocket = (socket) => {
 }
 
 // 나 외의 유저들을 socket으로 찾는 함수
-export const getOtherUsersBySocekt = (socket) => {
+export const getOtherUsersBySocket = (socket) => {
     const otherUsers = users.filter((user) => user.socket !== socket);
     return otherUsers;
 }

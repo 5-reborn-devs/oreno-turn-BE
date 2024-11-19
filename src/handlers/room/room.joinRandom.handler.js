@@ -1,27 +1,37 @@
 import { _ } from 'lodash';
 import { getEmptyRooms } from '../../session/room.session';
+import { getFailCode } from '../../utils/response/failCode';
+import sendResponsePacket, {
+  multiCast,
+} from '../../utils/response/createResponse';
+import { users } from '../../session/session';
+import { PACKET_TYPE } from '../../constants/header';
 
 //{}
 
 export const joinRandomRoomHandler = ({ socket, payload }) => {
-  const failCode = bufferManager.failCode;
+  const failCode = getFailCode();
   let message;
 
-  // 룸 리스트를 들고옴.
-  // 리스트에서 빈방을 골라냄.
-  const emptyRooms = getEmptyRooms();
-
-  // 빈방 리스트에서 랜덤하게 골라냄.
-  const selectedRoom = _.sample(emptyRooms);
-
-  // room 유효검사
-
   try {
+    const emptyRooms = getEmptyRooms(); // 룸 리스트에서 자리 있는 방을 골라냄.
+
+    const selectedRoom = _.sample(emptyRooms); // 빈방 리스트에서 랜덤하게 골라냄.
+    // room 유효검사
+
+    const usersInRoom = [...selectedRoom.users]; // 입장 알림을 위해 따로 때 놓음. 얕은 복사
+    selectedRoom.addUser(socket.token);
+    socket.roomId = selectedRoom.id;
+
     message = {
       success: true,
       room: selectedRoom,
       failCode: failCode.NONE_FAILCODE,
     };
+
+    const user = users.get(socket.token);
+    const notifiaction = { joinUser: user };
+    multiCast(usersInRoom, PACKET_TYPE.JOIN_ROOM_NOTIFICATION, notifiaction); // 다른 유저에게 입장을 알림.
   } catch (error) {
     message = {
       success: false,
@@ -32,8 +42,7 @@ export const joinRandomRoomHandler = ({ socket, payload }) => {
     console.error(error);
   }
 
-  socket.write(bufferManager.encoder(PACKET_TYPE.JOIN_ROOM_RESPONSE, message));
-  // S2CJoinRoomNotification
+  sendResponsePacket(socket, PACKET_TYPE.JOIN_ROOM_RESPONSE, message);
 };
 
 // {
@@ -42,6 +51,6 @@ export const joinRandomRoomHandler = ({ socket, payload }) => {
 //      GlobalFailCode failCode = 3
 //  }
 
-// {
-//     UserData joinUser = 1
-//  }
+// message S2CJoinRoomNotification {
+//   UserData joinUser = 1;
+// }
