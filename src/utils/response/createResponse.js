@@ -1,5 +1,6 @@
 import { PACKET_NUMBER } from '../../constants/header.js';
 import { getProtoMessages } from '../../init/loadProto.js';
+import { clients } from '../../session/session.js';
 import { serializer } from '../serilaizer.js';
 import { clients } from '../../session/session.js';
 
@@ -29,5 +30,3 @@ export const multiCast = (users, packetType, message) => {
     sendResponsePacket(client, packetType, message);
   });
 };
-
-export default sendResponsePacket;

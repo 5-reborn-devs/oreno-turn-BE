@@ -1,9 +1,10 @@
 import { _ } from 'lodash';
 import { getEmptyRooms } from '../../session/room.session';
 import { getFailCode } from '../../utils/response/failCode';
-import sendResponsePacket from '../../utils/response/createResponse';
+import sendResponsePacket, {
+  multiCast,
+} from '../../utils/response/createResponse';
 import { users } from '../../session/session';
-import { broadCast } from '../../utils/response/broadCast';
 import { PACKET_TYPE } from '../../constants/header';
 
 //{}
@@ -20,6 +21,7 @@ export const joinRandomRoomHandler = ({ socket, payload }) => {
 
     const usersInRoom = [...selectedRoom.users]; // 입장 알림을 위해 따로 때 놓음. 얕은 복사
     selectedRoom.addUser(socket.token);
+    socket.roomId = selectedRoom.id;
 
     message = {
       success: true,
@@ -29,7 +31,7 @@ export const joinRandomRoomHandler = ({ socket, payload }) => {
 
     const user = users.get(socket.token);
     const notifiaction = { joinUser: user };
-    broadCast(usersInRoom, PACKET_TYPE.JOIN_ROOM_NOTIFICATION, notifiaction); // 다른 유저에게 입장을 알림.
+    multiCast(usersInRoom, PACKET_TYPE.JOIN_ROOM_NOTIFICATION, notifiaction); // 다른 유저에게 입장을 알림.
   } catch (error) {
     message = {
       success: false,

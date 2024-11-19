@@ -1,5 +1,5 @@
 import { rooms } from '../../session/session';
-import sendResponsePacket from '../../utils/response/createResponse';
+import { sendResponsePacket } from '../../utils/response/createResponse';
 
 // {
 //     int32 id = 1,

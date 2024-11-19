@@ -1,6 +1,4 @@
-import { PACKET_NUMBER } from '../../constants/header.js';
 import { getProtoMessages } from '../../init/loadProto.js';
-import camelCase from 'lodash/camelCase.js';
 
 export const decoder = (payloadData) => {
   try {
