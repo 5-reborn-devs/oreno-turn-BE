@@ -17,21 +17,34 @@ export const gameStart = (socket) => {
     nextPhaseAt: nextPhaseAt,
   };
 
-  // users
-  const users = {};
-  // characterPositions
-  const characterPositions = [];
-  let positionKeys = Object.keys(RANDOM_POSITIONS);
-
   const roomId = socket.roomId;
   const room = rooms.get(roomId);
-  room.users.forEach((user, index) => {
-    const userData = new User(user.userId, user.nickname, user.character);
-    users[user.userId] = {
-      id: userData.id,
-      nickname: userData.nickname,
-      character: userData.character,
+
+  // users
+  const users = room.users.map((user) => {
+    const character = new Character(
+      user.character.characterType,
+      user.character.roleType,
+      user.character.hp,
+    );
+    character.weapon = user.character.weapon;
+    character.stateInfo = user.character.stateInfo;
+    character.equips = user.character.equips || [];
+    character.debuffs = user.character.debuffs || [];
+    character.handCards = user.character.handCards || [];
+    character.bbangCount = user.character.bbangCount || 0;
+    character.handCardsCount = user.character.handCardsCount || 0;
+
+    return {
+      id: user.userId,
+      nickname: user.nickname,
+      character,
     };
+  });
+  // characterPositions
+  const characterPositions = [];
+  const positionKeys = Object.keys(RANDOM_POSITIONS);
+  room.users.forEach((user, index) => {
     const positionKey = positionKeys[index % positionKeys.length];
     characterPositions.push({
       id: user.userId,
