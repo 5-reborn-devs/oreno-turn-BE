@@ -1,8 +1,9 @@
 import { PACKET_TYPE } from '../../constants/header';
 import { rooms } from '../../session/session';
-import { broadCast } from '../../utils/response/broadCast';
 import { getFailCode } from '../../utils/response/failCode';
-import sendResponsePacket from '../../utils/response/createResponse';
+import sendResponsePacket, {
+  multiCast,
+} from '../../utils/response/createResponse';
 
 // {
 //     int32 roomId = 1,
@@ -29,9 +30,10 @@ export const leaveRoomHandler = ({ socket, payloadData }) => {
     }
 
     room.removeUserById(userId); // room에서 user 제거
+    myRoomId.delete(socket.token); // 내 방 정보 제거
     const usersInRoom = [...room.users]; // 얕은 복사
 
-    broadCast(usersInRoom, PACKET_TYPE.LEAVE_ROOM_NOTIFICATION, { userId }); // 유저들에게 떠남을 알림.
+    multiCast(usersInRoom, PACKET_TYPE.LEAVE_ROOM_NOTIFICATION, { userId }); // 유저들에게 떠남을 알림.
   } catch (error) {
     message = {
       success: false,

@@ -1,7 +1,8 @@
 import { PACKET_TYPE } from '../../constants/header';
-import { rooms, users } from '../../session/session';
-import { broadCast } from '../../utils/response/broadCast';
-import sendResponsePacket from '../../utils/response/createResponse';
+import { myRoomId, rooms, users } from '../../session/session';
+import sendResponsePacket, {
+  multiCast,
+} from '../../utils/response/createResponse';
 import { getFailCode } from '../../utils/response/failCode';
 
 // {
@@ -16,17 +17,20 @@ export const joinRoomHandler = ({ socket, payload }) => {
   try {
     const room = rooms.get(roomId);
 
+    const user = users.get(socket.token);
+    room.addUser(user);
+    myRoomId.set(socket.token, roomId);
+
     message = {
       success: true,
       room: room,
       failCode: failCode.NONE_FAILCODE,
     };
 
-    const user = users.get(socket.token);
     const notifiaction = { joinUser: user };
 
     const usersInRoom = [...room.users];
-    broadCast(usersInRoom, PACKET_TYPE.JOIN_ROOM_NOTIFICATION, notifiaction);
+    multiCast(usersInRoom, PACKET_TYPE.JOIN_ROOM_NOTIFICATION, notifiaction);
   } catch (error) {
     message = {
       success: false,

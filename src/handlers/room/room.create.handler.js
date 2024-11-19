@@ -1,6 +1,6 @@
 import Room from '../../classes/models/room.class.js';
 import { PACKET_TYPE } from '../../constants/header.js';
-import { rooms, users } from '../../session/session.js';
+import { myRoomId, rooms, users } from '../../session/session.js';
 import sendResponsePacket from '../../utils/response/createResponse.js';
 import { getFailCode } from '../../utils/response/failCode.js';
 
@@ -18,6 +18,7 @@ export const createRoomHandler = async ({ socket, payloadData }) => {
     const room = new Room(count, user.id, name, maxUserNum, 0, usersInRoom);
 
     rooms.set(count, room); // 방 세션에 생성
+    myRoomId.set(socket.token, count);
     count++; // roomId 증가
 
     message = {
