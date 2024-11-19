@@ -71,7 +71,4 @@ export const registerHandler = async (socket, payload) => {
     sendResponsePacket(socket, PACKET_TYPE.REGISTER_RESPONSE, {
       registerResponse,
     });
-  } catch (err) {
-    console.error(`검증오류: ${err}`);
-  }
 };
