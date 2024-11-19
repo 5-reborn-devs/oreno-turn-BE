@@ -3,7 +3,7 @@ import { getProtoMessages } from '../../init/loadProto.js';
 import { clients } from '../../session/session.js';
 import { serializer } from '../serilaizer.js';
 
-export const sendResponsePacket = (socket, packetType, responseMessage) => {
+const sendResponsePacket = (socket, packetType, responseMessage) => {
   try {
     const protoMessages = getProtoMessages();
     const GamePacket = protoMessages.gamePacket.GamePacket;
@@ -29,3 +29,5 @@ export const multiCast = (users, packetType, message) => {
     sendResponsePacket(client, packetType, message);
   });
 };
+
+export default sendResponsePacket;
