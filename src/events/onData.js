@@ -75,7 +75,7 @@ export const onData = (socket) => async (data) => {
 
         // 인자로 받을 패킷 타입 전송
         const handler = getHandlerByPacketType(packetType);
-        handler(socket, decodedPacket);
+        await handler(socket, decodedPacket);
       } catch (err) {
         console.error(`패킷처리 에러 : `, err);
       }
