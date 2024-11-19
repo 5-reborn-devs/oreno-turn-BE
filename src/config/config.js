@@ -20,7 +20,6 @@ import {
   SEQUENCE_SIZE,
   TOTAL_LENGTH,
   VERSION_LENGTH,
-  VERSION_START,
 } from '../constants/header.js';
 
 export const config = {
@@ -37,7 +36,6 @@ export const config = {
     versionLength: VERSION_LENGTH,
     sequenceLength: SEQUENCE_SIZE,
     payloadLength: PAYLOAD_LENGTH_SIZE,
-    headerLength: VERSION_START,
   },
   database: {
     GAME_DB: {
