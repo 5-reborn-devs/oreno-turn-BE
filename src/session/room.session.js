@@ -1,4 +1,4 @@
-import { myRoomId, rooms } from './session';
+import { rooms } from './session';
 
 export const createRoom = (roomData) => {
   rooms.set(roomData.id, roomData);
@@ -18,13 +18,11 @@ export const getEmptyRooms = () => {
   );
 };
 
-export const getUsersWithoutMe = (token) => {
-  const roomId = myRoomId.get(token);
+export const getUsersWithoutMe = (roomId, userId) => {
   const room = rooms.get(roomId);
   const users = [...room.users];
-  const me = users.get(token);
 
-  return users.filter((user) => user.id != me.id);
+  return users.filter((user) => user.id != userId);
 };
 
 // message RoomData {

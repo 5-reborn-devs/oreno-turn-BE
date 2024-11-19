@@ -49,7 +49,7 @@ export const useCardHandler = async ({ socket, payload }) => {
       userId: user.id,
       suceess: true,
     };
-    const usersInRoomWithoutMe = getUsersWithoutMe(socket.token);
+    const usersInRoomWithoutMe = getUsersWithoutMe(socket.roomId, user.id);
     multiCast(
       usersInRoomWithoutMe,
       PACKET_TYPE.CARD_EFFECT_NOTIFICATION,

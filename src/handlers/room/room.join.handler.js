@@ -1,5 +1,5 @@
 import { PACKET_TYPE } from '../../constants/header';
-import { myRoomId, rooms, users } from '../../session/session';
+import { rooms, users } from '../../session/session';
 import sendResponsePacket, {
   multiCast,
 } from '../../utils/response/createResponse';
@@ -19,7 +19,7 @@ export const joinRoomHandler = ({ socket, payload }) => {
 
     const user = users.get(socket.token);
     room.addUser(user);
-    myRoomId.set(socket.token, roomId);
+    socket.roomId = roomId;
 
     message = {
       success: true,

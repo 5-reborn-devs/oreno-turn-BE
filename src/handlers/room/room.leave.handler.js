@@ -30,7 +30,7 @@ export const leaveRoomHandler = ({ socket, payloadData }) => {
     }
 
     room.removeUserById(userId); // room에서 user 제거
-    myRoomId.delete(socket.token); // 내 방 정보 제거
+    socket.roomId = null;
     const usersInRoom = [...room.users]; // 얕은 복사
 
     multiCast(usersInRoom, PACKET_TYPE.LEAVE_ROOM_NOTIFICATION, { userId }); // 유저들에게 떠남을 알림.

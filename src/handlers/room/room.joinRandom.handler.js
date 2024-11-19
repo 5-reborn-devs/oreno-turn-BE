@@ -4,7 +4,7 @@ import { getFailCode } from '../../utils/response/failCode';
 import sendResponsePacket, {
   multiCast,
 } from '../../utils/response/createResponse';
-import { myRoomId, users } from '../../session/session';
+import { users } from '../../session/session';
 import { PACKET_TYPE } from '../../constants/header';
 
 //{}
@@ -21,7 +21,7 @@ export const joinRandomRoomHandler = ({ socket, payload }) => {
 
     const usersInRoom = [...selectedRoom.users]; // 입장 알림을 위해 따로 때 놓음. 얕은 복사
     selectedRoom.addUser(socket.token);
-    myRoomId.set(socket.token, selectedRoom.id);
+    socket.roomId = selectedRoom.id;
 
     message = {
       success: true,
