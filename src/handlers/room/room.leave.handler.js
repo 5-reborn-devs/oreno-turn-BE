@@ -39,6 +39,8 @@ export const leaveRoomHandler = ({ socket, payloadData }) => {
       success: false,
       failCode: failCode.LEAVE_ROOM_FAILED,
     };
+
+    console.error('방을 떠나는데 실패했습니다.', error);
   }
 
   sendResponsePacket(socket, PACKET_TYPE.LEAVE_ROOM_RESPONSE, message);
