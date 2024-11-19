@@ -5,24 +5,36 @@ import sendResponsePacket from '../../utils/response/createResponse.js';
 
 export const gameStart = (socket) => {
   const protoMesages = getProtoMessages();
+
+  const roomId = socket.roomId;
+  const room = rooms.get(roomId);
+
   let gameStartResponse;
+
+  // gameState
   let currentPhase = protoMesages.enum.PhaseType.DAY;
   let nextPhaseAt = Date.now() + 180000; // 3분후에 넥스트 페이즈 타입으로 이동
   const gameState = {
     phaseType: currentPhase,
     nextPhaseAt: nextPhaseAt,
   };
+
+  // users
   const users = {};
-  const characterPositions = [
-    // 초기 좌프룔 랜덤값으로 설정
-    { id: 1, x: 2, y: 3 }, // userId 값으로 변경
-    { id: 1, x: 2, y: 3 },
-    { id: 1, x: 2, y: 3 },
-    { id: 1, x: 2, y: 3 },
-    { id: 1, x: 2, y: 3 },
-    { id: 1, x: 2, y: 3 },
-    { id: 1, x: 2, y: 3 },
-  ];
+  // characterPositions
+  const characterPositions = [];
+  let positionKeys = Object.keys(R1NDOM_POSITIONS);
+
+  room.users.forEach((user, index) => {
+    users[user.userId] = user;
+    const positionKey = positionKeys[index % positionKeys.length];
+    characterPositions.push({
+      id: user.userId,
+      x: RANODM_POSITIONS[positionKey].x,
+      y: RANDOM_POSITIONS[positionKey].y,
+    });
+  });
+
   const gameStartNotification = {
     gameState,
     users,
