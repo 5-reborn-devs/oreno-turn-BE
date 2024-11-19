@@ -1,4 +1,3 @@
-import { bufferManager } from '../../utils/response/buffer.manager';
 import { PACKET_TYPE } from '../../constants/header';
 import { rooms } from '../../session/session';
 import { broadCast } from '../../utils/response/broadCast';
@@ -11,8 +10,8 @@ import sendResponsePacket from '../../utils/response/createResponse';
 //     roomStateType state = 3
 //  }
 export const leaveRoomHandler = ({ socket, payloadData }) => {
-  const failCode = getFailCode();
   const { roomId, userId, state } = payloadData;
+  const failCode = getFailCode();
   let message;
 
   try {

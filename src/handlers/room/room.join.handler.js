@@ -1,4 +1,3 @@
-import { bufferManager } from '../../classes/managers/buffer.manager';
 import { PACKET_TYPE } from '../../constants/header';
 import { rooms, users } from '../../session/session';
 import { broadCast } from '../../utils/response/broadCast';

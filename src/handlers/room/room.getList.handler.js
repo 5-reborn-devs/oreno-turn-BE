@@ -1,4 +1,3 @@
-import { getProtoMessages } from '../../init/loadProto';
 import { rooms } from '../../session/session';
 import sendResponsePacket from '../../utils/response/createResponse';
 
