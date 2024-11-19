@@ -1,5 +1,6 @@
 import { getProtoMessages } from '../../init/loadProto';
 import { rooms } from '../../session/session';
+import sendResponsePacket from '../../utils/response/createResponse';
 
 // {
 //     int32 id = 1,
@@ -14,12 +15,7 @@ export const getRoomListHandler = async ({ socket, payloadData }) => {
     rooms: [...rooms.values()],
   };
 
-  const protoMessages = getProtoMessages();
-  const response = protoMessages.gamePacket.GamePacket;
-  const packet = response.encode({ getRoomListResponse: message }).finish();
-  socket.write(serializer(packet, PACKET_TYPE.GET_ROOM_LIST_RESPONSE));
-
-  return roomData;
+  sendResponsePacket(socket, PACKET_TYPE.GET_ROOM_LIST_RESPONSE, message);
 };
 
 // {

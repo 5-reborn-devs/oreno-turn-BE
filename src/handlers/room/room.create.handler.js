@@ -2,20 +2,20 @@ import Room from '../../classes/models/room.class.js';
 import { PACKET_TYPE } from '../../constants/header.js';
 import { getProtoMessages } from '../../init/loadProto.js';
 import { rooms, users } from '../../session/session.js';
+import sendResponsePacket from '../../utils/response/createResponse.js';
+import { getFailCode } from '../../utils/response/failCode.js';
 import { serializer } from '../../utils/serilaizer.js';
 
 let count = 0;
 
 export const createRoomHandler = async ({ socket, payloadData }) => {
-  const protoMessages = getProtoMessages();
-  const request = protoMessages.request.C2SCreateRoomRequest;
-  const failCode = protoMessages.common.GlobalFailCode;
+  const failCode = getFailCode();
+  const { name, maxUserNum } = request.decode(payloadData);
+  const token = socket.token;
+
   let message;
 
   try {
-    const { name, maxUserNum } = request.decode(payloadData);
-    const token = socket.token;
-
     const userData = users.get(token);
     const usersInRoom = [userData];
 
@@ -46,9 +46,5 @@ export const createRoomHandler = async ({ socket, payloadData }) => {
     console.error('방생성 실패: ', error);
   }
 
-  const response = protoMessages.gamePacket.GamePacket;
-  const packet = response.encode({ createRoomResponse: message }).finish();
-  socket.write(serializer(packet, PACKET_TYPE.CREATE_ROOM_RESPONSE));
-
-  return roomData;
+  sendResponsePacket(socket, PACKET_TYPE.CREATE_ROOM_RESPONSE, message);
 };
