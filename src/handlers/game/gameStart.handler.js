@@ -1,15 +1,41 @@
+import { PACKET_TYPE } from '../../constants/header.js';
 import { getProtoMessages } from '../../init/loadProto.js';
+import { rooms } from '../../session/session.js';
 import sendResponsePacket from '../../utils/response/createResponse.js';
 
 export const gameStart = (socket) => {
   const protoMesages = getProtoMessages();
-
   let gameStartResponse;
+  let currentPhase = protoMesages.enum.PhaseType.DAY;
+  let nextPhaseAt = Date.now() + 180000; // 3분후에 넥스트 페이즈 타입으로 이동
+  const gameState = {
+    phaseType: currentPhase,
+    nextPhaseAt: nextPhaseAt,
+  };
+  const users = {};
+  const characterPositions = [
+    // 초기 좌프룔 랜덤값으로 설정
+    { id: 1, x: 2, y: 3 }, // userId 값으로 변경
+    { id: 1, x: 2, y: 3 },
+    { id: 1, x: 2, y: 3 },
+    { id: 1, x: 2, y: 3 },
+    { id: 1, x: 2, y: 3 },
+    { id: 1, x: 2, y: 3 },
+    { id: 1, x: 2, y: 3 },
+  ];
+  const gameStartNotification = {
+    gameState,
+    users,
+    characterPositions,
+  };
   try {
     gameStartResponse = {
       success: true,
       failcode: protoMesages.enum.GlobalFailCode.NONE_FAILCODE,
     };
+    multiCast(usersInRoom, PACKET_TYPE.GAME_START_NOTIFICATION, {
+      gameStartNotification,
+    });
   } catch (err) {
     gameStartResponse = {
       success: false,
@@ -20,3 +46,40 @@ export const gameStart = (socket) => {
     gameStartResponse,
   });
 };
+
+// PACKET ID = 34번에서 사용될 가능성이 있어 보임 S2CPhaseUpdateNotification
+
+// setTimeout(() => {
+//     //setTimeout 때문에 180000밀리초 이후에 실행
+//     currentPhase = protoMessages.enum.PhaseType.END; // 밤으로 페이즈 변경
+//     nextPhaseAt = Date.now() + 30000; // 페이즈 변경 시간 30초로 변경
+//     const updatedGameState = {
+//       PhaseType: currentPhase,
+//       nextPhaseAt: nextPhaseAt,
+//     };
+//     const updatedGameStartNotification = {
+//       gameState: updatedGameState,
+//       users,
+//       characterPositions,
+//     };
+//     multiCast(usersInRoom, PACKET_TYPE.GAME_START_NOTIFICATION, {
+//       updatedGameStartNotification,
+//     }); // 밤이라고 노티 다시 보내기
+//     sentTimeout(() => {
+//       // setTimout 호출 30000밀리초 이후에 실행
+//       currentPhase = protoMesages.enum.PhaseType.DAY; // 낮으로 페이지 변경
+//       nextPhaseAt = Date.now() + 180000; // 페이즈 변경 시간 30초로 변경
+//       const finalGameState = {
+//         PhaseType: currentPhase,
+//         nextPhaseAt: nextPhaseAt,
+//       };
+//       const finalGameStartNotification = {
+//         gameState: finalGameState,
+//         users,
+//         characterPositions,
+//       };
+//       multiCast(usersInRoom, PACKET_TYPE.GAME_START_NOTIFICATION, {
+//         finalGameStartNotification,
+//       }); // 다시 노티 보냄
+//     }, 30000);
+//   }, 180000);

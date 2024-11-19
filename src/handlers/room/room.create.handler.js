@@ -6,9 +6,10 @@ import { getFailCode } from '../../utils/response/failCode.js';
 
 let count = 0;
 
-export const createRoomHandler = async ({ socket, payloadData }) => {
+export const createRoomHandler = async (socket, payloadData) => {
   const { name, maxUserNum } = payloadData;
   const failCode = getFailCode();
+
   let message;
   try {
     const user = users.get(socket.token);
@@ -17,6 +18,7 @@ export const createRoomHandler = async ({ socket, payloadData }) => {
     const room = new Room(count, user.id, name, maxUserNum, 0, usersInRoom);
 
     rooms.set(count, room); // 방 세션에 생성
+    socket.roomId = count;
     count++; // roomId 증가
 
     message = {

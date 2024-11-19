@@ -1,6 +1,6 @@
-import { getProtoMessages } from '../../init/loadProto';
+import { getProtoMessages } from '../../init/loadProto.js';
 
 export const getFailCode = () => {
   const protoMessages = getProtoMessages();
-  return protoMessages.common.GlobalFailCode;
+  return protoMessages.enum.GlobalFailCode;
 };

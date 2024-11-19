@@ -1,8 +1,9 @@
 import { PACKET_NUMBER } from '../../constants/header.js';
 import { getProtoMessages } from '../../init/loadProto.js';
 import { serializer } from '../serilaizer.js';
+import { clients } from '../../session/session.js';
 
-const sendResponsePacket = (socket, packetType, responseMessage) => {
+export const sendResponsePacket = (socket, packetType, responseMessage) => {
   try {
     const protoMessages = getProtoMessages();
     const GamePacket = protoMessages.gamePacket.GamePacket;
@@ -20,6 +21,13 @@ const sendResponsePacket = (socket, packetType, responseMessage) => {
   } catch (error) {
     console.error('Error sending response packet', error);
   }
+};
+
+export const multiCast = (users, packetType, message) => {
+  users.forEach((user) => {
+    const client = clients.get(user.id);
+    sendResponsePacket(client, packetType, message);
+  });
 };
 
 export default sendResponsePacket;
