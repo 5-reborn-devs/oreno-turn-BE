@@ -43,7 +43,7 @@ export const gameStart = (socket) => {
   try {
     gameStartResponse = {
       success: true,
-      failcode: protoMesages.enum.GlobalFailCode.NONE_FAILCODE,
+      failcode: failCode.NONE_FAILCODE,
     };
     multiCast(usersInRoom, PACKET_TYPE.GAME_START_NOTIFICATION, {
       gameStartNotification,
@@ -51,12 +51,14 @@ export const gameStart = (socket) => {
   } catch (err) {
     gameStartResponse = {
       success: false,
-      failcode: protoMesages.enum.GlobalFailCode.UNKNOWN_ERROR,
+      failcode: failCode.UNKNOWN_ERROR,
     };
   }
-  sendResponsePacket(socket, PACKET_TYPE.GAME_START_RESPONSE, {
+  sendResponsePacket(
+    socket,
+    PACKET_TYPE.GAME_START_RESPONSE,
     gameStartResponse,
-  });
+  );
 };
 
 // PACKET ID = 34번에서 사용될 가능성이 있어 보임 S2CPhaseUpdateNotification
