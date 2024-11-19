@@ -27,6 +27,7 @@ class Room {
       return false;
     }
   }
+
   // 클래스의 입력값이 맞는지 확인하는 검증이 필요할까?
 }
 
