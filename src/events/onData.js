@@ -17,14 +17,6 @@
 */
 
 import { config } from '../config/config.js';
-import {
-  TOTAL_LENGTH,
-  PACKET_TYPE_LENGTH,
-  VERSION_START,
-  VERSION_LENGTH,
-  SEQUENCE_SIZE,
-  PAYLOAD_LENGTH_SIZE,
-} from '../constants/header.js';
 import { getHandlerByPacketType } from '../handlers/index.js';
 import { decoder } from '../utils/response/decoder.js';
 
@@ -36,7 +28,7 @@ export const onData = (socket) => async (data) => {
   // const headerSize = config.packet.totalLength + config.packet.typeLength;
 
   // 버퍼 데이터로 들어온 패킷 데이터가 헤더 길이보다 크다면 ( 데이터가 들어왔다고 이해 )
-  while (socket.buffer.length >= VERSION_START) {
+  while (socket.buffer.length >= 3) {
     // 버퍼 데이터 중 PayloadOneofCase 길이만큼 할당 2byte
     const packetType = socket.buffer.readUInt16BE(0);
     let offset = config.packet.typeLength;
