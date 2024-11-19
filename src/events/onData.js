@@ -69,7 +69,6 @@ export const onData = (socket) => async (data) => {
       socket.buffer = socket.buffer.subarray(requiredLength);
 
       try {
-        console.log(`페이로드:${payload}`);
         // 모든 패킷을 게임패킷으로 처리 가능하다고 한다
         const decodedPacket = decoder(packetType, payload);
 

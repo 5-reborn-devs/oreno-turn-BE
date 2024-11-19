@@ -6,16 +6,13 @@ import { serializer } from '../../utils/serilaizer.js';
 
 let count = 0;
 
-export const createRoomHandler = async ({ socket, payloadData }) => {
+export const createRoomHandler = async (socket, payloadData) => {
   const protoMessages = getProtoMessages();
-  const request = protoMessages.request.C2SCreateRoomRequest;
-  const failCode = protoMessages.common.GlobalFailCode;
+  const failCode = protoMessages.enum.GlobalFailCode;
   let message;
-
   try {
-    const { name, maxUserNum } = request.decode(payloadData);
     const token = socket.token;
-
+    const { name, maxUserNum } = payloadData;
     const userData = users.get(token);
     const usersInRoom = [userData];
 

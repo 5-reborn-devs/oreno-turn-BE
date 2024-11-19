@@ -10,7 +10,6 @@ export const decoder = (packetType, payloadData) => {
     const gamePacket = GamePacket.decode(payloadData);
 
     const request = Object.values(gamePacket)[0];
-
     return request;
   } catch (error) {
     console.error(error);

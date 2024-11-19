@@ -8,11 +8,13 @@ import sendResponsePacket from '../../utils/response/createResponse.js';
 import User from '../../classes/models/user.class.js';
 
 export const login = async (socket, payload) => {
-  const { email, nickname, password } = payload;
+  const { email, password } = payload;
   const protoMesages = getProtoMessages();
   console.log('id', email);
   console.log('password', password);
-  const user = new User(email, nickname);
+  let nickname;
+  let character;
+  const user = new User(email, nickname, character);
   const loginResponse = {
     success: true,
     message: '회원가입에 성공했습니다!',
