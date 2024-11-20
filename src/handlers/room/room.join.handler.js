@@ -4,8 +4,9 @@ import sendResponsePacket, {
   multiCast,
 } from '../../utils/response/createResponse.js';
 import { getFailCode } from '../../utils/response/failCode.js';
+import { getUsersWithoutMe } from '../../session/room.session.js';
 
-// {
+// {ㅉ
 //     int32 roomId = 1;
 //  }
 
@@ -15,27 +16,28 @@ export const joinRoomHandler = async (socket, payload) => {
   console.log('룸아이디', roomId);
   const failCode = getFailCode();
   let joinRoomResponse;
+  let notification;
   try {
     const room = rooms.get(roomId);
+    console.log('들어온 룸 정보', room);
     const user = users.get(socket.token);
     room.addUser(user);
     socket.roomId = roomId;
-
     joinRoomResponse = {
       success: true,
       room: room,
       failCode: failCode.NONE_FAILCODE,
     };
-
     const joinRoomNotification = { joinUser: user };
 
-    const usersInRoom = [...room.users];
-    multiCast(usersInRoom, PACKET_TYPE.JOIN_ROOM_NOTIFICATION, {
-      joinRoomNotification,
-    });
-    sendResponsePacket(socket, PACKET_TYPE.JOIN_ROOM_RESPONSE, {
-      joinRoomResponse,
-    });
+    const usersInRoomWithoutMe = getUsersWithoutMe(roomId, user.id);
+    notification = [
+      usersInRoomWithoutMe,
+      PACKET_TYPE.JOIN_ROOM_NOTIFICATION,
+      {
+        joinRoomNotification,
+      },
+    ];
   } catch (error) {
     joinRoomResponse = {
       success: false,
@@ -47,8 +49,12 @@ export const joinRoomHandler = async (socket, payload) => {
     });
     console.error(error);
   }
-};
 
+  sendResponsePacket(socket, PACKET_TYPE.JOIN_ROOM_RESPONSE, {
+    joinRoomResponse,
+  });
+  if (notification) multiCast(...notification);
+};
 // {
 //     bool success = 1,
 //     RoomData room = 2,

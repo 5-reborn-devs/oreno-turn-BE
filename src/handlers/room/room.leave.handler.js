@@ -1,27 +1,25 @@
 import { PACKET_TYPE } from '../../constants/header.js';
-import { rooms } from '../../session/session.js';
+import { rooms, users } from '../../session/session.js';
 import { getFailCode } from '../../utils/response/failCode.js';
 import sendResponsePacket, {
   multiCast,
 } from '../../utils/response/createResponse.js';
 
-// {
-//     int32 roomId = 1,
-//     userData userId = 2,
-//     roomStateType state = 3
-//  }
-export const leaveRoomHandler = async (socket) => {
-  const { roomId, userId, state } = payloadData;
+// {}
+export const leaveRoomHandler = async (socket, payloadData) => {
   const failCode = getFailCode();
-  let leaveRoomNotification;
-  console.log(payloadData);
+  let leaveRoomResponse;
+
   try {
-    const room = rooms.get(roomId);
+    const room = rooms.get(socket.roomId);
     if (!room) {
       throw new Error('해당 방이 존재하지 않습니다');
     }
-    if (room.removeUserById(userId)) {
-      leaveRoomNotification = {
+
+    const user = users.get(socket.token);
+    console.log('user data:', JSON.stringify(user));
+    if (room.removeUserById(user.id)) {
+      leaveRoomResponse = {
         success: true,
         failCode: failCode.NONE_FAILCODE,
       };
@@ -29,13 +27,19 @@ export const leaveRoomHandler = async (socket) => {
       throw new Error('해당 방에 유저가 존재하지 않습니다');
     }
 
-    room.removeUserById(userId); // room에서 user 제거
+    room.removeUserById(user.id); // room에서 user 제거
     socket.roomId = null;
-    const usersInRoom = [...room.users]; // 얕은 복사
+    const usersInRoom = [...room.users];
+    const leaveRoomNotification = {
+      userId: user.id,
+    };
 
-    multiCast(usersInRoom, PACKET_TYPE.LEAVE_ROOM_NOTIFICATION, { userId }); // 유저들에게 떠남을 알림.
+    // 유저들에게 떠남을 알림.
+    multiCast(usersInRoom, PACKET_TYPE.LEAVE_ROOM_NOTIFICATION, {
+      leaveRoomNotification,
+    });
   } catch (error) {
-    leaveRoomNotification = {
+    leaveRoomResponse = {
       success: false,
       failCode: failCode.LEAVE_ROOM_FAILED,
     };
@@ -44,7 +48,7 @@ export const leaveRoomHandler = async (socket) => {
   }
 
   sendResponsePacket(socket, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
-    leaveRoomNotification,
+    leaveRoomResponse,
   });
 };
 

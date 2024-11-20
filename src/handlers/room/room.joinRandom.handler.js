@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { getEmptyRooms } from '../../session/room.session.js';
+import { getEmptyRooms, getUsersInRoom } from '../../session/room.session.js';
 import { getFailCode } from '../../utils/response/failCode.js';
 import sendResponsePacket, {
   multiCast,
@@ -31,7 +31,7 @@ export const joinRandomRoomHandler = async (socket, payload) => {
 
     const joinRoomNotification = { joinUser: user };
 
-    const usersInRoom = [...selectedRoom.users]; // 입장 알림을 위해 따로 때 놓음. 얕은 복사
+    const usersInRoom = getUsersInRoom(selectedRoom.id);
     multiCast(usersInRoom, PACKET_TYPE.JOIN_ROOM_NOTIFICATION, {
       joinRoomNotification,
     }); // 다른 유저에게 입장을 알림.

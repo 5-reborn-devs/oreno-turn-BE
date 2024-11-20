@@ -17,25 +17,8 @@ const handlers = {
     protoType: 'request.C2SRegisterRequest', // protobuf 타입
   },
   [PACKET_TYPE.LOGIN_REQUEST]: {
-    handler: loginHandler, // 사용하게될 함수명
-    protoType: 'request.C2SLoginRequest', // protobuf 타입
-  },
-  // [PACKET_TYPE.USE_CARD_REQUEST]: {
-  //     handler : register, // 사용하게될 함수명
-  //     protoType : 'request.C2SCreateRoomRequest', // protobuf 타입
-  // },
-  [PACKET_TYPE.GET_ROOM_LIST_REQUEST]: {
-    handler: getRoomListHandler, // 사용하게될 함수명
-    protoType: 'request.C2SGetRoomListRequest', // protobuf 타입
-  },
-  // [PACKET_TYPE.JOIN_ROOM_REQUEST]: {
-  //     handler : register, // 사용하게될 함수명
-  //     protoType : 'request.C2SJoinRandomRoomRequest', // protobuf 타입
-  // },
-  // 게임 관련 핸들러
-  [PACKET_TYPE.CREATE_ROOM_REQUEST]: {
-    handler: createRoomHandler,
-    protoType: 'request.C2SCreateRoomRequest',
+    handler: loginHandler,
+    protoType: 'request.C2SLoginRequest',
   },
   [PACKET_TYPE.GET_ROOM_LIST_REQUEST]: {
     handler: getRoomListHandler,
@@ -49,21 +32,25 @@ const handlers = {
     handler: joinRandomRoomHandler,
     protoType: 'request.C2SJoinRandomRoomRequest',
   },
+  [PACKET_TYPE.CREATE_ROOM_REQUEST]: {
+    handler: createRoomHandler,
+    protoType: 'request.C2SCreateRoomRequest',
+  },
   [PACKET_TYPE.LEAVE_ROOM_REQUEST]: {
     handler: leaveRoomHandler,
     protoType: 'request.C2SLeaveRoomRequest',
   },
   [PACKET_TYPE.GAME_PREPARE_REQUEST]: {
-    handler: gamePrepare, // 사용하게될 함수명
+    handler: gamePrepare,
     protoType: 'request.C2SGamePrepareRequest',
   },
   [PACKET_TYPE.GAME_START_REQUEST]: {
-    handler: gameStart, // 사용하게될 함수명
+    handler: gameStart,
     protoType: 'request.C2SGameStartRequest',
   },
   [PACKET_TYPE.FLEAMARKET_PICK_REQUEST]: {
-    handler: fleamarketPickHandler, // 사용하게될 함수명
-    protoType: 'request.C2SFleaMarketPickRequest', // protobuf 타입
+    handler: fleamarketPickHandler,
+    protoType: 'request.C2SFleaMarketPickRequest',
   },
 };
 

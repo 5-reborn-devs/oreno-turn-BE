@@ -47,13 +47,13 @@ export const loginHandler = async (socket, payload) => {
       socket.token = token;
 
       // 유저 세션에도 추가
-      addClient(socket, email);
-
+      addClient(socket, dbUser.userId); // 동작 이상. 수정할 것
+      console.log('디비유저 정보값', dbUser);
       const loginResponse = {
         success: true,
         message: `로그인 성공 ! ${email}`,
         token: token,
-        userData: new User(email), // 캐릭터 선정 해준다 ?!
+        userData: new User(dbUser.userId, dbUser.nickname), // 캐릭터 선정 해준다 ?!
         failCode: protoMessages.enum.GlobalFailCode.NONE_FAILCODE,
       };
       sendResponsePacket(socket, PACKET_TYPE.LOGIN_RESPONSE, { loginResponse });
