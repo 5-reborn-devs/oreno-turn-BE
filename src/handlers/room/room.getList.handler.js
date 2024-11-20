@@ -12,11 +12,13 @@ import { sendResponsePacket } from '../../utils/response/createResponse.js';
 
 export const getRoomListHandler = async (socket, payloadData) => {
   try {
-    const message = {
+    const getRoomListResponse = {
       rooms: [...rooms.values()],
     };
 
-    sendResponsePacket(socket, PACKET_TYPE.GET_ROOM_LIST_RESPONSE, message);
+    sendResponsePacket(socket, PACKET_TYPE.GET_ROOM_LIST_RESPONSE, {
+      getRoomListResponse,
+    });
   } catch (error) {
     console.error('방 리스트 가져오기 실패', error);
   }

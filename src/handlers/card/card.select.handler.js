@@ -1,6 +1,6 @@
 import { PACKET_TYPE } from '../../constants/header.js';
-import { getUsersWithoutMe } from '../../session/room.session.js';
-import { users } from '../../session/session.js';
+import { getUsersInRoom } from '../../session/room.session.js';
+import { rooms, users } from '../../session/session.js';
 import {
   multiCast,
   sendResponsePacket,
@@ -17,7 +17,7 @@ import { getFailCode } from '../../utils/response/failCode.js';
 export const selectCardHandler = async (socket, payload) => {
   const { selectType, selectCardType } = payload;
   const failCode = getFailCode();
-  let message;
+  let cardSelectResponse;
 
   try {
     // 카드ID를 통해 카드 데이터를 가져오고, 카드의 타입을 가져옴. (작성 필요)
@@ -27,27 +27,31 @@ export const selectCardHandler = async (socket, payload) => {
     // 디버프, 등 다른 카드의 타입도 알림을 넣어야하나?
     if (selectType === 1) {
       const user = users.get(socket.token);
-      const usersInRoom = getUsersWithoutMe(socket.roomId, user.id);
-      const notification = {
+      const usersInRoom = getUsersInRoom(socket.roomId);
+      const equipCardNotification = {
         cardType: selectCardType,
         userId: user.id,
       };
-      multiCast(usersInRoom, PACKET_TYPE.EQUIP_CARD_NOTIFICATION, notification);
+      multiCast(usersInRoom, PACKET_TYPE.EQUIP_CARD_NOTIFICATION, {
+        equipCardNotification,
+      });
     }
 
-    message = {
+    cardSelectResponse = {
       success: true,
       failCode: failCode.NONE_FAILCODE,
     };
   } catch (errer) {
-    message = {
+    cardSelectResponse = {
       success: false,
       failCode: failCode.UNKNOWN_ERROR,
     };
     console.error('카드 선택중 알 수 없는 에러');
   }
 
-  sendResponsePacket(socket, PACKET_TYPE.CARD_SELECT_RESPONSE, message);
+  sendResponsePacket(socket, PACKET_TYPE.CARD_SELECT_RESPONSE, {
+    cardSelectResponse,
+  });
 };
 
 // {

@@ -13,7 +13,7 @@ import sendResponsePacket, {
 export const leaveRoomHandler = async (socket, payloadData) => {
   const { roomId, userId, state } = payloadData;
   const failCode = getFailCode();
-  let message;
+  let leaveRoomNotification;
 
   try {
     const room = rooms.get(roomId);
@@ -21,7 +21,7 @@ export const leaveRoomHandler = async (socket, payloadData) => {
       throw new Error('해당 방이 존재하지 않습니다');
     }
     if (room.removeUserById(userId)) {
-      message = {
+      leaveRoomNotification = {
         success: true,
         failCode: failCode.NONE_FAILCODE,
       };
@@ -35,7 +35,7 @@ export const leaveRoomHandler = async (socket, payloadData) => {
 
     multiCast(usersInRoom, PACKET_TYPE.LEAVE_ROOM_NOTIFICATION, { userId }); // 유저들에게 떠남을 알림.
   } catch (error) {
-    message = {
+    leaveRoomNotification = {
       success: false,
       failCode: failCode.LEAVE_ROOM_FAILED,
     };
@@ -43,7 +43,9 @@ export const leaveRoomHandler = async (socket, payloadData) => {
     console.error('방을 떠나는데 실패했습니다.', error);
   }
 
-  sendResponsePacket(socket, PACKET_TYPE.LEAVE_ROOM_RESPONSE, message);
+  sendResponsePacket(socket, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
+    leaveRoomNotification,
+  });
 };
 
 // {

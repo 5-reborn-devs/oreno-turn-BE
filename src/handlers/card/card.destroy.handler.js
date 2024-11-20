@@ -35,11 +35,13 @@ export const destroyCardsHandler = async (socket, payload) => {
     handCards = [...handCardsMap.values()];
 
     character.handCards = handCards; // user 데이터 업데이트
-    const message = {
+    const destroyCardResponse = {
       handCards: handCards,
     };
 
-    sendResponsePacket(socket, PACKET_TYPE.DESTROY_CARD_RESPONSE, message);
+    sendResponsePacket(socket, PACKET_TYPE.DESTROY_CARD_RESPONSE, {
+      destroyCardResponse,
+    });
   } catch (error) {
     console.error('카드 삭제 에러 발생', error);
   }
