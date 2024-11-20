@@ -12,14 +12,12 @@ import { getUsersWithoutMe } from '../../session/room.session.js';
 
 export const joinRoomHandler = async (socket, payload) => {
   const { roomId } = payload;
-  console.log('페이로드', payload);
-  console.log('룸아이디', roomId);
+
   const failCode = getFailCode();
   let joinRoomResponse;
   let notification;
   try {
     const room = rooms.get(roomId);
-    console.log('들어온 룸 정보', room);
     const user = users.get(socket.token);
     room.addUser(user);
     socket.roomId = roomId;

@@ -4,7 +4,7 @@ import { rooms, users } from '../../session/session.js';
 import { sendResponsePacket } from '../../utils/response/createResponse.js';
 import { getFailCode } from '../../utils/response/failCode.js';
 
-let count = 1;
+let count = 13;
 
 export const createRoomHandler = async (socket, payloadData) => {
   const { name, maxUserNum } = payloadData;
@@ -14,13 +14,11 @@ export const createRoomHandler = async (socket, payloadData) => {
   try {
     const user = users.get(socket.token);
     const usersInRoom = [user];
-    console.log('유저', user);
-    const room = new Room(count, user.id, name, maxUserNum, 1, usersInRoom);
+    const room = new Room(count, user.id, name, maxUserNum, 0, usersInRoom);
 
     rooms.set(count, room); // 방 세션에 생성
     socket.roomId = count;
     count++; // roomId 증가
-    console.log('생성시 룸이 어떻게 들어오는지 확인', room);
 
     createRoomResponse = {
       success: true,
