@@ -1,4 +1,4 @@
-import CharacterState from './charater.state.class';
+import CharacterState from './charater.state.class.js';
 
 class Charater {
   constructor(characterType, roleType, hp) {

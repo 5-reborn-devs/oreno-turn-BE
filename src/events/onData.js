@@ -4,16 +4,6 @@
   2 bytes              1 bytes         versionLength 4 bytes      4 bytes         payloadLength 
   C2S = 리틀 엔디안
   S2C = 빅 엔디안
-
-  const PAYLOAD_ONEOF_CASE_SIZE = 2;
-  const VERSION_LENGTH_SIZE = 1;
-  const SEQUENCE_SIZE = 4;
-  const PAYLOAD_LENGTH_SIZE = 4;
--------------------------------------------------------------
-  const PACKET_TYPE_LENGTH = 2;     // PayloadOneofCase
-  const VERSION_START = 1;          // versionLength (version)
-  const SEQUENCE_SIZE = 4;          // sequence
-  const PAYLOAD_LENGTH_SIZE = 4;    // payloadLength 
 */
 
 import { config } from '../config/config.js';
@@ -69,7 +59,8 @@ export const onData = (socket) => async (data) => {
         const handler = getHandlerByPacketType(packetType);
         await handler(socket, decodedPacket);
       } catch (err) {
-        console.error(`패킷처리 에러 : `, err);
+        console.error(err)
+        console.error(`패킷처리 에러 : ${err}, packeyType : ${packetType}`);
       }
     } else {
       console.log(
