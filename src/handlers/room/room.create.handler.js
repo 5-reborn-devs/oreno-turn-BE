@@ -14,8 +14,8 @@ export const createRoomHandler = async (socket, payloadData) => {
   try {
     const user = users.get(socket.token);
     const usersInRoom = [user];
-
-    const room = new Room(count, user.id, name, maxUserNum, 0, usersInRoom);
+    console.log('유저', user);
+    const room = new Room(count, user.id, name, maxUserNum, 1, usersInRoom);
 
     rooms.set(count, room); // 방 세션에 생성
     socket.roomId = count;
