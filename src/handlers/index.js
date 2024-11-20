@@ -6,6 +6,9 @@ import { gameStart } from './game/gameStart.handler.js';
 import { createRoomHandler } from './room/room.create.handler.js';
 import { fleamarketPickHandler } from './fleamarket/fleaMarket.handler.js';
 import { getRoomListHandler } from './room/room.getList.handler.js';
+import { joinRoomHandler } from './room/room.join.handler.js';
+import { joinRandomRoomHandler } from './room/room.joinRandom.handler.js';
+import { leaveRoomHandler } from './room/room.leave.handler.js';
 
 const handlers = {
   // 회원가입
@@ -30,7 +33,6 @@ const handlers = {
   //     protoType : 'request.C2SJoinRandomRoomRequest', // protobuf 타입
   // },
   // 게임 관련 핸들러
-
   [PACKET_TYPE.CREATE_ROOM_REQUEST]: {
     handler: createRoomHandler,
     protoType: 'request.C2SCreateRoomRequest',
@@ -38,6 +40,18 @@ const handlers = {
   [PACKET_TYPE.GET_ROOM_LIST_REQUEST]: {
     handler: getRoomListHandler,
     protoType: 'request.C2SGetRoomListRequest',
+  },
+  [PACKET_TYPE.JOIN_ROOM_REQUEST]: {
+    handler: joinRoomHandler,
+    protoType: 'request.C2SJoinRoomRequest',
+  },
+  [PACKET_TYPE.JOIN_RANDOM_ROOM_REQUEST]: {
+    handler: joinRandomRoomHandler,
+    protoType: 'request.C2SJoinRandomRoomRequest',
+  },
+  [PACKET_TYPE.LEAVE_ROOM_REQUEST]: {
+    handler: leaveRoomHandler,
+    protoType: 'request.C2SLeaveRoomRequest',
   },
   [PACKET_TYPE.GAME_PREPARE_REQUEST]: {
     handler: gamePrepare, // 사용하게될 함수명

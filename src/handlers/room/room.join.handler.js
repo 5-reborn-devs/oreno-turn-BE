@@ -11,12 +11,12 @@ import { getFailCode } from '../../utils/response/failCode.js';
 
 export const joinRoomHandler = async (socket, payload) => {
   const { roomId } = payload;
+  console.log('페이로드', payload);
+  console.log('룸아이디', roomId);
   const failCode = getFailCode();
   let joinRoomResponse;
-
   try {
     const room = rooms.get(roomId);
-
     const user = users.get(socket.token);
     room.addUser(user);
     socket.roomId = roomId;
@@ -33,19 +33,20 @@ export const joinRoomHandler = async (socket, payload) => {
     multiCast(usersInRoom, PACKET_TYPE.JOIN_ROOM_NOTIFICATION, {
       joinRoomNotification,
     });
+    sendResponsePacket(socket, PACKET_TYPE.JOIN_ROOM_RESPONSE, {
+      joinRoomResponse,
+    });
   } catch (error) {
     joinRoomResponse = {
       success: false,
       room: null,
       failCode: failCode.JOIN_ROOM_FAILED,
     };
-
+    sendResponsePacket(socket, PACKET_TYPE.JOIN_ROOM_RESPONSE, {
+      joinRoomResponse,
+    });
     console.error(error);
   }
-
-  sendResponsePacket(socket, PACKET_TYPE.JOIN_ROOM_RESPONSE, {
-    joinRoomResponse,
-  });
 };
 
 // {

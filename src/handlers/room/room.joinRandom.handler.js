@@ -1,11 +1,11 @@
-import { _ } from 'lodash';
-import { getEmptyRooms } from '../../session/room.session';
-import { getFailCode } from '../../utils/response/failCode';
+import _ from 'lodash';
+import { getEmptyRooms } from '../../session/room.session.js';
+import { getFailCode } from '../../utils/response/failCode.js';
 import sendResponsePacket, {
   multiCast,
-} from '../../utils/response/createResponse';
-import { users } from '../../session/session';
-import { PACKET_TYPE } from '../../constants/header';
+} from '../../utils/response/createResponse.js';
+import { users } from '../../session/session.js';
+import { PACKET_TYPE } from '../../constants/header.js';
 
 //{}
 

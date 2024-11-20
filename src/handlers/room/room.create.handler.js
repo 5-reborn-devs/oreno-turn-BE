@@ -5,7 +5,7 @@ import { sendResponsePacket } from '../../utils/response/createResponse.js';
 import { getFailCode } from '../../utils/response/failCode.js';
 import { joinRoomHandler } from './room.join.handler.js';
 
-let count = 0;
+let count = 1;
 
 export const createRoomHandler = async (socket, payloadData) => {
   const { name, maxUserNum } = payloadData;
@@ -16,7 +16,7 @@ export const createRoomHandler = async (socket, payloadData) => {
     const user = users.get(socket.token);
     const usersInRoom = [user];
     const room = new Room(count, user.id, name, maxUserNum, 0, usersInRoom);
-    console.log(JSON.stringify(room));
+    console.log(room);
 
     rooms.set(count, room); // 방 세션에 생성
     socket.roomId = count;

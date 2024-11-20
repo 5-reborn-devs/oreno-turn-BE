@@ -1,20 +1,20 @@
-import { PACKET_TYPE } from '../../constants/header';
-import { rooms } from '../../session/session';
-import { getFailCode } from '../../utils/response/failCode';
+import { PACKET_TYPE } from '../../constants/header.js';
+import { rooms } from '../../session/session.js';
+import { getFailCode } from '../../utils/response/failCode.js';
 import sendResponsePacket, {
   multiCast,
-} from '../../utils/response/createResponse';
+} from '../../utils/response/createResponse.js';
 
 // {
 //     int32 roomId = 1,
 //     userData userId = 2,
 //     roomStateType state = 3
 //  }
-export const leaveRoomHandler = async (socket, payloadData) => {
+export const leaveRoomHandler = async (socket) => {
   const { roomId, userId, state } = payloadData;
   const failCode = getFailCode();
   let leaveRoomNotification;
-
+  console.log(payloadData);
   try {
     const room = rooms.get(roomId);
     if (!room) {
