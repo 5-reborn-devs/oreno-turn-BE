@@ -53,6 +53,7 @@ export const gameStart = (socket) => {
     multiCast(usersInRoom, PACKET_TYPE.GAME_START_NOTIFICATION, {
       gameStartNotification,
     });
+    //이 부근 언저리 즘에서 인터벌 매니저 생성?
   } catch (err) {
     gameStartResponse = {
       success: false,
@@ -64,6 +65,7 @@ export const gameStart = (socket) => {
     PACKET_TYPE.GAME_START_RESPONSE,
     gameStartResponse,
   );
+  
 };
 
 // PACKET ID = 34번에서 사용될 가능성이 있어 보임 S2CPhaseUpdateNotification
