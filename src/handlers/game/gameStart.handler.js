@@ -1,4 +1,5 @@
 import { PACKET_TYPE } from '../../constants/header.js';
+import { RANDOM_POSITIONS } from '../../constants/randomPositions.js';
 import { getProtoMessages } from '../../init/loadProto.js';
 import { rooms } from '../../session/session.js';
 import sendResponsePacket from '../../utils/response/createResponse.js';
@@ -23,7 +24,7 @@ export const gameStart = (socket) => {
   const users = {};
   // characterPositions
   const characterPositions = [];
-  let positionKeys = Object.keys(R1NDOM_POSITIONS);
+  let positionKeys = Object.keys(RANDOM_POSITIONS);
 
   room.users.forEach((user, index) => {
     users[user.userId] = user;
