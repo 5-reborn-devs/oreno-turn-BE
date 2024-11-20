@@ -5,10 +5,9 @@ import { makeCardDeck } from './card.js';
 export const maturedsavingsHandler = async (socket, cardType, targetUserId) => {
   const user = getUserById(targetUserId);
   const userCharacter = user.character;
+  const handCards = userCharacter.handCards;
 
-  // 카드더미에서 2장 뽑아 유저에게 준다
-  // 카드더미에서 2장 줄이고, 종류값에 맞는 카드를 유저 핸드로 넣어준다
-  // handCard는 type, count로 이루어져 있으니 Map이나 2차원배열로 들어가야 한다 -> Map이 좋을 것 같다 🤔
+  // 카드더미에서 2장 뽑아 유저에게 준다 - 카드더미에서 2장 줄이고, 종류값에 맞는 카드를 유저 핸드로 넣어준다
 
   // CardData {
   //     CardType type = 1;
@@ -29,12 +28,11 @@ export const maturedsavingsHandler = async (socket, cardType, targetUserId) => {
   // }
 
   const cardDeck = makeCardDeck();
-  const pickedCards = cardDeck.splice(0, 2)[0];
-  const handCards = userCharacter.handCards;
-
+  const pickedCards = cardDeck.splice(0, 2);
   // 얻은 카드의 타입과 장수를 handCards에 set으로 넣어준다
-  pickedCards.forEach((pickedCard) => {
-    let count = handCards.get(pickedCard.cardType);
-    handCards.set(pickedCard.cardType, ++count);
+  pickedCards.forEach((pickedCardType) => {
+    let count = handCards.get(pickedCardType);
+    count = !!count ? count : 0;
+    handCards.set(pickedCardType, ++count);
   });
 };
