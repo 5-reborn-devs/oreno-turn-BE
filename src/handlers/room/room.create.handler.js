@@ -10,24 +10,23 @@ export const createRoomHandler = async (socket, payloadData) => {
   const { name, maxUserNum } = payloadData;
   const failCode = getFailCode();
 
-  let message;
+  let createRoomResponse;
   try {
     const user = users.get(socket.token);
     const usersInRoom = [user];
-
     const room = new Room(count, user.id, name, maxUserNum, 0, usersInRoom);
 
     rooms.set(count, room); // 방 세션에 생성
     socket.roomId = count;
     count++; // roomId 증가
 
-    message = {
+    createRoomResponse = {
       success: true,
       room: room,
       failCode: failCode.NONE_FAILCODE,
     };
   } catch (error) {
-    message = {
+    createRoomResponse = {
       success: false,
       room: null,
       failCode: failCode.CREATE_ROOM_FAILED,
@@ -36,5 +35,7 @@ export const createRoomHandler = async (socket, payloadData) => {
     console.error('방생성 실패: ', error);
   }
 
-  sendResponsePacket(socket, PACKET_TYPE.CREATE_ROOM_RESPONSE, message);
+  sendResponsePacket(socket, PACKET_TYPE.CREATE_ROOM_RESPONSE, {
+    createRoomResponse,
+  });
 };

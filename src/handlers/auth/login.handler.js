@@ -6,12 +6,12 @@ import { getProtoMessages } from '../../init/loadProto.js';
 import jwt from 'jsonwebtoken';
 import { config } from '../../config/config.js';
 import sendResponsePacket from '../../utils/response/createResponse.js';
-import { addClient, addUser } from '../../session/client.session.js';
+import { addClient } from '../../session/client.session.js';
+import { addUser } from '../../session/user.session.js';
 
 export const loginHandler = async (socket, payload) => {
   const { email, password } = payload;
   const protoMessages = getProtoMessages();
-
   const dbUser = await findUserByUserEmail(email);
   // 아이디 검사
   if (!dbUser) {
@@ -46,7 +46,7 @@ export const loginHandler = async (socket, payload) => {
       const token = jwt.sign(dbUser, config.auth.key, { expiresIn: '1h' });
 
       // 유저 세션에도 추가
-      addClient(socket, email); // 동작 이상. 수정할 것
+      addClient(socket, email);
 
       const loginResponse = {
         success: true,

@@ -3,11 +3,11 @@ import { formatDate } from '../utils/dateFormatter.js';
 
 // config가 없는 동안 임시로 사용
 const database = {
-  database: 'USER_DB',
+  database: 'user_db',
   user: 'root',
-  password: 'rootdemo',
+  password: 'qwe123',
   host: '127.0.0.1',
-  port: '8886',
+  port: '7777',
 };
 
 // 데이터베이스 커넥션 풀 생성 함수

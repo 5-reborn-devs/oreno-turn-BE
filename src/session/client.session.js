@@ -4,10 +4,6 @@ export const addClient = (socket, userId) => {
   clients.set(socket, userId);
 };
 
-export const addUser = (token, userData) => {
-  users.set(token, userData);
-}
-
 export const removeClient = (email) => {
   clients.delete(email);
 };

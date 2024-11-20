@@ -67,11 +67,9 @@ export const gameStart = (socket) => {
       failcode: failCode.UNKNOWN_ERROR,
     };
   }
-  sendResponsePacket(
-    socket,
-    PACKET_TYPE.GAME_START_RESPONSE,
+  sendResponsePacket(socket, PACKET_TYPE.GAME_START_RESPONSE, {
     gameStartResponse,
-  );
+  });
 };
 
 // PACKET ID = 34번에서 사용될 가능성이 있어 보임 S2CPhaseUpdateNotification

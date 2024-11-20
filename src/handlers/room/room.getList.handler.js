@@ -1,6 +1,6 @@
-import { rooms } from '../../session/session';
-import { sendResponsePacket } from '../../utils/response/createResponse';
-
+import { PACKET_TYPE } from '../../constants/header.js';
+import { rooms } from '../../session/session.js';
+import { sendResponsePacket } from '../../utils/response/createResponse.js';
 // {
 //     int32 id = 1,
 //     string ownerId = 2,
@@ -9,12 +9,14 @@ import { sendResponsePacket } from '../../utils/response/createResponse';
 //     roomStateType state = 5
 //  }
 
-export const getRoomListHandler = async ({ socket, payloadData }) => {
-  const message = {
+export const getRoomListHandler = async (socket, payloadData) => {
+  const getRoomListResponse = {
     rooms: [...rooms.values()],
   };
 
-  sendResponsePacket(socket, PACKET_TYPE.GET_ROOM_LIST_RESPONSE, message);
+  sendResponsePacket(socket, PACKET_TYPE.GET_ROOM_LIST_RESPONSE, {
+    getRoomListResponse,
+  });
 };
 
 // {

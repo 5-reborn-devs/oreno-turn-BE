@@ -54,9 +54,8 @@ export const config = {
       port: DB2_PORT,
     },
   },
-  
+
   auth: {
     key: JWT_SECRET,
-  }
+  },
 };
-
