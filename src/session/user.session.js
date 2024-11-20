@@ -12,3 +12,8 @@ export const getOtherUsersBySocket = (socket) => {
     const otherUsers = users.filter((user) => user.socket !== socket);
     return otherUsers;
 }
+
+export const getUserById = (userId) => {
+    const user = users.get(userId);
+    return user;
+}
