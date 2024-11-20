@@ -9,7 +9,7 @@ class Charater {
     this.stateInfo = new CharacterState();
     this.equips = [];
     this.debuffs = [];
-    this.handCards = [];
+    this.handCards = new Map();
     this.bbangCount = 0;
     this.handCardsCount = 0;
   }
