@@ -1,4 +1,4 @@
-import { rooms } from './session';
+import { rooms } from './session.js';
 
 export const createRoom = (roomData) => {
   rooms.set(roomData.id, roomData);
