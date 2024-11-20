@@ -1,6 +1,6 @@
 import CharacterState from './charater.state.class.js';
 
-class Charater {
+class Character {
   constructor(characterType, roleType, hp) {
     this.characterType = characterType;
     this.roleType = roleType;
@@ -15,4 +15,4 @@ class Charater {
   }
 }
 
-export default Charater;
+export default Character;

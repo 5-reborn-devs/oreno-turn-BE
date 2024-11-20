@@ -9,7 +9,7 @@ import { PACKET_TYPE } from '../../constants/header';
 
 //{}
 
-export const joinRandomRoomHandler = ({ socket, payload }) => {
+export const joinRandomRoomHandler = async (socket, payload) => {
   const failCode = getFailCode();
   let message;
 

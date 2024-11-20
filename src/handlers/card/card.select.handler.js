@@ -14,7 +14,7 @@ import { getFailCode } from '../../utils/response/failCode.js';
 
 // 어떤 경우의 카드 선택 핸들러 인지 모르겠음.
 // selectType의 enum을 들고 와야함. 전부 constants에 적어두는게 맞는건가?
-export const selectCardHandler = async ({ socket, payload }) => {
+export const selectCardHandler = async (socket, payload) => {
   const { selectType, selectCardType } = payload;
   const failCode = getFailCode();
   let message;

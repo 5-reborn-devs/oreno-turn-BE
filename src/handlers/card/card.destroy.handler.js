@@ -15,7 +15,7 @@ function mappingCards(cards) {
   return map;
 }
 
-export const destroyCardsHandler = async ({ socket, payload }) => {
+export const destroyCardsHandler = async (socket, payload) => {
   const { destroyCards } = payload;
 
   try {

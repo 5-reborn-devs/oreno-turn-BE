@@ -10,7 +10,7 @@ import sendResponsePacket, {
 //     userData userId = 2,
 //     roomStateType state = 3
 //  }
-export const leaveRoomHandler = ({ socket, payloadData }) => {
+export const leaveRoomHandler = async (socket, payloadData) => {
   const { roomId, userId, state } = payloadData;
   const failCode = getFailCode();
   let message;

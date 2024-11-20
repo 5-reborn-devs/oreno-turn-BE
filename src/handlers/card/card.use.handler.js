@@ -14,7 +14,7 @@ import { getHandlerByCardType } from './card.js';
 //     string targetUserId = 2
 // }
 
-export const useCardHandler = async ({ socket, payload }) => {
+export const useCardHandler = async (socket, payload) => {
   const { cardType, targetUserId } = payload;
   const failCode = getFailCode();
   const message = {

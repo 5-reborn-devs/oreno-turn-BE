@@ -1,5 +1,6 @@
-import { rooms } from '../../session/session';
-import { sendResponsePacket } from '../../utils/response/createResponse';
+import { PACKET_TYPE } from '../../constants/header.js';
+import { rooms } from '../../session/session.js';
+import { sendResponsePacket } from '../../utils/response/createResponse.js';
 
 // {
 //     int32 id = 1,
@@ -9,12 +10,16 @@ import { sendResponsePacket } from '../../utils/response/createResponse';
 //     roomStateType state = 5
 //  }
 
-export const getRoomListHandler = async ({ socket, payloadData }) => {
-  const message = {
-    rooms: [...rooms.values()],
-  };
+export const getRoomListHandler = async (socket, payloadData) => {
+  try {
+    const message = {
+      rooms: [...rooms.values()],
+    };
 
-  sendResponsePacket(socket, PACKET_TYPE.GET_ROOM_LIST_RESPONSE, message);
+    sendResponsePacket(socket, PACKET_TYPE.GET_ROOM_LIST_RESPONSE, message);
+  } catch (error) {
+    console.error('방 리스트 가져오기 실패', error);
+  }
 };
 
 // {

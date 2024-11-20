@@ -9,7 +9,7 @@ import { getFailCode } from '../../utils/response/failCode';
 //     int32 roomId = 1;
 //  }
 
-export const joinRoomHandler = ({ socket, payload }) => {
+export const joinRoomHandler = async (socket, payload) => {
   const { roomId } = payload;
   const failCode = getFailCode();
   let message;
