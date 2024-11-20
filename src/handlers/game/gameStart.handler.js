@@ -3,6 +3,7 @@ import { getProtoMessages } from '../../init/loadProto.js';
 import { rooms } from '../../session/session.js';
 import { sendResponsePacket } from '../../utils/response/createResponse.js';
 import User from '../../classes/models/user.class.js';
+import { RANDOM_POSITIONS } from '../../constants/randomPositions.js';
 
 export const gameStart = (socket) => {
   const protoMesages = getProtoMessages();
@@ -22,33 +23,27 @@ export const gameStart = (socket) => {
 
   // users
   const users = room.users.map((user) => {
-    const character = new Character(
-      user.character.characterType,
-      user.character.roleType,
-      user.character.hp,
-    );
-    character.weapon = user.character.weapon;
-    character.stateInfo = user.character.stateInfo;
-    character.equips = user.character.equips || [];
-    character.debuffs = user.character.debuffs || [];
-    character.handCards = user.character.handCards || [];
-    character.bbangCount = user.character.bbangCount || 0;
-    character.handCardsCount = user.character.handCardsCount || 0;
-
     return {
       id: user.userId,
       nickname: user.nickname,
-      character,
+      character: user.character,
     };
   });
+
   // characterPositions
   const characterPositions = [];
   const positionKeys = Object.keys(RANDOM_POSITIONS);
-  room.users.forEach((user, index) => {
-    const positionKey = positionKeys[index % positionKeys.length];
+  const usedPositions = new Set();
+  room.users.forEach((user) => {
+    let positionKey;
+    do {
+      const randomIndex = Math.floor(Math.random() * positionKeys.length);
+      positionKey = positionKeys[randomIndex];
+    } while (usedPositions.has(positionKey));
+    usedPositions.add(positionKey);
     characterPositions.push({
       id: user.userId,
-      x: RANODM_POSITIONS[positionKey].x,
+      x: RANDOM_POSITIONS[positionKey].x,
       y: RANDOM_POSITIONS[positionKey].y,
     });
   });

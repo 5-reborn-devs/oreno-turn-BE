@@ -1,10 +1,13 @@
+import { getProtoMessages } from '../../init/loadProto.js';
 import CharacterState from './charater.state.class';
 
-class Charater {
-  constructor(characterType, roleType, hp) {
-    this.characterType = characterType;
-    this.roleType = roleType;
-    this.hp = hp;
+const protoMessages = getProtoMessages();
+
+class Character {
+  constructor() {
+    this.characterType = protoMessages.enum.CharacterType.NONE_CHARACTER;
+    this.roleType = protoMessages.enum.CharacterType.NONE_CHARACTER;
+    this.hp = null;
     this.weapon = null;
     this.stateInfo = new CharacterState();
     this.equips = [];
@@ -22,8 +25,8 @@ class Charater {
     }
   }
 
-  removeEupit(itemId) {
-    const index = this.equips.indeoxOf(itemId);
+  removeEquip(itemId) {
+    const index = this.equips.indexOf(itemId);
     if (index !== -1) {
       this.equips.splice(index, 1);
     } else {
@@ -54,4 +57,4 @@ class Charater {
   }
 }
 
-export default Charater;
+export default Character;

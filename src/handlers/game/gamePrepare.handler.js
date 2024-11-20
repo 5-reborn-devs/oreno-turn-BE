@@ -7,7 +7,6 @@ export const gamePrepare = (socket) => {
   try {
     const roomId = socket.roomId; // socket.roomId로 통일
     const room = rooms.get(roomId);
-    // 본인은 빼는 로직을 추가해도 될 것같음
     const usersInRoom = [...room.users];
 
     gamePrePareResponse = {
