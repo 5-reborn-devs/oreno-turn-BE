@@ -13,10 +13,11 @@ export const joinRoomHandler = async (socket, payload) => {
   const { roomId } = payload;
   const failCode = getFailCode();
   let joinRoomResponse;
+  let notification;
 
   try {
     const room = rooms.get(roomId);
-
+    console.log('들어온 룸 정보', room);
     const user = users.get(socket.token);
     room.addUser(user);
     socket.roomId = roomId;
@@ -30,9 +31,13 @@ export const joinRoomHandler = async (socket, payload) => {
     const joinRoomNotification = { joinUser: user };
 
     const usersInRoom = [...room.users];
-    multiCast(usersInRoom, PACKET_TYPE.JOIN_ROOM_NOTIFICATION, {
-      joinRoomNotification,
-    });
+    notification = [
+      usersInRoom,
+      PACKET_TYPE.JOIN_ROOM_NOTIFICATION,
+      {
+        joinRoomNotification,
+      },
+    ];
   } catch (error) {
     joinRoomResponse = {
       success: false,
@@ -46,6 +51,7 @@ export const joinRoomHandler = async (socket, payload) => {
   sendResponsePacket(socket, PACKET_TYPE.JOIN_ROOM_RESPONSE, {
     joinRoomResponse,
   });
+  if (notification) multiCast(...notification);
 };
 
 // {
