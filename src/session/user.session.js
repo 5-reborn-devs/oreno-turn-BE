@@ -17,3 +17,8 @@ export const getUserById = (userId) => {
     const user = users.get(userId);
     return user;
 }
+
+export const getOhterUsersById = (userId) => {
+    const otherUsers = users.filter((user) => user.id !== userId)
+    return otherUsers;
+}
