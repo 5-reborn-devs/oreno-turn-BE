@@ -18,6 +18,11 @@ export const getEmptyRooms = () => {
   );
 };
 
+export const getUsersInRoom = (roomId) => {
+  const room = rooms.get(roomId);
+  return [...room.users];
+};
+
 export const getUsersWithoutMe = (roomId, userId) => {
   const room = rooms.get(roomId);
   const users = [...room.users];

@@ -1,6 +1,7 @@
 import { PACKET_TYPE } from '../../constants/header.js';
 import { rooms } from '../../session/session.js';
 import { sendResponsePacket } from '../../utils/response/createResponse.js';
+
 // {
 //     int32 id = 1,
 //     string ownerId = 2,
@@ -10,13 +11,17 @@ import { sendResponsePacket } from '../../utils/response/createResponse.js';
 //  }
 
 export const getRoomListHandler = async (socket, payloadData) => {
-  const getRoomListResponse = {
-    rooms: [...rooms.values()],
-  };
+  try {
+    const getRoomListResponse = {
+      rooms: [...rooms.values()],
+    };
 
-  sendResponsePacket(socket, PACKET_TYPE.GET_ROOM_LIST_RESPONSE, {
-    getRoomListResponse,
-  });
+    sendResponsePacket(socket, PACKET_TYPE.GET_ROOM_LIST_RESPONSE, {
+      getRoomListResponse,
+    });
+  } catch (error) {
+    console.error('방 리스트 가져오기 실패', error);
+  }
 };
 
 // {

@@ -44,6 +44,7 @@ export const loginHandler = async (socket, payload) => {
     } else {
       // 토큰 유효 시간
       const token = jwt.sign(dbUser, config.auth.key, { expiresIn: '1h' });
+      socket.token = token;
 
       // 유저 세션에도 추가
       addClient(socket, email);

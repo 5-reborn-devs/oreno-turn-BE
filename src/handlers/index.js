@@ -21,10 +21,10 @@ const handlers = {
   //     handler : register, // 사용하게될 함수명
   //     protoType : 'request.C2SCreateRoomRequest', // protobuf 타입
   // },
-  // [PACKET_TYPE.GET_ROOM_LIST_REQUEST]: {
-  //     handler : register, // 사용하게될 함수명
-  //     protoType : 'request.C2SGetRoomListRequest', // protobuf 타입
-  // },
+  [PACKET_TYPE.GET_ROOM_LIST_REQUEST]: {
+    handler: getRoomListHandler, // 사용하게될 함수명
+    protoType: 'request.C2SGetRoomListRequest', // protobuf 타입
+  },
   // [PACKET_TYPE.JOIN_ROOM_REQUEST]: {
   //     handler : register, // 사용하게될 함수명
   //     protoType : 'request.C2SJoinRandomRoomRequest', // protobuf 타입

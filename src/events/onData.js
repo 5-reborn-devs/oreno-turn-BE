@@ -29,7 +29,9 @@ export const onData = (socket) => async (data) => {
     // version을 읽을 곳 4byte (문자열로 반환받기)
     // 헤더에는 3으로 되어있어서 일단 3byte 읽어오기
     // 만약 4byte일 경우에는 VERSION_START + versionLength 만큼 읽기
-    const version = socket.buffer.subarray(offset, offset + versionLength).toString();
+    const version = socket.buffer
+      .subarray(offset, offset + versionLength)
+      .toString();
     // offset += VERSION_START + versionLength;
     // 만약 1byte 이면 offset += versionLength; 만 해주기
     offset += versionLength;
@@ -55,11 +57,16 @@ export const onData = (socket) => async (data) => {
         // 모든 패킷을 게임패킷으로 처리 가능하다고 한다
         const decodedPacket = decoder(payload);
 
+        console.log('packetType', packetType);
+        if (!socket) {
+          console.log('socket is undefined, packetType :', packetType);
+        }
+
         // 인자로 받을 패킷 타입 전송
         const handler = getHandlerByPacketType(packetType);
         await handler(socket, decodedPacket);
       } catch (err) {
-        console.error(err)
+        console.error(err);
         console.error(`패킷처리 에러 : ${err}, packeyType : ${packetType}`);
       }
     } else {
