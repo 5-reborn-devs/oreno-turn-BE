@@ -25,6 +25,13 @@ export const getUsersWithoutMe = (roomId, userId) => {
   return users.filter((user) => user.id != userId);
 };
 
+export const getAllUsersInRoom = (roomId) => {
+  const currentRoom = rooms.get(roomId)
+  const allUsers = [...currentRoom.users];
+
+  return allUsers;
+}
+
 // message RoomData {
 //     int32 id = 1;
 //     int64 ownerId = 2;
