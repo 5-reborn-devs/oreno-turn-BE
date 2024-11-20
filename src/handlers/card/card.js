@@ -1,15 +1,23 @@
-import { CARD_LIMIT, CARD_TYPES } from '../../constants/cardTypes.js';
+import { CARD_LIMIT, CARD_TYPES, CARD_TYPES_INDEX } from '../../constants/cardTypes.js';
 import { fleamarketNotificationHanlder } from '../fleamarket/fleamarketNotification.handler.js';
+import { maturedsavingsHandler } from './maturedsavings.handler.js';
 
 const handlers = {
   [CARD_TYPES.NONE]: {
     handler: async (u, t) => {}, // 사용하게될 함수명
+    typeName: CARD_TYPES_INDEX[CARD_TYPES.NONE]
   },
   [CARD_TYPES.BBANG]: {
     handler: async () => {}, // 사용하게될 함수명
+    typeName: CARD_TYPES_INDEX[CARD_TYPES.BBANG]
+  },
+  [CARD_TYPES.MATURED_SAVINGS] : {
+    handler: maturedsavingsHandler,
+    typeName: CARD_TYPES_INDEX[CARD_TYPES.MATURED_SAVINGS]
   },
   [CARD_TYPES.FLEA_MARKET]:{
-    handler: fleamarketNotificationHanlder
+    handler: fleamarketNotificationHanlder,
+    typeName: CARD_TYPES_INDEX[CARD_TYPES.FLEA_MARKET]
   }
 };
 
@@ -30,7 +38,6 @@ export const makeCardDeck = () => {
         gameDeck.push(parseInt(deckCard));
       }
     }
-
     gameDeck.sort(() => Math.random() - 0.5)
     return gameDeck;
 }
