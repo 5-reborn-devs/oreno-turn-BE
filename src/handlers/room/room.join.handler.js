@@ -18,8 +18,10 @@ export const joinRoomHandler = async (socket, payload) => {
   try {
     const room = rooms.get(roomId);
     console.log('들어온 룸 정보', room);
+
     const user = users.get(socket.token);
     room.addUser(user);
+
     socket.roomId = roomId;
     joinRoomResponse = {
       success: true,

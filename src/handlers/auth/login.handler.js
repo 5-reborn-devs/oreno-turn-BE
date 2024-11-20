@@ -20,7 +20,7 @@ export const loginHandler = async (socket, payload) => {
       success: false,
       message: `아이디가 틀립니다. ${email}`,
       token: '',
-      userData: '',
+      myInfo: '',
       failCode: protoMessages.enum.GlobalFailCode.AUTHENTICATION_FAILED,
     };
     sendResponsePacket(socket, PACKET_TYPE.LOGIN_RESPONSE, { errorMessage }); //
@@ -37,7 +37,7 @@ export const loginHandler = async (socket, payload) => {
         success: false,
         message: `비밀번호가 틀렸습니다. ${email}`,
         token: '',
-        userData: '',
+        myInfo: '',
         failCode: protoMessages.enum.GlobalFailCode.AUTHENTICATION_FAILED,
       };
       sendResponsePacket(socket, PACKET_TYPE.LOGIN_RESPONSE, { errorMessage });
@@ -53,12 +53,12 @@ export const loginHandler = async (socket, payload) => {
         success: true,
         message: `로그인 성공 ! ${email}`,
         token: token,
-        userData: new User(dbUser.userId, dbUser.nickname), // 캐릭터 선정 해준다 ?!
+        myInfo: new User(dbUser.userId, dbUser.nickname), // 캐릭터 선정 해준다 ?!
         failCode: protoMessages.enum.GlobalFailCode.NONE_FAILCODE,
       };
       sendResponsePacket(socket, PACKET_TYPE.LOGIN_RESPONSE, { loginResponse });
 
-      addUser(token, loginResponse.userData);
+      addUser(token, loginResponse.myInfo);
     }
   }
 
