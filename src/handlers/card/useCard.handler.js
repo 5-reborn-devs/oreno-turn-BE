@@ -7,7 +7,7 @@ import { GLOBAL_FAIL_CODES } from '../../constants/globalFailCodes.js';
 import { PACKET_TYPE } from '../../constants/header.js';
 import { getAllUsersInRoom } from '../../session/room.session.js';
 import {
-  getOhterUsersById,
+  getOtherUsersById,
   getUserById,
   getUserBySocket,
 } from '../../session/user.session.js';
@@ -74,7 +74,7 @@ export const useCardHandler = async (socket, payload) => {
     // 다른 유저들의 id를 잡아와서 하나하나 타겟으로 parseData함수 쓰고 배열에 푸쉬, 그 배열을 전달
     if (targetUserId === 0) {
       targetedUserData = [];
-      const otherUsers = getOhterUsersById(user.id);
+      const otherUsers = getOtherUsersById(user.id);
       otherUsers.forEach((user) => {
         const parsedDatas = parseUserData(user.id, user);
         targetedUserData.push(parsedDatas);
