@@ -1,4 +1,5 @@
 import { CARD_TYPES } from '../../constants/cardTypes.js';
+import { fleamarketNotificationHanlder } from '../fleamarket/fleamarketNotification.handler.js';
 
 const handlers = {
   [CARD_TYPES.NONE]: {
@@ -7,6 +8,9 @@ const handlers = {
   [CARD_TYPES.BBANG]: {
     handler: async () => {}, // 사용하게될 함수명
   },
+  [CARD_TYPES.FLEA_MARKET]:{
+    handler: fleamarketNotificationHanlder
+  }
 };
 
 export const getHandlerByCardType = (cardType) => {
