@@ -1,5 +1,5 @@
 import { PACKET_TYPE } from '../constants/header.js';
-import { login } from './auth/login.handler.js';
+import { loginHandler } from './auth/login.handler.js';
 import { registerHandler } from './auth/register.handler.js';
 import { gamePrepare } from './game/gamePrepare.handler.js';
 import { gameStart } from './game/gameStart.handler.js';
@@ -13,7 +13,7 @@ const handlers = {
     protoType: 'request.C2SRegisterRequest', // protobuf 타입
   },
   [PACKET_TYPE.LOGIN_REQUEST]: {
-    handler: login, // 사용하게될 함수명
+    handler: loginHandler, // 사용하게될 함수명
     protoType: 'request.C2SLoginRequest', // protobuf 타입
   },
   // [PACKET_TYPE.USE_CARD_REQUEST]: {

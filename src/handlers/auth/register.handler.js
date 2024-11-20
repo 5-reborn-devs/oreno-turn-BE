@@ -3,7 +3,7 @@ import { createUser, findUserByUserEmail } from '../../db/user/user.db.js';
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
 import Joi from 'joi';
-import sendResponsePacket from '../../utils/response/createResponse.js';
+import { sendResponsePacket } from '../../utils/response/createResponse.js';
 import { getProtoMessages } from '../../init/loadProto.js';
 
 export const registerHandler = async (socket, payload) => {
@@ -11,14 +11,20 @@ export const registerHandler = async (socket, payload) => {
         const protoMessages = getProtoMessages();
         const { password, nickname, email } = payload;
         console.log(`id : ${email}, password(nickname) : ${nickname}, password_re(password) : ${password} `);
-        
+
         // 검증을 위한 객체 선언
         const schema = Joi.object({
-            email: Joi.string().email( { tlds} ).required(),
+            email: Joi.string().email().required(),
         });
 
         const validation = schema.validate({ email });
         const validationError = validation.error;
+
+        // SELECT * FROM user;
+            // 우리 테이블 이름은 다르다. 테이블 이름을 알려면 어디서 찾아야할까?
+            // 테이블을 잘 못 적은게 아닐 수도 있다 오류 메세지를 살펴보자
+
+        console.log(validationError);
 
         // 이메일 유효성 검사
         if (validationError) {
@@ -63,12 +69,4 @@ export const registerHandler = async (socket, payload) => {
     } catch (err) {
         console.error(`검증오류: ${err}`);
     }
-
-    const registerResponse = {
-      success: true,
-      message: '회원가입에 성공했습니다!',
-    };
-    sendResponsePacket(socket, PACKET_TYPE.REGISTER_RESPONSE, {
-      registerResponse,
-    });
 };
