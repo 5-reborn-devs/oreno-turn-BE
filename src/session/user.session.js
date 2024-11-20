@@ -18,7 +18,7 @@ export const getUserById = (userId) => {
     return user;
 }
 
-export const getOhterUsersById = (userId) => {
+export const getOtherUsersById = (userId) => {
     const otherUsers = users.filter((user) => user.id !== userId)
     return otherUsers;
 }
