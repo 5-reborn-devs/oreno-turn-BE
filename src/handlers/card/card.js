@@ -1,4 +1,4 @@
-import { CARD_TYPES } from '../../constants/cardTypes.js';
+import { CARD_LIMIT, CARD_TYPES } from '../../constants/cardTypes.js';
 import { fleamarketNotificationHanlder } from '../fleamarket/fleamarketNotification.handler.js';
 
 const handlers = {
@@ -15,7 +15,22 @@ const handlers = {
 
 export const getHandlerByCardType = (cardType) => {
   if (!handlers[cardType]) {
-    throw Error();
+    throw Error('카드 타입에 해당하는 핸들러가 존재하지 않습니다.');
   }
   return handlers[cardType].handler;
 };
+
+  // 게임 시작 시 준비되어야 할 카드더미 -> (카드 타입값 * 제한 매수) 한 int 배열을 섞은 것
+export const makeCardDeck = () => {
+  const gameDeck = []
+  for(let i = 0; i <= Object.keys(CARD_TYPES).length; i++) {
+      const deckCard = Object.keys(CARD_TYPES_INDEX)[i] 
+
+      for (let j = 0; j < Object.values(CARD_LIMIT)[i]; j++) {
+        gameDeck.push(parseInt(deckCard));
+      }
+    }
+
+    gameDeck.sort(() => Math.random() - 0.5)
+    return gameDeck;
+}
