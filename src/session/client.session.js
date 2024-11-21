@@ -1,8 +1,11 @@
 import { clients, users } from './session.js';
 
-export const addClient = (email, socket, token) => {
-  clients.set(socket, token);
-  users.set(socket, token);
+export const addClient = (socket, userId) => {
+  clients.set(userId, socket);
+};
+
+export const addUser = (token, userData) => {
+  users.set(token, userData);
 };
 
 export const removeClient = (email) => {

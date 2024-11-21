@@ -1,55 +1,60 @@
 import { PACKET_TYPE } from '../../constants/header.js';
 import { getProtoMessages } from '../../init/loadProto.js';
 import { rooms } from '../../session/session.js';
-import { sendResponsePacket } from '../../utils/response/createResponse.js';
-import User from '../../classes/models/user.class.js';
-import { phaseUpdateNotificationHandler } from '../sync/phase.update.handler.js';
+import {
+  multiCast,
+  sendResponsePacket,
+} from '../../utils/response/createResponse.js';
+import { RANDOM_POSITIONS } from '../../constants/randomPositions.js';
+import { getFailCode } from '../../utils/response/failCode.js';
 
 export const gameStart = (socket) => {
-  const protoMesages = getProtoMessages();
-
+  const protoMessages = getProtoMessages();
   let gameStartResponse;
-
-  // gameState
-  let currentPhase = protoMesages.enum.PhaseType.DAY; // 낮
-  let nextPhaseAt = Date.now() + 180000; // 3분후에 넥스트 페이즈 타입으로 이동
-  const gameState = {
-    phaseType: currentPhase,
-    nextPhaseAt: nextPhaseAt,
-  };
-
-  // users
-  const users = {};
-  // characterPositions
-  const characterPositions = [];
-  let positionKeys = Object.keys(RANDOM_POSITIONS);
-
-  const roomId = socket.roomId;
-  const room = rooms.get(roomId);
-  room.users.forEach((user, index) => {
-    const userData = new User(user.userId, user.nickname, user.character);
-    users[user.userId] = {
-      id: userData.id,
-      nickname: userData.nickname,
-      character: userData.character,
-    };
-    const positionKey = positionKeys[index % positionKeys.length];
-    characterPositions.push({
-      id: user.userId,
-      x: RANODM_POSITIONS[positionKey].x,
-      y: RANDOM_POSITIONS[positionKey].y,
-    });
-  });
-
-  const gameStartNotification = {
-    gameState,
-    users,
-    characterPositions,
-  };
+  const failCode = getFailCode();
   try {
+    // gameState
+    let currentPhase = protoMessages.enum.PhaseType.values['DAY'];
+    // 낮에만 캐릭터가 이동 가능
+    let nextPhaseAt = Date.now() + 180000; // 3분후에 넥스트 페이즈 타입으로 이동
+    const gameState = {
+      phaseType: currentPhase,
+      nextPhaseAt,
+    };
+
+    const roomId = socket.roomId;
+    const room = rooms.get(roomId);
+    room.state = protoMessages.enum.RoomStateType.values['INGAME'];
+    const usersInRoom = [...room.users]; // 방 안에 있는 모든 유저들의 정보를 가져옴
+    // users
+
+    // characterPositions
+    const characterPositions = [];
+    const positionKeys = Object.keys(RANDOM_POSITIONS);
+    const usedPositions = new Set();
+    room.users.forEach((user) => {
+      let positionKey;
+      do {
+        const randomIndex = Math.floor(Math.random() * positionKeys.length);
+        positionKey = positionKeys[randomIndex];
+      } while (usedPositions.has(positionKey));
+      usedPositions.add(positionKey);
+      characterPositions.push({
+        id: user.id,
+        x: RANDOM_POSITIONS[positionKey].x,
+        y: RANDOM_POSITIONS[positionKey].y,
+      });
+    });
+
+    const gameStartNotification = {
+      gameState,
+      users: usersInRoom,
+      characterPositions,
+    };
+
     gameStartResponse = {
       success: true,
-      failcode: failCode.NONE_FAILCODE,
+      failCode: failCode.NONE_FAILCODE,
     };
     multiCast(usersInRoom, PACKET_TYPE.GAME_START_NOTIFICATION, {
       gameStartNotification,
@@ -66,15 +71,14 @@ export const gameStart = (socket) => {
   } catch (err) {
     gameStartResponse = {
       success: false,
-      failcode: failCode.UNKNOWN_ERROR,
+      failCode: failCode.UNKNOWN_ERROR,
     };
+    console.log(err);
   }
-  sendResponsePacket(
-    socket,
-    PACKET_TYPE.GAME_START_RESPONSE,
+  sendResponsePacket(socket, PACKET_TYPE.GAME_START_RESPONSE, {
     gameStartResponse,
-  );
-  
+
+  });
 };
 
 // PACKET ID = 34번에서 사용될 가능성이 있어 보임 S2CPhaseUpdateNotification

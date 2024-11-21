@@ -1,17 +1,17 @@
-import { _ } from 'lodash';
-import { getEmptyRooms } from '../../session/room.session';
-import { getFailCode } from '../../utils/response/failCode';
+import _ from 'lodash';
+import { getEmptyRooms, getUsersInRoom } from '../../session/room.session.js';
+import { getFailCode } from '../../utils/response/failCode.js';
 import sendResponsePacket, {
   multiCast,
-} from '../../utils/response/createResponse';
-import { users } from '../../session/session';
-import { PACKET_TYPE } from '../../constants/header';
+} from '../../utils/response/createResponse.js';
+import { users } from '../../session/session.js';
+import { PACKET_TYPE } from '../../constants/header.js';
 
 //{}
 
-export const joinRandomRoomHandler = ({ socket, payload }) => {
+export const joinRandomRoomHandler = async (socket, payload) => {
   const failCode = getFailCode();
-  let message;
+  let joinRoomResponse;
 
   try {
     const emptyRooms = getEmptyRooms(); // 룸 리스트에서 자리 있는 방을 골라냄.
@@ -19,21 +19,25 @@ export const joinRandomRoomHandler = ({ socket, payload }) => {
     const selectedRoom = _.sample(emptyRooms); // 빈방 리스트에서 랜덤하게 골라냄.
     // room 유효검사
 
-    const usersInRoom = [...selectedRoom.users]; // 입장 알림을 위해 따로 때 놓음. 얕은 복사
     const user = users.get(socket.token);
     selectedRoom.addUser(user);
     socket.roomId = selectedRoom.id;
+    console.log('들어온 룸 정보', selectedRoom);
 
-    message = {
+    joinRoomResponse = {
       success: true,
       room: selectedRoom,
       failCode: failCode.NONE_FAILCODE,
     };
 
-    const notifiaction = { joinUser: user };
-    multiCast(usersInRoom, PACKET_TYPE.JOIN_ROOM_NOTIFICATION, notifiaction); // 다른 유저에게 입장을 알림.
+    const joinRoomNotification = { joinUser: user };
+
+    const usersInRoom = getUsersInRoom(selectedRoom.id);
+    multiCast(usersInRoom, PACKET_TYPE.JOIN_ROOM_NOTIFICATION, {
+      joinRoomNotification,
+    }); // 다른 유저에게 입장을 알림.
   } catch (error) {
-    message = {
+    joinRoomResponse = {
       success: false,
       room: null,
       failCode: failCode.JOIN_ROOM_FAILED,
@@ -42,7 +46,9 @@ export const joinRandomRoomHandler = ({ socket, payload }) => {
     console.error(error);
   }
 
-  sendResponsePacket(socket, PACKET_TYPE.JOIN_ROOM_RESPONSE, message);
+  sendResponsePacket(socket, PACKET_TYPE.JOIN_ROOM_RESPONSE, {
+    joinRoomResponse,
+  });
 };
 
 // {
