@@ -1,6 +1,6 @@
 import { CARD_LIMIT, CARD_TYPES, CARD_TYPES_INDEX } from '../../constants/cardTypes.js';
 import { fleamarketNotificationHanlder } from '../fleamarket/fleamarketNotification.handler.js';
-import { maturedsavingsHandler } from './maturedsavings.handler.js';
+import { maturedSavingsHandler } from './maturedSavings.handler.js';
 
 const handlers = {
   [CARD_TYPES.NONE]: {
@@ -12,7 +12,7 @@ const handlers = {
     typeName: CARD_TYPES_INDEX[CARD_TYPES.BBANG]
   },
   [CARD_TYPES.MATURED_SAVINGS] : {
-    handler: maturedsavingsHandler,
+    handler: maturedSavingsHandler,
     typeName: CARD_TYPES_INDEX[CARD_TYPES.MATURED_SAVINGS]
   },
   [CARD_TYPES.FLEA_MARKET]:{
