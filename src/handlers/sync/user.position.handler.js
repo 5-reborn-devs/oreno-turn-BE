@@ -39,7 +39,7 @@ export const positionUpdateHandler = async (socket, payload) => {
   //페일 코드
   const failCode = getFailCode();
   const PositionUpdateResponse = {
-    suceess: false,
+    success: false,
     failCode: failCode.UNKNOWN_ERROR,
   };
 
@@ -64,7 +64,6 @@ export const positionUpdateHandler = async (socket, payload) => {
         },
       ],
     };
-    console.log('잘나오나', positionUpdateNotification);
     // 노티 만들기
     multiCast(usersInRoom, PACKET_TYPE.POSITION_UPDATE_NOTIFICATION, {
       positionUpdateNotification,

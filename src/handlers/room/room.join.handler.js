@@ -12,7 +12,6 @@ import { getUsersWithoutMe } from '../../session/room.session.js';
 
 export const joinRoomHandler = async (socket, payload) => {
   const { roomId } = payload;
-
   const failCode = getFailCode();
   let joinRoomResponse;
   let notification;
@@ -43,9 +42,6 @@ export const joinRoomHandler = async (socket, payload) => {
       room: null,
       failCode: failCode.JOIN_ROOM_FAILED,
     };
-    sendResponsePacket(socket, PACKET_TYPE.JOIN_ROOM_RESPONSE, {
-      joinRoomResponse,
-    });
     console.error(error);
   }
 
