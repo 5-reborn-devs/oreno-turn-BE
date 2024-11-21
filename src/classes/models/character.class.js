@@ -7,7 +7,7 @@ class Character {
     this.characterType =
       protoMessages.enum.CharacterType.values['NONE_CHARACTER'];
     this.roleType = protoMessages.enum.RoleType.values['NONE_ROLE'];
-    this.hp = null;
+    this.hp = 50;
     this.weapon = null;
     this.stateInfo = new CharacterState();
     this.equips = [];
