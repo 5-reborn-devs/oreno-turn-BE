@@ -45,6 +45,10 @@ const handlers = {
       handler : fleamarketPickHandler, // 사용하게될 함수명
       protoType : 'request.C2SFleaMarketPickRequest', // protobuf 타입
   },
+  [PACKET_TYPE.POSITION_UPDATE_REQUEST]: {
+    handler: positionUpdateHandler, // 사용하게될 함수명
+    protoType: 'request.C2SPositionUpdateRequest',
+  },
 };
 
 export const getHandlerByPacketType = (packetType) => {
