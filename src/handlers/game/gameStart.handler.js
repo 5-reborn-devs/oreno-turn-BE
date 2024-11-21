@@ -5,7 +5,6 @@ import {
   multiCast,
   sendResponsePacket,
 } from '../../utils/response/createResponse.js';
-import User from '../../classes/models/user.class.js';
 import { RANDOM_POSITIONS } from '../../constants/randomPositions.js';
 import { getFailCode } from '../../utils/response/failCode.js';
 
@@ -15,14 +14,13 @@ export const gameStart = (socket) => {
   const failCode = getFailCode();
   try {
     // gameState
-    let currentPhase = protoMessages.enum.PhaseType.values['DAY']; // 낮
+    let currentPhase = protoMessages.enum.PhaseType.values['DAY'];
+    // 낮에만 캐릭터가 이동 가능
     let nextPhaseAt = Date.now() + 180000; // 3분후에 넥스트 페이즈 타입으로 이동
     const gameState = {
       phaseType: currentPhase,
       nextPhaseAt,
     };
-
-    console.log('커렌트페이즈', currentPhase);
 
     const roomId = socket.roomId;
     const room = rooms.get(roomId);
@@ -42,7 +40,7 @@ export const gameStart = (socket) => {
       } while (usedPositions.has(positionKey));
       usedPositions.add(positionKey);
       characterPositions.push({
-        id: user.userId,
+        id: user.id,
         x: RANDOM_POSITIONS[positionKey].x,
         y: RANDOM_POSITIONS[positionKey].y,
       });

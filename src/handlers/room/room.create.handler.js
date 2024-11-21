@@ -5,7 +5,7 @@ import { rooms, users } from '../../session/session.js';
 import { sendResponsePacket } from '../../utils/response/createResponse.js';
 import { getFailCode } from '../../utils/response/failCode.js';
 
-let count = 13;
+let count = 1;
 
 export const createRoomHandler = async (socket, payloadData) => {
   const protoMessages = getProtoMessages();
