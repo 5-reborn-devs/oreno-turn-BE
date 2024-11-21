@@ -1,3 +1,5 @@
+import IntervalManager from "../managers/interval.manager.js";
+
 class Room {
   constructor(
     id,
@@ -13,6 +15,8 @@ class Room {
     this.maxUserNum = maxUserNum < 1 ? 1 : maxUserNum;
     this.state = state;
     this.users = users;
+    this.intervalManager = new IntervalManager();
+    this.phaseType = 1; // DAY:1, NIGHT:3
   }
 
   addUser(userData) {
@@ -26,6 +30,10 @@ class Room {
     } else {
       return false;
     }
+  }
+  getIntervalManager(){
+    console.log("겟 인터벌 매니저!");
+    return this.intervalManager;
   }
 
   // 클래스의 입력값이 맞는지 확인하는 검증이 필요할까?
