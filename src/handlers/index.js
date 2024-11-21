@@ -9,12 +9,11 @@ import { getRoomListHandler } from './room/room.getList.handler.js';
 import { joinRoomHandler } from './room/room.join.handler.js';
 import { joinRandomRoomHandler } from './room/room.joinRandom.handler.js';
 import { leaveRoomHandler } from './room/room.leave.handler.js';
-
+import { useCardHandler } from './card/useCard.handler.js';
 const handlers = {
-  // 회원가입
   [PACKET_TYPE.REGISTER_REQUEST]: {
-    handler: registerHandler, // 사용하게될 함수명
-    protoType: 'request.C2SRegisterRequest', // protobuf 타입
+    handler: registerHandler,
+    protoType: 'request.C2SRegisterRequest',
   },
   [PACKET_TYPE.LOGIN_REQUEST]: {
     handler: loginHandler,
@@ -48,12 +47,16 @@ const handlers = {
     handler: gameStart,
     protoType: 'request.C2SGameStartRequest',
   },
+  [PACKET_TYPE.USE_CARD_REQUEST]: {
+    handler: useCardHandler,
+    protoType: 'request.C2SUseCardRequest',
+  },
   [PACKET_TYPE.FLEAMARKET_PICK_REQUEST]: {
     handler: fleamarketPickHandler,
     protoType: 'request.C2SFleaMarketPickRequest',
   },
   [PACKET_TYPE.POSITION_UPDATE_REQUEST]: {
-    handler: positionUpdateHandler, // 사용하게될 함수명
+    handler: positionUpdateHandler,
     protoType: 'request.C2SPositionUpdateRequest',
   },
 };

@@ -1,4 +1,5 @@
 import { PACKET_TYPE } from '../../constants/header.js';
+import { RANDOM_POSITIONS } from '../../constants/randomPositions.js';
 import { getProtoMessages } from '../../init/loadProto.js';
 import { rooms } from '../../session/session.js';
 import {
@@ -12,6 +13,36 @@ export const gameStart = (socket) => {
   const protoMessages = getProtoMessages();
   let gameStartResponse;
   const failCode = getFailCode();
+
+  // gameState
+  let currentPhase = protoMesages.enum.PhaseType.DAY;
+  let nextPhaseAt = Date.now() + 180000; // 3분후에 넥스트 페이즈 타입으로 이동
+  const gameState = {
+    phaseType: currentPhase,
+    nextPhaseAt: nextPhaseAt,
+  };
+
+  // users
+  const users = {};
+  // characterPositions
+  const characterPositions = [];
+  let positionKeys = Object.keys(RANDOM_POSITIONS);
+
+  room.users.forEach((user, index) => {
+    users[user.userId] = user;
+    const positionKey = positionKeys[index % positionKeys.length];
+    characterPositions.push({
+      id: user.userId,
+      x: RANDOM_POSITIONS[positionKey].x,
+      y: RANDOM_POSITIONS[positionKey].y,
+    });
+  });
+
+  const gameStartNotification = {
+    gameState,
+    users,
+    characterPositions,
+  };
   try {
     // gameState
     let currentPhase = protoMessages.enum.PhaseType.values['DAY'];
@@ -65,9 +96,6 @@ export const gameStart = (socket) => {
     room.getIntervalManager().addPlayer(roomId,()=>{phaseUpdateNotificationHandler(socket)},180000);
     // 인터벌  룸 클래스 > 페이즈 업데이트 핸들러 기동
     */
-
-    
-
   } catch (err) {
     gameStartResponse = {
       success: false,
@@ -77,7 +105,6 @@ export const gameStart = (socket) => {
   }
   sendResponsePacket(socket, PACKET_TYPE.GAME_START_RESPONSE, {
     gameStartResponse,
-
   });
 };
 
