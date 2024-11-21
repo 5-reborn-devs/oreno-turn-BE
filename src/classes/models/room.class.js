@@ -1,3 +1,5 @@
+import IntervalManager from "../managers/interval.manager.js";
+
 class Room {
   constructor(
     id,
@@ -29,10 +31,8 @@ class Room {
       return false;
     }
   }
-  getUserTest(){
-    console.log("방 만들어졌음!");
-  }
   getIntervalManager(){
+    console.log("겟 인터벌 매니저!");
     return this.intervalManager;
   }
 

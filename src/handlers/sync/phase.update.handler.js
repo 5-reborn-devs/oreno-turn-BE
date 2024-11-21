@@ -1,7 +1,7 @@
 import { PACKET_TYPE } from '../../constants/header.js';
 import { rooms } from '../../session/session.js';
 import User from '../../classes/models/user.class.js';
-import { getUsersWithoutMe } from '../../session/room.session.js';
+import { getUsersInRoom } from '../../session/room.session.js';
 import { getFailCode } from '../../utils/response/failCode.js';
 import {
     multiCast,
@@ -25,7 +25,7 @@ export const phaseUpdateNotificationHandler = async (socket) => {
 
         //페일 코드 
         const failCode = getFailCode();
-        const message = {
+        const phaseUpdateNotification = {
           suceess: false,
           failCode: failCode.UNKNOWN_ERROR,
         };
@@ -59,11 +59,11 @@ export const phaseUpdateNotificationHandler = async (socket) => {
         //phaseShift
         if(room.phaseType === 1){
         console.log(`밤으로 전환합니다. 현재 PhaseType: ${room.phaseType}.`);
-        socket.phaseType = 3;
+        room.phaseType = 3;
         }
         else if(room.phaseType === 3){
         console.log(`낮으로 전환합니다. 현재 PhaseType: ${room.phaseType}.`);
-        socket.phaseType = 1;
+        room.phaseType = 1;
         }
         else{
             //기타 처리
@@ -72,21 +72,21 @@ export const phaseUpdateNotificationHandler = async (socket) => {
           // 노티 만들기
           const notification = {
             phaseType : room.phaseType,
-            nextPhaseAt : Date.now() + 180000,
+            nextPhaseAt : Date.now() + 180000, 
             characterPositions: characterPositions,
             success: true,
         }
 
         // 방 전체 슛
-        const usersInRoomWithoutMe = getUsersWithoutMe(socket.roomId, user.id);
+        const usersInRoom = getUsersInRoom(socket.roomId, user.id);
         multiCast(
-          usersInRoomWithoutMe,
+          usersInRoom,
           PACKET_TYPE.PHASE_UPDATE_NOTIFICATION,
           notification,
         );
 
         } catch (errer) {
-        console.error('카드 사용중 알 수 없는 에러');
+        console.error('페이즈 전환중 에러');
       }
 
   };

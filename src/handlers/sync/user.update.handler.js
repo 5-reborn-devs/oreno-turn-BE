@@ -2,7 +2,7 @@ import { PACKET_TYPE } from '../../constants/header.js';
 import { rooms } from '../../session/session.js';
 import { users } from '../../session/session.js';
 import User from '../../classes/models/user.class.js';
-import { getUsersWithoutMe } from '../../session/room.session.js';
+import { getUsersInRoom } from '../../session/room.session.js';
 import { getFailCode } from '../../utils/response/failCode.js';
 import {
     multiCast,
@@ -20,7 +20,7 @@ export const userUpdateNotificationHandler = async(socket)=>{
 
     //페일 코드 
     const failCode = getFailCode();
-    const message = {
+    const userUpdateNotification = {
         suceess: false,
         failCode: failCode.UNKNOWN_ERROR,
     };
@@ -28,7 +28,7 @@ export const userUpdateNotificationHandler = async(socket)=>{
     try{
         //유저 받아옴.
         const user = users.get(socket.token);
-   
+        
         /*검증구간
         */
 
@@ -38,9 +38,9 @@ export const userUpdateNotificationHandler = async(socket)=>{
         }
 
         //방 전체 슛
-        const usersInRoomWithoutMe = getUsersWithoutMe(socket.roomId, user.id);
+        const usersInRoom = getUsersInRoom(socket.roomId, user.id);
         multiCast(
-          usersInRoomWithoutMe,
+          usersInRoom,
           PACKET_TYPE.USER_UPDATE_NOTIFICATION,
           notification,
         );
@@ -57,8 +57,8 @@ export const userUpdateNotificationHandler = async(socket)=>{
 // >
 
 // 실시간으로 > 위치 변경 노티()를 멀티캐스트로 쏴준다.
-// 주기적으로 > 상태 업데이트 노티()를 멀티캐스트로 쏴준다.
-// 일정 주기로 > 페이즈 변경을 진행하고 페이즈 업데이트 노티()를 멀티캐스트로 쏴준다.  
+// 주기적으로<내부지표 : ? 변수 > > 상태 업데이트 노티()를 멀티캐스트로 쏴준다.
+// 일정주기로 <기획상 게임룰 상수: 3분 5분> > 페이즈 변경을 진행하고 페이즈 업데이트 노티()를 멀티캐스트로 쏴준다.  
 
 // 다른 이벤트 발생후 필요시 > 
 

@@ -3,6 +3,7 @@ import { getProtoMessages } from '../../init/loadProto.js';
 import { rooms } from '../../session/session.js';
 import { sendResponsePacket } from '../../utils/response/createResponse.js';
 import User from '../../classes/models/user.class.js';
+import { phaseUpdateNotificationHandler } from '../sync/phase.update.handler.js';
 
 export const gameStart = (socket) => {
   const protoMesages = getProtoMessages();
@@ -54,6 +55,14 @@ export const gameStart = (socket) => {
       gameStartNotification,
     });
     //이 부근 언저리 즘에서 인터벌 매니저 생성?
+
+    /*
+    room.getIntervalManager().addPlayer(roomId,()=>{phaseUpdateNotificationHandler(socket)},180000);
+    // 인터벌  룸 클래스 > 페이즈 업데이트 핸들러 기동
+    */
+
+    
+
   } catch (err) {
     gameStartResponse = {
       success: false,
