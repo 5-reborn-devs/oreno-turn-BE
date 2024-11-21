@@ -1,4 +1,5 @@
 import { CARD_LIMIT, CARD_TYPES, CARD_TYPES_INDEX } from '../../constants/cardTypes.js';
+import { fyShuffle } from '../../utils/fisherYatesShuffle.js';
 import { fleamarketNotificationHanlder } from '../fleamarket/fleamarketNotification.handler.js';
 import { maturedSavingsHandler } from './maturedSavings.handler.js';
 
@@ -38,6 +39,6 @@ export const makeCardDeck = () => {
         gameDeck.push(parseInt(deckCard));
       }
     }
-    gameDeck.sort(() => Math.random() - 0.5)
+    fyShuffle(gameDeck)
     return gameDeck;
 }
