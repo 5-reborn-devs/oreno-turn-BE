@@ -1,4 +1,4 @@
-const RANDOM_POSITIONS = {
+export const RANDOM_POSITIONS = {
   1: { x: -3.972, y: 3.703 },
   2: { x: 10.897, y: 4.033 },
   3: { x: 11.737, y: -5.216 },

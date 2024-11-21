@@ -1,4 +1,4 @@
-import Character from './charater.class.js';
+import Character from './character.class.js';
 
 class User {
   constructor(id, nickname = 'ironcow') {
