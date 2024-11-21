@@ -1,4 +1,5 @@
-import IntervalManager from "../managers/interval.manager.js";
+import IntervalManager from '../managers/interval.manager.js';
+import { makeCardDeck } from '../../handlers/card/index.js';
 
 class Room {
   constructor(
@@ -17,6 +18,7 @@ class Room {
     this.users = users;
     this.intervalManager = new IntervalManager();
     this.phaseType = 1; // DAY:1, NIGHT:3
+    this.gameDeck = makeCardDeck();
   }
 
   addUser(userData) {
@@ -31,8 +33,8 @@ class Room {
       return false;
     }
   }
-  getIntervalManager(){
-    console.log("겟 인터벌 매니저!");
+  getIntervalManager() {
+    console.log('겟 인터벌 매니저!');
     return this.intervalManager;
   }
 

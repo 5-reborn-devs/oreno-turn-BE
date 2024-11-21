@@ -3,10 +3,7 @@ import { rooms } from '../../session/session.js';
 import User from '../../classes/models/user.class.js';
 import { getUsersInRoom } from '../../session/room.session.js';
 import { getFailCode } from '../../utils/response/failCode.js';
-import {
-    multiCast,
-    sendResponsePacket,
-  } from '../../utils/response/createResponse.js';
+import { multiCast } from '../../utils/response/createResponse.js';
 //페이즈가 넘어갈때, 호출 넘어갔는지 체크.
 /* 
 영향을 받는것들 
@@ -22,72 +19,60 @@ message S2CPhaseUpdateNotification {
 }
 */
 export const phaseUpdateNotificationHandler = async (socket) => {
-
-        //페일 코드 
-        const failCode = getFailCode();
-        const phaseUpdateNotification = {
-          suceess: false,
-          failCode: failCode.UNKNOWN_ERROR,
-        };
-        
-        
-        try{
-
-        const users = {};
-
-        // characterPositions
-        const characterPositions = [];
-        let positionKeys = Object.keys(RANDOM_POSITIONS);
-
-        const roomId = socket.roomId;
-        const room = rooms.get(roomId);
-        room.users.forEach((user, index) => {
-            const userData = new User(user.userId, user.nickname, user.character);
-            users[user.userId] = {
-                id: userData.id,
-                nickname: userData.nickname,
-                character: userData.character,
-            };
-            const positionKey = positionKeys[index % positionKeys.length];
-            characterPositions.push({
-                id: user.userId,
-                x: RANODM_POSITIONS[positionKey].x,
-                y: RANDOM_POSITIONS[positionKey].y,
-            });
-            });
-
-        //phaseShift
-        if(room.phaseType === 1){
-        console.log(`밤으로 전환합니다. 현재 PhaseType: ${room.phaseType}.`);
-        room.phaseType = 3;
-        }
-        else if(room.phaseType === 3){
-        console.log(`낮으로 전환합니다. 현재 PhaseType: ${room.phaseType}.`);
-        room.phaseType = 1;
-        }
-        else{
-            //기타 처리
-        }
-    
-          // 노티 만들기
-          const notification = {
-            phaseType : room.phaseType,
-            nextPhaseAt : Date.now() + 180000, 
-            characterPositions: characterPositions,
-            success: true,
-        }
-
-        // 방 전체 슛
-        const usersInRoom = getUsersInRoom(socket.roomId, user.id);
-        multiCast(
-          usersInRoom,
-          PACKET_TYPE.PHASE_UPDATE_NOTIFICATION,
-          notification,
-        );
-
-        } catch (errer) {
-        console.error('페이즈 전환중 에러');
-      }
-
+  //페일 코드
+  const failCode = getFailCode();
+  const phaseUpdateNotification = {
+    success: false,
+    failCode: failCode.UNKNOWN_ERROR,
   };
-  
+
+  try {
+    const users = {};
+
+    // characterPositions
+    const characterPositions = [];
+    let positionKeys = Object.keys(RANDOM_POSITIONS);
+
+    const roomId = socket.roomId;
+    const room = rooms.get(roomId);
+    room.users.forEach((user, index) => {
+      const userData = new User(user.userId, user.nickname, user.character);
+      users[user.userId] = {
+        id: userData.id,
+        nickname: userData.nickname,
+        character: userData.character,
+      };
+      const positionKey = positionKeys[index % positionKeys.length];
+      characterPositions.push({
+        id: user.userId,
+        x: RANDOM_POSITIONS[positionKey].x,
+        y: RANDOM_POSITIONS[positionKey].y,
+      });
+    });
+
+    //phaseShift
+    if (room.phaseType === 1) {
+      console.log(`밤으로 전환합니다. 현재 PhaseType: ${room.phaseType}.`);
+      room.phaseType = 3;
+    } else if (room.phaseType === 3) {
+      console.log(`낮으로 전환합니다. 현재 PhaseType: ${room.phaseType}.`);
+      room.phaseType = 1;
+    } else {
+      //기타 처리
+    }
+
+    // 노티 만들기
+    const notification = {
+      phaseType: room.phaseType,
+      nextPhaseAt: Date.now() + 180000,
+      characterPositions: characterPositions,
+      success: true,
+    };
+
+    // 방 전체 슛
+    const usersInRoom = getUsersInRoom(socket.roomId);
+    multiCast(usersInRoom, PACKET_TYPE.PHASE_UPDATE_NOTIFICATION, notification);
+  } catch (error) {
+    console.error('페이즈 전환중 에러');
+  }
+};
