@@ -6,7 +6,6 @@ import {
   multiCast,
   sendResponsePacket,
 } from '../../utils/response/createResponse.js';
-import sendResponsePacket from '../../utils/response/createResponse.js';
 import { getFailCode } from '../../utils/response/failCode.js';
 
 //게임이 시작되는 순간부터 인터벌로 상시호출? 이라고 하기엔 리퀘가 있네..
@@ -28,62 +27,53 @@ import { getFailCode } from '../../utils/response/failCode.js';
 //     GlobalFailCode failCode = 2;
 // }
 
-// 방에 있는 모두에게 
+// 방에 있는 모두에게
 // message S2CPositionUpdateNotification {
 //     repeated CharacterPositionData characterPositions = 1;
 // }//24
 
-export const positionUpdateHandler = async({socket, payload})=>{
+export const positionUpdateHandler = async (socket, payload) => {
+  //console.log("포지션 변경 어서오고");
 
-    //console.log("포지션 변경 어서오고");
-    
-    const { x, y } = payload;
-    //페일 코드
-    const failCode = getFailCode();
-    const PositionUpdateResponse = {
-      suceess: false,
-      failCode: failCode.UNKNOWN_ERROR,
+  const { x, y } = payload;
+  //페일 코드
+  const failCode = getFailCode();
+  const PositionUpdateResponse = {
+    suceess: false,
+    failCode: failCode.UNKNOWN_ERROR,
+  };
+
+  try {
+    const user = users.get(socket.token);
+
+    /*검증 구간
+
+        */
+
+    // 위치 동기화
+    user.x = x;
+    user.y = y;
+
+    const characterPositions = {
+      id: user.id,
+      x: user.x,
+      y: user.y,
     };
 
-    try{
-        const user = user.get(socket.token);
+    // 노티 만들기
+    const positionUpdateNotification = {
+      characterPositions: characterPositions,
+      success: true,
+    };
 
-        /*검증 구간
-
-        */ 
-
-        // 위치 동기화
-        // user.x = x;
-        // user.y = y;
-
-        const characterPositions = {
-                id : user.id,
-                x : user.x,
-                y : user.y
-        }
-
-
-        // 노티 만들기
-        const notification = {
-            characterPositions : characterPositions,
-            success: true,
-        }
-
-        //방 전체 슛
-        const usersInRoom = getUsersInRoom(socket.roomId, user.id);
-        multiCast(
-            usersInRoom,
-            PACKET_TYPE.POSITION_UPDATE_NOTIFICATION,
-            notification,
-          );
-    }
-    catch(error){
-        console.log('위치 동기화 알수없는 에러');
-    }
-    //리스폰스 보내기
-    //sendResponsePacket(socket,PACKET_TYPE.POSITION_UPDATE_RESPONSE,{PositionUpdateResponse,})
-}
-
-  
-
-    
+    //방 전체 슛
+    const usersInRoom = getUsersInRoom(socket.roomId, user.id);
+    multiCast(usersInRoom, PACKET_TYPE.POSITION_UPDATE_NOTIFICATION, {
+      positionUpdateNotification,
+    });
+  } catch (error) {
+    console.log('위치 동기화 알수없는 에러', error);
+  }
+  //리스폰스 보내기
+  //sendResponsePacket(socket,PACKET_TYPE.POSITION_UPDATE_RESPONSE,{PositionUpdateResponse,})
+};

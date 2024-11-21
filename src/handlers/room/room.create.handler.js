@@ -44,7 +44,6 @@ export const createRoomHandler = async (socket, payloadData) => {
     console.error('방생성 실패: ', error);
   }
 
-  // joinRoomHandler(socket, { roomId: 0 });
   sendResponsePacket(socket, PACKET_TYPE.CREATE_ROOM_RESPONSE, {
     createRoomResponse,
   });

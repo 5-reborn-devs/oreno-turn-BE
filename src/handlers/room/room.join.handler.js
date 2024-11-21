@@ -6,10 +6,6 @@ import sendResponsePacket, {
 import { getFailCode } from '../../utils/response/failCode.js';
 import { getUsersWithoutMe } from '../../session/room.session.js';
 
-// {ㅉ
-//     int32 roomId = 1;
-//  }
-
 export const joinRoomHandler = async (socket, payload) => {
   const { roomId } = payload;
 
@@ -54,8 +50,3 @@ export const joinRoomHandler = async (socket, payload) => {
   });
   if (notification) multiCast(...notification);
 };
-// {
-//     bool success = 1,
-//     RoomData room = 2,
-//     GlobalFailCode failCode = 3
-// }

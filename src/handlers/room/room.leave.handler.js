@@ -5,7 +5,6 @@ import sendResponsePacket, {
   multiCast,
 } from '../../utils/response/createResponse.js';
 
-// {}
 export const leaveRoomHandler = async (socket, payloadData) => {
   const failCode = getFailCode();
   let leaveRoomResponse;
@@ -51,11 +50,3 @@ export const leaveRoomHandler = async (socket, payloadData) => {
     leaveRoomResponse,
   });
 };
-
-// {
-//     bool success = 1,
-//     GlobalFailCode failCode = 2
-// }
-// message S2CLeaveRoomNotification {
-//   string userId = 1;
-// }
