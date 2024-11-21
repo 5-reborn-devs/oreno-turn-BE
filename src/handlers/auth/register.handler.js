@@ -2,21 +2,17 @@ import { PACKET_TYPE } from '../../constants/header.js';
 import { createUser, findUserByUserEmail } from '../../db/user/user.db.js';
 import bcrypt from 'bcrypt';
 import { sendResponsePacket } from '../../utils/response/createResponse.js';
-import { getProtoMessages } from '../../init/loadProto.js';
 import schema from '../../utils/validation/validation.js';
+import { getFailCode } from '../../utils/response/failCode.js';
 
 export const registerHandler = async (socket, payload) => {
     try {
-        const protoMessages = getProtoMessages();
+        const failCode = getFailCode();
         const { password, nickname, email } = payload;
         console.log(`id : ${email}, password(nickname) : ${nickname}, password_re(password) : ${password} `);
 
         // 패킷 데이터 전송 객체
-        let response = {
-            success: false,
-            message: '',
-            failCode: protoMessages.enum.GlobalFailCode.REGISTER_FAILED,
-        }
+        let registerResponse;
 
         const validation = schema.validate({ email });
         const validationError = validation.error;
@@ -24,10 +20,10 @@ export const registerHandler = async (socket, payload) => {
         // 이메일 유효성 검사
         if (validationError) {
             console.log('이메일을 정확하게 입력해주세요.');
-            response = {
+            registerResponse = {
                 success: false,
                 message: '이메일을 정확하게 입력해주세요.',
-                failCode: protoMessages.enum.GlobalFailCode.REGISTER_FAILED,
+                failCode: failCode.REGISTER_FAILED,
             }
         };
 
@@ -35,25 +31,25 @@ export const registerHandler = async (socket, payload) => {
         const joinedUser = await findUserByUserEmail(email);
 
         if (joinedUser) {
-            response = {
+            registerResponse = {
                 success: false,
                 message: '이미 아이디가 존재합니다.',
-                failCode: protoMessages.enum.GlobalFailCode.REGISTER_FAILED,
+                failCode: failCode.REGISTER_FAILED,
             };
         } else {
             // 계정 생성하기
-            response = {
+            registerResponse = {
                 success: true,
                 message: 'register success',
-                failCode: protoMessages.enum.GlobalFailCode.NONE_FAILCODE,
+                failCode: failCode.NONE_FAILCODE,
             };
 
             const bcryptPassword = await bcrypt.hash(password, 10); // 비밀번호 암호화
             await createUser(nickname, bcryptPassword, email);
         }
 
-        console.log('response 메세지 : ', response);
-        sendResponsePacket(socket, PACKET_TYPE.REGISTER_RESPONSE, { registerResponse: response, });
+        console.log('response 메세지 : ', registerResponse);
+        sendResponsePacket(socket, PACKET_TYPE.REGISTER_RESPONSE, registerResponse, );
     } catch (err) {
         console.error(`검증오류: ${err}`);
     }
