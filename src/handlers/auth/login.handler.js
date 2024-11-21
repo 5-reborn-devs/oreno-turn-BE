@@ -27,11 +27,11 @@ export const loginHandler = async (socket, payload) => {
         myInfo: '',
         failCode: failCode.AUTHENTICATION_FAILED,
       };
+      return sendResponsePacket(socket, PACKET_TYPE.LOGIN_RESPONSE, { loginResponse, });
     }
 
-    const dbUser = await findUserByUserEmail(email);
-
     // 아이디 검사
+    const dbUser = await findUserByUserEmail(email);
     if (!dbUser) {
       console.log('아이디가 틀립니다.');
       loginResponse = {
@@ -41,43 +41,47 @@ export const loginHandler = async (socket, payload) => {
         myInfo: '',
         failCode: failCode.AUTHENTICATION_FAILED,
       };
-    } else {
-      // 비밀번호 검사
-      const isPasswordCorrect = await bcrypt.compare(password, dbUser.password);
-      console.log('비번', password);
-      console.log('디비비번', dbUser.password);
-
-      if (!isPasswordCorrect) {
-        console.log(`${password} : 비밀번호가 틀렸습니다.`);
-        loginResponse = {
-          success: false,
-          message: `비밀번호가 틀렸습니다. ${email}`,
-          token: '',
-          myInfo: '',
-          failCode: failCode.AUTHENTICATION_FAILED,
-        };
-      }
-      else {
-        // 토큰 유효 시간
-        const token = jwt.sign(dbUser, config.auth.key, { expiresIn: '12h' });
-
-        loginResponse = {
-          success: true,
-          message: `로그인 성공 ! ${email}`,
-          token: token,
-          myInfo: new User(email),
-          failCode: failCode.NONE_FAILCODE,
-        };
-        addClient(socket, email);
-        addUser(token, loginResponse.myInfo);
-      }
+      return sendResponsePacket(socket, PACKET_TYPE.LOGIN_RESPONSE, { loginResponse, });
     }
-    console.log('response 메세지 : ', response);
-    sendResponsePacket(socket, PACKET_TYPE.LOGIN_RESPONSE, { loginResponse, });
+
+    // 비밀번호 검사
+    const isPasswordCorrect = await bcrypt.compare(password, dbUser.password);
+    console.log('비번', password);
+    console.log('디비비번', dbUser.password);
+
+    if (!isPasswordCorrect) {
+      console.log(`${password} : 비밀번호가 틀렸습니다.`);
+      loginResponse = {
+        success: false,
+        message: `비밀번호가 틀렸습니다. ${email}`,
+        token: '',
+        myInfo: '',
+        failCode: failCode.AUTHENTICATION_FAILED,
+      };
+      return sendResponsePacket(socket, PACKET_TYPE.LOGIN_RESPONSE, { loginResponse, });
+    }
+
+    //토큰 발급 
+    const token = jwt.sign(dbUser, config.auth.key, { expiresIn: '12h' });
+
+    //클라이언트 세션 추가
+    addClient(socket, email);
+
+    loginResponse = {
+      success: true,
+      message: `로그인 성공 ! ${email}`,
+      token: token,
+      myInfo: new User(email),
+      failCode: failCode.NONE_FAILCODE,
+    };
+
+    // session에 사용자 추가
+    addUser(token, loginResponse.myInfo);
+
+    return sendResponsePacket(socket, PACKET_TYPE.LOGIN_RESPONSE, { loginResponse, });
+    
   } catch (err) {
     console.log(err);
   }
-
-  // 1. sendResponsePacket을 한번 적고서도 작동하게끔 만들어라.
 };
 
