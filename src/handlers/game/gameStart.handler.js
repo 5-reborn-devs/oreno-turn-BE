@@ -6,43 +6,12 @@ import {
   multiCast,
   sendResponsePacket,
 } from '../../utils/response/createResponse.js';
-import { RANDOM_POSITIONS } from '../../constants/randomPositions.js';
 import { getFailCode } from '../../utils/response/failCode.js';
 
 export const gameStart = (socket) => {
   const protoMessages = getProtoMessages();
   let gameStartResponse;
   const failCode = getFailCode();
-
-  // gameState
-  let currentPhase = protoMesages.enum.PhaseType.DAY;
-  let nextPhaseAt = Date.now() + 180000; // 3분후에 넥스트 페이즈 타입으로 이동
-  const gameState = {
-    phaseType: currentPhase,
-    nextPhaseAt: nextPhaseAt,
-  };
-
-  // users
-  const users = {};
-  // characterPositions
-  const characterPositions = [];
-  let positionKeys = Object.keys(RANDOM_POSITIONS);
-
-  room.users.forEach((user, index) => {
-    users[user.userId] = user;
-    const positionKey = positionKeys[index % positionKeys.length];
-    characterPositions.push({
-      id: user.userId,
-      x: RANDOM_POSITIONS[positionKey].x,
-      y: RANDOM_POSITIONS[positionKey].y,
-    });
-  });
-
-  const gameStartNotification = {
-    gameState,
-    users,
-    characterPositions,
-  };
   try {
     // gameState
     let currentPhase = protoMessages.enum.PhaseType.values['DAY'];

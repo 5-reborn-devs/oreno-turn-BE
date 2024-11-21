@@ -1,5 +1,5 @@
 import IntervalManager from '../managers/interval.manager.js';
-import { makeCardDeck } from '../../handlers/card/card.js';
+import { makeCardDeck } from '../../handlers/card/index.js';
 
 class Room {
   constructor(

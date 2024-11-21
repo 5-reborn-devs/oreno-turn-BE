@@ -4,7 +4,7 @@ import { registerHandler } from './auth/register.handler.js';
 import { gamePrepare } from './game/gamePrepare.handler.js';
 import { gameStart } from './game/gameStart.handler.js';
 import { createRoomHandler } from './room/room.create.handler.js';
-import { fleamarketPickHandler } from './fleamarket/fleaMarket.handler.js';
+import { fleamarketPickHandler } from './fleamarket/fleamarketPick.handler.js';
 import { getRoomListHandler } from './room/room.getList.handler.js';
 import { joinRoomHandler } from './room/room.join.handler.js';
 import { joinRandomRoomHandler } from './room/room.joinRandom.handler.js';

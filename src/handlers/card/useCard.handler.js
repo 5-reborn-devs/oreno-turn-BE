@@ -15,7 +15,7 @@ import { parseUserData } from '../../utils/notification/userDatas.js';
 import sendResponsePacket, {
   multiCast,
 } from '../../utils/response/createResponse.js';
-import { getHandlerByCardType, makeCardDeck } from './card.js';
+import { getHandlerByCardType, makeCardDeck } from './index.js';
 
 export const useCardHandler = async (socket, payload) => {
   const { cardType, targetUserId } = payload;
@@ -24,8 +24,8 @@ export const useCardHandler = async (socket, payload) => {
   const userCharacter = user.character;
   const userRoomId = socket.roomId;
 
-  const userRoom = getUserRoom(userRoomId)
-  const gameDeck = userRoom.gameDeck
+  const userRoom = getUserRoom(userRoomId);
+  const gameDeck = userRoom.gameDeck;
 
   // 페이로드 값 검증
   if (!cardType) {

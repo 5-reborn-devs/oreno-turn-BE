@@ -6,8 +6,8 @@ export const addUser = (token, myInfo) => {
 };
 
 // 해당 email을 가진 유저 중복 로그인 여부 확인
-export const userLoggedIn = (email) => {
-  return [...users.values()].some((userInfo) => userInfo.id === email);
+export const userLoggedIn = (userId) => {
+  return [...users.values()].some((userInfo) => userInfo.id === userId);
 };
 
 // 유저 세션에서 socket으로 유저 찾는 함수
