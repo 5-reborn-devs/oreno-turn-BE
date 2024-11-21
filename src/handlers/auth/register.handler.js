@@ -1,10 +1,9 @@
 import { PACKET_TYPE } from '../../constants/header.js';
 import { createUser, findUserByUserEmail } from '../../db/user/user.db.js';
-import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
-import Joi from 'joi';
 import { sendResponsePacket } from '../../utils/response/createResponse.js';
 import { getProtoMessages } from '../../init/loadProto.js';
+import schema from '../../utils/validation/validation.js';
 
 export const registerHandler = async (socket, payload) => {
     try {
@@ -12,49 +11,38 @@ export const registerHandler = async (socket, payload) => {
         const { password, nickname, email } = payload;
         console.log(`id : ${email}, password(nickname) : ${nickname}, password_re(password) : ${password} `);
 
-        // 검증을 위한 객체 선언
-        const schema = Joi.object({
-            email: Joi.string().email().required(),
-        });
+        // 패킷 데이터 전송 객체
+        let response = {
+            success: false,
+            message: '',
+            failCode: protoMessages.enum.GlobalFailCode.REGISTER_FAILED,
+        }
 
         const validation = schema.validate({ email });
         const validationError = validation.error;
 
-        // SELECT * FROM user;
-            // 우리 테이블 이름은 다르다. 테이블 이름을 알려면 어디서 찾아야할까?
-            // 테이블을 잘 못 적은게 아닐 수도 있다 오류 메세지를 살펴보자
-
-        console.log(validationError);
-
         // 이메일 유효성 검사
         if (validationError) {
             console.log('이메일을 정확하게 입력해주세요.');
-            const errorMessage = {
-                registerResponse: {
-                    success: false,
-                    message: '이메일을 정확하게 입력해주세요.',
-                    failCode: protoMessages.enum.GlobalFailCode.REGISTER_FAILED,
-                }
+            response = {
+                success: false,
+                message: '이메일을 정확하게 입력해주세요.',
+                failCode: protoMessages.enum.GlobalFailCode.REGISTER_FAILED,
             }
-            sendResponsePacket(socket, PACKET_TYPE.REGISTER_RESPONSE, { errorMessage, });
-            return;
         };
 
         // 중복 계정 확인 : 해당 email을 가진 유저가 존재한다면
         const joinedUser = await findUserByUserEmail(email);
 
         if (joinedUser) {
-            const errorMessage = {
+            response = {
                 success: false,
                 message: '이미 아이디가 존재합니다.',
                 failCode: protoMessages.enum.GlobalFailCode.REGISTER_FAILED,
             };
-
-            sendResponsePacket(socket, PACKET_TYPE.REGISTER_RESPONSE, { errorMessage, });
-            return;
         } else {
             // 계정 생성하기
-            const registerResponse = {
+            response = {
                 success: true,
                 message: 'register success',
                 failCode: protoMessages.enum.GlobalFailCode.NONE_FAILCODE,
@@ -62,10 +50,10 @@ export const registerHandler = async (socket, payload) => {
 
             const bcryptPassword = await bcrypt.hash(password, 10); // 비밀번호 암호화
             await createUser(nickname, bcryptPassword, email);
-            sendResponsePacket(socket, PACKET_TYPE.REGISTER_RESPONSE, { registerResponse, });
-            return;
         }
 
+        console.log('response 메세지 : ', response);
+        sendResponsePacket(socket, PACKET_TYPE.REGISTER_RESPONSE, { registerResponse: response, });
     } catch (err) {
         console.error(`검증오류: ${err}`);
     }
