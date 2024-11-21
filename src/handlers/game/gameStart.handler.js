@@ -59,6 +59,15 @@ export const gameStart = (socket) => {
     multiCast(usersInRoom, PACKET_TYPE.GAME_START_NOTIFICATION, {
       gameStartNotification,
     });
+    //이 부근 언저리 즘에서 인터벌 매니저 생성?
+
+    /*
+    room.getIntervalManager().addPlayer(roomId,()=>{phaseUpdateNotificationHandler(socket)},180000);
+    // 인터벌  룸 클래스 > 페이즈 업데이트 핸들러 기동
+    */
+
+    
+
   } catch (err) {
     gameStartResponse = {
       success: false,
@@ -68,6 +77,7 @@ export const gameStart = (socket) => {
   }
   sendResponsePacket(socket, PACKET_TYPE.GAME_START_RESPONSE, {
     gameStartResponse,
+
   });
 };
 
