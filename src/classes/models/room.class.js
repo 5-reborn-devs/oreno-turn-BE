@@ -1,3 +1,5 @@
+import { makeCardDeck } from "../../handlers/card/card.js";
+
 class Room {
   constructor(
     id,
@@ -13,6 +15,7 @@ class Room {
     this.maxUserNum = maxUserNum < 1 ? 1 : maxUserNum;
     this.state = state;
     this.users = users;
+    this.gameDeck = makeCardDeck();
   }
 
   addUser(userData) {
