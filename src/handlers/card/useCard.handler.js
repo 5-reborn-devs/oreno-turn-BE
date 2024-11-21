@@ -5,7 +5,7 @@
 
 import { GLOBAL_FAIL_CODES } from '../../constants/globalFailCodes.js';
 import { PACKET_TYPE } from '../../constants/header.js';
-import { getAllUsersInRoom } from '../../session/room.session.js';
+import { getAllUsersInRoom, getUserRoom } from '../../session/room.session.js';
 import {
   getOtherUsersById,
   getUserById,
@@ -15,13 +15,17 @@ import { parseUserData } from '../../utils/notification/userDatas.js';
 import sendResponsePacket, {
   multiCast,
 } from '../../utils/response/createResponse.js';
-import { getHandlerByCardType } from './card.js';
+import { getHandlerByCardType, makeCardDeck } from './card.js';
 
 export const useCardHandler = async (socket, payload) => {
   const { cardType, targetUserId } = payload;
 
   const user = getUserBySocket(socket);
   const userCharacter = user.character;
+  const userRoomId = socket.roomId;
+
+  const userRoom = getUserRoom(userRoomId)
+  const gameDeck = userRoom.gameDeck
 
   // 페이로드 값 검증
   if (!cardType) {
@@ -38,7 +42,7 @@ export const useCardHandler = async (socket, payload) => {
   try {
     // 핸들러 돌려준다 - 여기서 너무 길어지면 안되므로 동혁님이 card.js로 핸들러 맵핑을 따로 뺀것
     const handler = getHandlerByCardType(cardType);
-    await handler(socket, cardType, targetUserId);
+    await handler(socket, gameDeck, cardType, targetUserId);
 
     // 사용한 카드를 타입으로 찾아 손패에서 지워줌
     let usedCardCount = userCharacter.handCards.get(cardType);
