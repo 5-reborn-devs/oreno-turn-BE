@@ -10,12 +10,12 @@ export const DB1_NAME = process.env.DB1_NAME || 'USER_DB';
 export const DB1_USER = process.env.DB1_USER || 'root';
 export const DB1_PASSWORD = process.env.DB1_PASSWORD || 'qwe123';
 export const DB1_HOST = process.env.DB1_HOST || 'localhost';
-export const DB1_PORT = process.env.DB1_PORT || 7777;
+export const DB1_PORT = process.env.DB1_PORT || '6666';
 
 export const DB2_NAME = process.env.DB2_NAME || 'game_db';
 export const DB2_USER = process.env.DB2_USER || 'root';
 export const DB2_PASSWORD = process.env.DB2_PASSWORD || 'qwe123';
 export const DB2_HOST = process.env.DB2_HOST || 'localhost';
-export const DB2_PORT = process.env.DB2_PORT || 7777;
+export const DB2_PORT = process.env.DB2_PORT || '6666';
 
 export const JWT_SECRET = process.env.JWT_SECRET || 'test6666';

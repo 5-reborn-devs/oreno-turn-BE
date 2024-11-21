@@ -20,6 +20,7 @@ export const joinRoomHandler = async (socket, payload) => {
     const room = rooms.get(roomId);
     const user = users.get(socket.token);
     room.addUser(user);
+
     socket.roomId = roomId;
     joinRoomResponse = {
       success: true,
