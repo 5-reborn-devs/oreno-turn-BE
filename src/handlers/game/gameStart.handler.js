@@ -31,7 +31,7 @@ export const gameStart = (socket) => {
     const positionKey = positionKeys[index % positionKeys.length];
     characterPositions.push({
       id: user.userId,
-      x: RANODM_POSITIONS[positionKey].x,
+      x: RANDOM_POSITIONS[positionKey].x,
       y: RANDOM_POSITIONS[positionKey].y,
     });
   });
