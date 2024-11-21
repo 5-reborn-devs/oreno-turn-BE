@@ -9,6 +9,7 @@ import { getRoomListHandler } from './room/room.getList.handler.js';
 import { joinRoomHandler } from './room/room.join.handler.js';
 import { joinRandomRoomHandler } from './room/room.joinRandom.handler.js';
 import { leaveRoomHandler } from './room/room.leave.handler.js';
+import { positionUpdateHandler } from './sync/user.position.handler.js';
 import { useCardHandler } from './card/useCard.handler.js';
 const handlers = {
   [PACKET_TYPE.REGISTER_REQUEST]: {
