@@ -7,7 +7,7 @@ import {
   sendResponsePacket,
 } from '../../utils/response/createResponse.js';
 import { getFailCode } from '../../utils/response/failCode.js';
-import { getHandlerByCardType } from './card.js';
+import { getHandlerByCardType } from './index.js';
 
 // {
 //     CardType cardType = 1,

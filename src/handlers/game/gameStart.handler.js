@@ -1,11 +1,11 @@
 import { PACKET_TYPE } from '../../constants/header.js';
+import { RANDOM_POSITIONS } from '../../constants/randomPositions.js';
 import { getProtoMessages } from '../../init/loadProto.js';
 import { rooms } from '../../session/session.js';
 import {
   multiCast,
   sendResponsePacket,
 } from '../../utils/response/createResponse.js';
-import { RANDOM_POSITIONS } from '../../constants/randomPositions.js';
 import { getFailCode } from '../../utils/response/failCode.js';
 
 export const gameStart = (socket) => {
@@ -65,9 +65,6 @@ export const gameStart = (socket) => {
     room.getIntervalManager().addPlayer(roomId,()=>{phaseUpdateNotificationHandler(socket)},180000);
     // 인터벌  룸 클래스 > 페이즈 업데이트 핸들러 기동
     */
-
-    
-
   } catch (err) {
     gameStartResponse = {
       success: false,
@@ -77,7 +74,6 @@ export const gameStart = (socket) => {
   }
   sendResponsePacket(socket, PACKET_TYPE.GAME_START_RESPONSE, {
     gameStartResponse,
-
   });
 };
 

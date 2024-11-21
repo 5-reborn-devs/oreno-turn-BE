@@ -12,6 +12,10 @@ export const clearRooms = () => {
   rooms.clear();
 };
 
+export const getUserRoom = (userRoomId) => {
+  rooms.get(userRoomId)
+}
+
 export const getEmptyRooms = () => {
   return [...rooms.values()].filter(
     (room) => room.maxUserNum > room.users.length,
@@ -29,6 +33,13 @@ export const getUsersWithoutMe = (roomId, userId) => {
 
   return users.filter((user) => user.id != userId);
 };
+
+export const getAllUsersInRoom = (roomId) => {
+  const currentRoom = rooms.get(roomId)
+  const allUsers = [...currentRoom.users];
+
+  return allUsers;
+}
 
 // message RoomData {
 //     int32 id = 1;

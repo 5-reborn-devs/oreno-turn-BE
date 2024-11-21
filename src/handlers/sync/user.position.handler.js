@@ -39,35 +39,32 @@ export const positionUpdateHandler = async (socket, payload) => {
   //페일 코드
   const failCode = getFailCode();
   const PositionUpdateResponse = {
-    suceess: false,
+    success: false,
     failCode: failCode.UNKNOWN_ERROR,
   };
 
   try {
     const user = users.get(socket.token);
+    //방 전체 슛
 
-    /*검증 구간
+    /*검증 구간 
 
         */
-
     // 위치 동기화
-    user.x = x;
-    user.y = y;
+    //user.x = x;
+    //user.y = y;
 
-    const characterPositions = {
-      id: user.id,
-      x: user.x,
-      y: user.y,
-    };
-
-    // 노티 만들기
-    const positionUpdateNotification = {
-      characterPositions: characterPositions,
-      success: true,
-    };
-
-    //방 전체 슛
     const usersInRoom = getUsersInRoom(socket.roomId, user.id);
+    const positionUpdateNotification = {
+      characterPositions: [
+        {
+          id: user.id,
+          x,
+          y,
+        },
+      ],
+    };
+    // 노티 만들기
     multiCast(usersInRoom, PACKET_TYPE.POSITION_UPDATE_NOTIFICATION, {
       positionUpdateNotification,
     });
