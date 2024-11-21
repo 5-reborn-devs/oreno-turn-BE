@@ -1,22 +1,13 @@
 /* 
-  명세
-  [ PayloadOneofCase ] [ versionLength ] [ version ] [ sequence ] [ payloadLength ] [ payload ]
+  명세                        header 
+  [ PayloadOneofCase ] [ versionLength ] [ version ] [ sequence ] [ payloadLength ] // [ payload ]
   2 bytes              1 bytes         versionLength 4 bytes      4 bytes         payloadLength 
   C2S = 리틀 엔디안
   S2C = 빅 엔디안
-
-  const PAYLOAD_ONEOF_CASE_SIZE = 2;
-  const VERSION_LENGTH_SIZE = 1;
-  const SEQUENCE_SIZE = 4;
-  const PAYLOAD_LENGTH_SIZE = 4;
--------------------------------------------------------------
-  const PACKET_TYPE_LENGTH = 2;     // PayloadOneofCase
-  const VERSION_START = 1;          // versionLength (version)
-  const SEQUENCE_SIZE = 4;          // sequence
-  const PAYLOAD_LENGTH_SIZE = 4;    // payloadLength 
 */
 
 import { config } from '../config/config.js';
+import { TOTAL_LENGTH } from '../constants/header.js';
 import { getHandlerByPacketType } from '../handlers/index.js';
 import { decoder } from '../utils/response/decoder.js';
 
@@ -28,7 +19,7 @@ export const onData = (socket) => async (data) => {
   // const headerSize = config.packet.totalLength + config.packet.typeLength;
 
   // 버퍼 데이터로 들어온 패킷 데이터가 헤더 길이보다 크다면 ( 데이터가 들어왔다고 이해 )
-  while (socket.buffer.length >= 3) {
+  while (socket.buffer.length >= TOTAL_LENGTH) {
     // 버퍼 데이터 중 PayloadOneofCase 길이만큼 할당 2byte
     const packetType = socket.buffer.readUInt16BE(0);
     let offset = config.packet.typeLength;
@@ -38,7 +29,9 @@ export const onData = (socket) => async (data) => {
     // version을 읽을 곳 4byte (문자열로 반환받기)
     // 헤더에는 3으로 되어있어서 일단 3byte 읽어오기
     // 만약 4byte일 경우에는 VERSION_START + versionLength 만큼 읽기
-    const version = socket.buffer.subarray(offset, versionLength).toString();
+    const version = socket.buffer
+      .subarray(offset, offset + versionLength)
+      .toString();
     // offset += VERSION_START + versionLength;
     // 만약 1byte 이면 offset += versionLength; 만 해주기
     offset += versionLength;
@@ -68,7 +61,8 @@ export const onData = (socket) => async (data) => {
         const handler = getHandlerByPacketType(packetType);
         await handler(socket, decodedPacket);
       } catch (err) {
-        console.error(`패킷처리 에러 : `, err);
+        console.error(err);
+        console.error(`패킷처리 에러 : ${err}, packeyType : ${packetType}`);
       }
     } else {
       console.log(
