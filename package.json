@@ -9,7 +9,8 @@
   "type": "module",
   "scripts": {
     "dev": "node ./src/server.js",
-    "migrate": "node ./src/db/migrations/createSchema.js"
+    "migrate": "node ./src/db/migrations/createSchema.js",
+    "test": "node ./src/tests/test.function.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -18,6 +19,7 @@
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "loadtest": "^8.0.9",
+    "lodash": "^4.17.21",
     "mysql2": "^3.11.4",
     "protobufjs": "^7.4.0",
     "uuid": "^11.0.3"
