@@ -17,7 +17,7 @@ import sendResponsePacket, {
 } from '../../utils/response/createResponse.js';
 import { getHandlerByCardType } from './index.js';
 
-export const useCardHandler = async (socket, gameDeck, payload) => {
+export const useCardHandler = async (socket, payload) => {
   const { cardType, targetUserId } = payload;
 
   const user = getUserBySocket(socket);
@@ -27,26 +27,36 @@ export const useCardHandler = async (socket, gameDeck, payload) => {
   const userRoom = getUserRoom(userRoomId);
   const gameDeck = userRoom.gameDeck;
 
+  let message;
+
   // 페이로드 값 검증
   if (!cardType) {
-    console.error('카드 타입 값이 없습니다.');
+    message = '카드 타입 값이 없습니다.'
+    console.error(message)
+    throw new Error(message)
   }
   if (!targetUserId) {
-    console.error('유효하지 않은 대상입니다.');
+    message = '타겟 유저가 없습니다.'
+    console.error(message)
+    throw new Error(message)
   }
   // 손에 있는 카드인지 검증
-  if (!character.handCards.some((card) => card.cardType === cardType)) {
-    console.error('소유하고 있는 카드가 아닙니다.');
+  if (!character.handCards.some((card) => card.type === cardType)) {
+    message = '소지한 카드가 아닙니다.'
+    console.error(message)
+    throw new Error(message)
   }
 
   try {
     // 핸들러 돌려준다 - 여기서 너무 길어지면 안되므로 동혁님이 card.js로 핸들러 맵핑을 따로 뺀것
     const handler = getHandlerByCardType(cardType);
-    await handler( user, gameDeck, targetUserId);
+    await handler(user, gameDeck, targetUserId);
 
     // 사용한 카드를 타입으로 찾아 손패에서 지워줌
-    let usedCardCount = character.handCards.get(cardType);
-    handCards.set(cardType, --usedCardCount);
+    const usedCardIndex = character.handCards.findIndex(
+      (cardType) => card.cardType === cardType,
+    );
+    handCards.splice(usedCardIndex, 1)[0];
 
     // 나에게 카드 사용 리스폰스
     sendResponsePacket(socket, PACKET_TYPE.USE_CARD_RESPONSE, {
@@ -74,22 +84,17 @@ export const useCardHandler = async (socket, gameDeck, payload) => {
     const targetedUser = getUserById(targetUserId);
     let targetedUserData = parseUserData(targetUserId, targetedUser);
 
+    targetedUserData = [];
     // 난사나 플리마켓처럼 대상 여러명인 경우 targetUserId가 0이라 if문에 걸릴 것
     // 다른 유저들의 id를 잡아와서 하나하나 타겟으로 parseData함수 쓰고 배열에 푸쉬, 그 배열을 전달
-    if (targetUserId === 0) {
-      targetedUserData = [];
-      const otherUsers = getOtherUsersById(user.id);
-      otherUsers.forEach((user) => {
-        const parsedDatas = parseUserData(user.id, user);
-        targetedUserData.push(parsedDatas);
-      });
-    }
+    // * 백신의 경우는 타겟이 자기 자신이다! -> 카드 타입에 따라서 대상이 달라져야 할 것
+    
 
-    // 유저 업데이트 노티
-    multiCast(allUsersInRoom, PACKET_TYPE.USER_UPDATE_NOTIFICATION, [
-      userData,
-      targetedUserData,
-    ]);
+
+
+
+    // 유저 업데이트 노티 -> 모두에게 똑같은 데이터
+    
   } catch (e) {
     console.error(`카드 사용 중 에러 발생: ${e.message}`);
     sendResponsePacket(socket, PACKET_TYPE.USE_CARD_RESPONSE, {
