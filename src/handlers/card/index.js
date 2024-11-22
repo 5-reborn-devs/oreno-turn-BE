@@ -1,7 +1,8 @@
 import { CARD_LIMIT, CARD_TYPES, CARD_TYPES_INDEX } from '../../constants/cardTypes.js';
 import { fyShuffle } from '../../utils/fisherYatesShuffle.js';
 import { fleamarketNotificationHanlder } from '../fleamarket/fleamarketNotification.handler.js';
-import { maturedSavingsHandler } from './maturedSavings.handler.js';
+import { maturedSavingsHandler } from './cardEffects/effect.maturedSavings.handler.js';
+import { laserPointerHandler } from './laserPointer.handler.js';
 
 const handlers = {
   [CARD_TYPES.NONE]: {
@@ -19,6 +20,10 @@ const handlers = {
   [CARD_TYPES.FLEA_MARKET]:{
     handler: fleamarketNotificationHanlder,
     typeName: CARD_TYPES_INDEX[CARD_TYPES.FLEA_MARKET]
+  },
+  [CARD_TYPES.LASER_POINTER]:{
+    handler: laserPointerHandler,
+    typeName: CARD_TYPES_INDEX[CARD_TYPES.LASER_POINTER]
   }
 };
 
