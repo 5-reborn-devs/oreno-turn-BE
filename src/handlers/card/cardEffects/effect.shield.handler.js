@@ -42,7 +42,7 @@ import CharacterState from '../../../classes/models/character.state.class.js';
 //     int32 handCardsCount = 10;
 // }
 
-export const bbangEffectHandler = async (user, targetUserId) => {
+export const shieldEffectHandler = async (user, targetUserId) => {
   const failCode = getFailCode();
   let errorMessage = '';
   // 캐릭터 스테이트 enum을 getProtomessages에서 불러기
@@ -50,39 +50,32 @@ export const bbangEffectHandler = async (user, targetUserId) => {
   const stateType = protoMessages.enum.CharacterStateType.values; // values 붙여줘야함!
 
   try {
-    // 내 캐릭터 정보 가져오기
-    const myCharacter = user.character; // Character 객체임
+    // 유저 캐릭터 들고오기
+    const myCharacter = user.character;
     let stateInfo = myCharacter.CharacterState;
-  
-    // user의 캐릭터의 characterState를 shooter 상태로 바꿔주기, character.class.js 참고!
-    // stateInfo 도 객체임! character.state.class.js 참고!
+
+    // 유저 캐릭터의 상태를 바꾸기 // 뱅 상태 -> 0
     stateInfo = {
-        state: 0,
-        nextState: stateType.BBANG_SHOOTER,
-        nextStateAt: Date.now() + 1000, 
+        state: stateType.BBANG_SHOOTER,
+        nextState: 0,
+        nextStateAt: Date.now() + 1000,
         stateTargetUserId: targetUserId,
     }
-    
-    const targetUser = getUserById(targetUserId);  // getUserById는 User객체를 가져옴. Character가 아님
+
+    // 상대 캐릭터 들고오기
+    const targetUser = getUserById(targetUserId);
     const targetCharacter = targetUser.character;
-    
-    // 대상 캐릭터의 state를 bangTarget으로 바꿔주기
+
+    // 상대 캐릭터 상태 바꾸기 // 뱅타겟 -> 0
     targetCharacter.stateInfo = {
-        state: 0,
-        nextState: stateType.BBANG_TARGET,
+        state: stateType.BBANG_TARGET,
+        nextState: 0,
         nextStateAt: Date.now() + 1000,
         stateTargetUserId: user.id,
     }
-    // 나의 유저 아이디가 필요.
-    // 캐릭터가 카드를 사용하면 공격 카운터 증가시켜주기
-    myCharacter.bbangCount += 1; // 조건문이 필요한가? 그냥 증가해도 괜찮은가
 
   } catch (error) {
     console.error(errorMessage, error);
     return errorMessage;
   }
 };
-
-// 검증
-// 뱅을 사용할 때 상대가 이미 상태 처리 중이라면 ? 
-// 
