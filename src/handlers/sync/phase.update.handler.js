@@ -4,6 +4,7 @@ import User from '../../classes/models/user.class.js';
 import { getUsersInRoom } from '../../session/room.session.js';
 import { getFailCode } from '../../utils/response/failCode.js';
 import { multiCast } from '../../utils/response/createResponse.js';
+import { RANDOM_POSITIONS } from '../../constants/randomPositions.js';
 //페이즈가 넘어갈때, 호출 넘어갔는지 체크.
 /* 
 영향을 받는것들 
@@ -62,17 +63,18 @@ export const phaseUpdateNotificationHandler = async (socket) => {
     }
 
     // 노티 만들기
-    const notification = {
+    const phaseUpdateNotification = {
       phaseType: room.phaseType,
-      nextPhaseAt: Date.now() + 180000,
+      nextPhaseAt: Date.now() + 30000,
       characterPositions: characterPositions,
-      success: true,
     };
-
+    console.log('노티', phaseUpdateNotification);
     // 방 전체 슛
     const usersInRoom = getUsersInRoom(socket.roomId);
-    multiCast(usersInRoom, PACKET_TYPE.PHASE_UPDATE_NOTIFICATION, notification);
+    multiCast(usersInRoom, PACKET_TYPE.PHASE_UPDATE_NOTIFICATION, {
+      phaseUpdateNotification,
+    });
   } catch (error) {
-    console.error('페이즈 전환중 에러');
+    console.error('페이즈 전환중 에러', error);
   }
 };

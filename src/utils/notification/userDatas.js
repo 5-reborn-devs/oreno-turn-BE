@@ -1,8 +1,8 @@
-import { getUserById } from "../../session/user.session.js";
+import { getUserById } from '../../session/user.session.js';
 
 // 유저 상태 업데이트 노티를 위한 데이터
 export const parseUserData = (id, user) => {
-  const character = user.character
+  const character = user.character;
 
   const userData = {
     id: user.id,
@@ -22,7 +22,7 @@ export const parseUserData = (id, user) => {
 
   // 타인이고 타겟유저도 아닌 경우 데이터를 가려준다
   if (getUserById(id) !== user && character.roleType !== 1) {
-    userData.roleType = 0
+    userData.roleType = 0;
     userData.weapon = null;
     userData.stateInfo = null;
     userData.debuffs = [];
