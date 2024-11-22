@@ -1,4 +1,4 @@
-import { getUserById } from '../../session/user.session.js';
+import { getUserById } from '../../../session/user.session.js';
 
 // 만기적금 - 은행 npc에게 사용시 핸드카드 두장을 획득한다
 export const maturedSavingsHandler = async (user, gameDeck, targetUserId) => {

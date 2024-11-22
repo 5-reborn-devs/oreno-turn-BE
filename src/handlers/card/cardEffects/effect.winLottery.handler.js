@@ -1,6 +1,3 @@
-import { getUserById } from "../../session/user.session.js";
-import { makeCardDeck } from "./card.js";
-
 export const winLotteryHandler = async (user, gameDeck, targetUserId) => {
     const character = user.character
     const handCards = character.handCards;
