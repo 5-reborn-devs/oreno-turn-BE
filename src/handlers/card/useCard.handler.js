@@ -42,7 +42,7 @@ export const useCardHandler = async (socket, payload) => {
   try {
     // 핸들러 돌려준다 - 여기서 너무 길어지면 안되므로 동혁님이 card.js로 핸들러 맵핑을 따로 뺀것
     const handler = getHandlerByCardType(cardType);
-    await handler(socket, gameDeck, cardType, targetUserId);
+    await handler(socket, gameDeck, targetUserId);
 
     // 사용한 카드를 타입으로 찾아 손패에서 지워줌
     let usedCardCount = userCharacter.handCards.get(cardType);

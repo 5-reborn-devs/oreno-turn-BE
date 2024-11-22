@@ -41,7 +41,7 @@ export const selectCardHandler = async (socket, payload) => {
       success: true,
       failCode: failCode.NONE_FAILCODE,
     };
-  } catch (errer) {
+  } catch (error) {
     cardSelectResponse = {
       success: false,
       failCode: failCode.UNKNOWN_ERROR,
