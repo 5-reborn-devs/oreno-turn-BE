@@ -17,13 +17,13 @@ import sendResponsePacket, {
 } from '../../utils/response/createResponse.js';
 import { getHandlerByCardType } from './index.js';
 
-export const useCardHandler = async (socket, payload) => {
+export const useCardHandler = async (socket, gameDeck, payload) => {
   const { cardType, targetUserId } = payload;
 
   const user = getUserBySocket(socket);
-  const userCharacter = user.character;
-  const userRoomId = socket.roomId;
+  const character = user.character;
 
+  const userRoomId = socket.roomId;
   const userRoom = getUserRoom(userRoomId);
   const gameDeck = userRoom.gameDeck;
 
@@ -35,17 +35,17 @@ export const useCardHandler = async (socket, payload) => {
     console.error('유효하지 않은 대상입니다.');
   }
   // 손에 있는 카드인지 검증
-  if (!userCharacter.handCards.some((card) => card.cardType === cardType)) {
+  if (!character.handCards.some((card) => card.cardType === cardType)) {
     console.error('소유하고 있는 카드가 아닙니다.');
   }
 
   try {
     // 핸들러 돌려준다 - 여기서 너무 길어지면 안되므로 동혁님이 card.js로 핸들러 맵핑을 따로 뺀것
     const handler = getHandlerByCardType(cardType);
-    await handler(socket, gameDeck, cardType, targetUserId);
+    await handler( user, gameDeck, targetUserId);
 
     // 사용한 카드를 타입으로 찾아 손패에서 지워줌
-    let usedCardCount = userCharacter.handCards.get(cardType);
+    let usedCardCount = character.handCards.get(cardType);
     handCards.set(cardType, --usedCardCount);
 
     // 나에게 카드 사용 리스폰스
