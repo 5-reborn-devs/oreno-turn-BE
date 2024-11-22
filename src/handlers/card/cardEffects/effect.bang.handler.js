@@ -1,14 +1,5 @@
-import { PACKET_TYPE } from '../../constants/header.js';
-import { getUsersInRoom } from '../../session/room.session.js';
-import { rooms, users } from '../../session/session.js';
-import {
-  multiCast,
-  sendResponsePacket,
-} from '../../utils/response/createResponse.js';
-import { getFailCode } from '../../utils/response/failCode.js';
-import { getProtoMessages } from '../../init/loadProto.js';
+import { getProtoMessages } from '../../../init/loadProto.js';
 import { getUserById } from '../../../session/user.session.js';
-import CharacterState from '../../../classes/models/character.state.class.js';
 
 // enum CharacterStateType {
 //     NONE_CHARACTER_STATE = 0;
@@ -43,17 +34,16 @@ import CharacterState from '../../../classes/models/character.state.class.js';
 // }
 
 export const bbangEffectHandler = async (user, targetUserId) => {
-  const failCode = getFailCode();
   let errorMessage = '';
   // 캐릭터 스테이트 enum을 getProtomessages에서 불러기
   const protoMessages = getProtoMessages();
   const stateType = protoMessages.enum.CharacterStateType.values; // values 붙여줘야함!
 
-  try {
+  try { 
     // 내 캐릭터 정보 가져오기
     const myCharacter = user.character; // Character 객체임
-    let stateInfo = myCharacter.CharacterState;
-  
+    let stateInfo = myCharacter.stateInfo;
+
     // user의 캐릭터의 characterState를 shooter 상태로 바꿔주기, character.class.js 참고!
     // stateInfo 도 객체임! character.state.class.js 참고!
     stateInfo = {
@@ -63,8 +53,11 @@ export const bbangEffectHandler = async (user, targetUserId) => {
         stateTargetUserId: targetUserId,
     }
     
+    console.log('상태', stateInfo); //
+  
     const targetUser = getUserById(targetUserId);  // getUserById는 User객체를 가져옴. Character가 아님
     const targetCharacter = targetUser.character;
+    console.log('targetUser:',targetUser);
     
     // 대상 캐릭터의 state를 bangTarget으로 바꿔주기
     targetCharacter.stateInfo = {

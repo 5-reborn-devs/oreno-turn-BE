@@ -1,18 +1,17 @@
 import { getProtoMessages } from '../../init/loadProto.js';
-import CharacterState from './character.state.class.js.js';
+import CharacterState from './character.state.class.js';
 
 class Character {
   constructor() {
     const protoMessages = getProtoMessages();
-    this.characterType =
-      protoMessages.enum.CharacterType.values['NONE_CHARACTER'];
-    this.roleType = protoMessages.enum.RoleType.values['NONE_ROLE'];
-    this.hp = 50;
+    this.characterType = 0;
+    this.roleType = 0;
+    this.hp = 3;
     this.weapon = null;
     this.stateInfo = new CharacterState();
     this.equips = [];
     this.debuffs = [];
-    this.handCards = new Map();
+    this.handCards = [{type:1, count:1}];
     this.bbangCount = 0;
     this.handCardsCount = 0;
   }

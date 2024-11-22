@@ -12,7 +12,7 @@ export const userLoggedIn = (userId) => {
 
 // 유저 세션에서 socket으로 유저 찾는 함수
 export const getUserBySocket = (socket) => {
-  const user = users.get(socket.token)
+  const user = users.get(socket.token);
   return user;
 };
 
@@ -25,13 +25,17 @@ export const getOtherUsersBySocket = (socket) => {
 export const getUserById = (userId) => {
   try{
     const socket = clients.get(userId);
+    console.log('getUserById', socket);
+    console.log('clients', [...clients.values()]);
     if(!socket) throw new Error(`${userId}가 클라이언트 세션에 존재하지 않습니다.`)
     
     const user = users.get(socket.token);
+    if(!user) throw new Error(`${socket.token}가 유저 세션에 존재하지 않습니다.`)
+
     return user;
     
   } catch(error) {
-    console.error()
+    console.error(error)
     return false;
   }
 };

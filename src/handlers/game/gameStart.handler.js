@@ -1,7 +1,7 @@
 import { PACKET_TYPE } from '../../constants/header.js';
 import { RANDOM_POSITIONS } from '../../constants/randomPositions.js';
 import { getProtoMessages } from '../../init/loadProto.js';
-import { rooms } from '../../session/session.js';
+import { rooms, clients } from '../../session/session.js';
 import {
   multiCast,
   sendResponsePacket,
@@ -30,21 +30,25 @@ export const gameStart = (socket) => {
 
     // characterPositions
     const characterPositions = [];
-    const positionKeys = Object.keys(RANDOM_POSITIONS);
+    //const positionKeys = Object.keys(RANDOM_POSITIONS);
+    const positionKeys = [21, 22];
     const usedPositions = new Set();
     room.users.forEach((user) => {
       let positionKey;
       do {
-        const randomIndex = Math.floor(Math.random() * positionKeys.length);
-        positionKey = positionKeys[randomIndex];
+        //const randomIndex = Math.floor(Math.random() * positionKeys.length);
+        //positionKey = positionKeys[randomIndex];
+        positionKey =
+          positionKeys[Math.floor(Math.random() * positionKeys.length)];
       } while (usedPositions.has(positionKey));
       usedPositions.add(positionKey);
+      console.log('x,y값', RANDOM_POSITIONS[positionKey]);
       characterPositions.push({
         id: user.id,
         x: RANDOM_POSITIONS[positionKey].x,
         y: RANDOM_POSITIONS[positionKey].y,
       });
-    });
+    })
 
     const gameStartNotification = {
       gameState,
@@ -56,6 +60,8 @@ export const gameStart = (socket) => {
       success: true,
       failCode: failCode.NONE_FAILCODE,
     };
+
+    console.log([...clients.keys()])
     multiCast(usersInRoom, PACKET_TYPE.GAME_START_NOTIFICATION, {
       gameStartNotification,
     });

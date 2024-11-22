@@ -1,14 +1,13 @@
-import { PACKET_TYPE } from '../../constants/header.js';
-import { getUsersInRoom } from '../../session/room.session.js';
-import { rooms, users } from '../../session/session.js';
+import { PACKET_TYPE } from '../../../constants/header.js';
+import { getUsersInRoom } from '../../../session/room.session.js';
+import { rooms, users } from '../../../session/session.js';
 import {
   multiCast,
   sendResponsePacket,
-} from '../../utils/response/createResponse.js';
-import { getFailCode } from '../../utils/response/failCode.js';
-import { getProtoMessages } from '../../init/loadProto.js';
+} from '../../../utils/response/createResponse.js';
+import { getFailCode } from '../../../utils/response/failCode.js';
+import { getProtoMessages } from '../../../init/loadProto.js';
 import { getUserById } from '../../../session/user.session.js';
-import CharacterState from '../../../classes/models/character.state.class.js';
 
 // enum CharacterStateType {
 //     NONE_CHARACTER_STATE = 0;
@@ -79,3 +78,4 @@ export const shieldEffectHandler = async (user, targetUserId) => {
     return errorMessage;
   }
 };
+// 이거거던
