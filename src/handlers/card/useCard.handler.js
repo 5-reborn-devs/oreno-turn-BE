@@ -15,7 +15,7 @@ import { parseUserData } from '../../utils/notification/userDatas.js';
 import sendResponsePacket, {
   multiCast,
 } from '../../utils/response/createResponse.js';
-import { getHandlerByCardType, makeCardDeck } from './index.js';
+import { getHandlerByCardType } from './index.js';
 
 export const useCardHandler = async (socket, payload) => {
   const { cardType, targetUserId } = payload;
