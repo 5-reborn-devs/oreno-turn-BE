@@ -1,7 +1,7 @@
 import { PACKET_TYPE } from '../../constants/header.js';
 import { RANDOM_POSITIONS } from '../../constants/randomPositions.js';
 import { getProtoMessages } from '../../init/loadProto.js';
-import { rooms } from '../../session/session.js';
+import { rooms, clients } from '../../session/session.js';
 import {
   multiCast,
   sendResponsePacket,
@@ -52,7 +52,7 @@ export const gameStart = (socket) => {
         x: RANDOM_POSITIONS[positionKey].x,
         y: RANDOM_POSITIONS[positionKey].y,
       });
-    });
+    })
 
     const gameStartNotification = {
       gameState,
@@ -64,6 +64,8 @@ export const gameStart = (socket) => {
       success: true,
       failCode: failCode.NONE_FAILCODE,
     };
+
+    console.log([...clients.keys()])
     multiCast(usersInRoom, PACKET_TYPE.GAME_START_NOTIFICATION, {
       gameStartNotification,
     });

@@ -37,5 +37,5 @@ export const parseUserData = (id, user) => {
     userData.bbangCount = 0;
   }
 
-  return userData;
+  return user;
 };
