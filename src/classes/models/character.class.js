@@ -1,5 +1,5 @@
 import { getProtoMessages } from '../../init/loadProto.js';
-import CharacterState from './character.state.class.js.js';
+import CharacterState from './character.state.class.js';
 
 class Character {
   constructor() {
@@ -12,7 +12,7 @@ class Character {
     this.stateInfo = new CharacterState();
     this.equips = [];
     this.debuffs = [];
-    this.handCards = new Map();
+    this.handCards = [];
     this.bbangCount = 0;
     this.handCardsCount = 0;
   }
