@@ -39,7 +39,7 @@ export const bbangEffectHandler = async (user, targetUserId) => {
   const protoMessages = getProtoMessages();
   const stateType = protoMessages.enum.CharacterStateType.values; // values 붙여줘야함!
 
-  try { 
+  try {
     // 내 캐릭터 정보 가져오기
     const myCharacter = user.character; // Character 객체임
     let stateInfo = myCharacter.stateInfo;
@@ -47,29 +47,29 @@ export const bbangEffectHandler = async (user, targetUserId) => {
     // user의 캐릭터의 characterState를 shooter 상태로 바꿔주기, character.class.js 참고!
     // stateInfo 도 객체임! character.state.class.js 참고!
     stateInfo = {
-        state: 0,
-        nextState: stateType.BBANG_SHOOTER,
-        nextStateAt: Date.now() + 1000, 
-        stateTargetUserId: targetUserId,
-    }
-    
+      state: stateType.BBANG_SHOOTER,
+      nextState: 0,
+      nextStateAt: Date.now() + 1000,
+      stateTargetUserId: targetUserId,
+    };
+
     console.log('상태', stateInfo); //
-  
-    const targetUser = getUserById(targetUserId);  // getUserById는 User객체를 가져옴. Character가 아님
+
+    const targetUser = getUserById(targetUserId); // getUserById는 User객체를 가져옴. Character가 아님
     const targetCharacter = targetUser.character;
-    console.log('targetUser:',targetUser);
-    
+
     // 대상 캐릭터의 state를 bangTarget으로 바꿔주기
     targetCharacter.stateInfo = {
-        state: 0,
-        nextState: stateType.BBANG_TARGET,
-        nextStateAt: Date.now() + 1000,
-        stateTargetUserId: user.id,
-    }
+      state: stateType.BBANG_TARGET,
+      nextState: 0,
+      nextStateAt: Date.now() + 1000,
+      stateTargetUserId: user.id,
+    };
+    targetCharacter.hp -= 1;
+    console.log('targetUser 상태:', targetUser);
     // 나의 유저 아이디가 필요.
     // 캐릭터가 카드를 사용하면 공격 카운터 증가시켜주기
     myCharacter.bbangCount += 1; // 조건문이 필요한가? 그냥 증가해도 괜찮은가
-
   } catch (error) {
     console.error(errorMessage, error);
     return errorMessage;
@@ -77,5 +77,5 @@ export const bbangEffectHandler = async (user, targetUserId) => {
 };
 
 // 검증
-// 뱅을 사용할 때 상대가 이미 상태 처리 중이라면 ? 
-// 
+// 뱅을 사용할 때 상대가 이미 상태 처리 중이라면 ?
+//

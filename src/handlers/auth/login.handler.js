@@ -9,7 +9,7 @@ import { addClient } from '../../session/client.session.js';
 import { addUser, userLoggedIn } from '../../session/user.session.js';
 import { getFailCode } from '../../utils/response/failCode.js';
 
-function sendErrorMessage(response, message){
+function sendErrorMessage(response, message) {
   console.error(message);
   response.message = message;
   throw new Error(message);
@@ -30,24 +30,26 @@ export const loginHandler = async (socket, payload) => {
   try {
     // 아이디 검사
     const dbUser = await findUserByUserEmail(email);
-    if (!dbUser) 
-      sendErrorMessage(`${email} : 아이디가 틀립니다.`);
+    if (!dbUser)
+      sendErrorMessage(loginResponse, `${email} : 아이디가 틀립니다.`);
 
     // 비밀번호 검사
     const isPasswordCorrect = await bcrypt.compare(password, dbUser.password);
-    if (!isPasswordCorrect) 
-      sendErrorMessage(`비밀번호가 틀렸습니다. ${email}`);
+    if (!isPasswordCorrect)
+      sendErrorMessage(loginResponse, `비밀번호가 틀렸습니다. ${email}`);
 
     // 중복 로그인 확인
-    if (userLoggedIn(dbUser.userId)) 
-      sendErrorMessage(`이미 로그인된 사용자 입니다. : ${email}`);
+    if (userLoggedIn(dbUser.userId))
+      sendErrorMessage(
+        loginResponse,
+        `이미 로그인된 사용자 입니다. : ${email}`,
+      );
 
     //토큰 발급
     const token = jwt.sign(dbUser, config.auth.key, { expiresIn: '12h' });
     socket.token = token;
     //클라이언트 세션 추가
     addClient(socket, dbUser.userId);
-
     loginResponse = {
       success: true,
       message: `로그인 성공 ! ${email}`,

@@ -1,6 +1,5 @@
 import { getProtoMessages } from '../../init/loadProto.js';
 import CharacterState from './character.state.class.js';
-import CharacterState from './character.state.class.js';
 
 class Character {
   constructor() {

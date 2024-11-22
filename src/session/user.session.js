@@ -18,24 +18,25 @@ export const getUserBySocket = (socket) => {
 
 // 나 외의 유저들을 socket으로 찾는 함수
 export const getOtherUsersBySocket = (socket) => {
-  const otherUsers = [...users.values()].filter((user) => user.socket !== socket);
+  const otherUsers = [...users.values()].filter(
+    (user) => user.socket !== socket,
+  );
   return otherUsers;
 };
 
 export const getUserById = (userId) => {
-  try{
+  try {
     const socket = clients.get(userId);
-    console.log('getUserById', socket);
-    console.log('clients', [...clients.values()]);
-    if(!socket) throw new Error(`${userId}가 클라이언트 세션에 존재하지 않습니다.`)
-    
+    if (!socket)
+      throw new Error(`${userId}가 클라이언트 세션에 존재하지 않습니다.`);
+
     const user = users.get(socket.token);
-    if(!user) throw new Error(`${socket.token}가 유저 세션에 존재하지 않습니다.`)
+    if (!user)
+      throw new Error(`${socket.token}가 유저 세션에 존재하지 않습니다.`);
 
     return user;
-    
-  } catch(error) {
-    console.error(error)
+  } catch (error) {
+    console.error(error);
     return false;
   }
 };
