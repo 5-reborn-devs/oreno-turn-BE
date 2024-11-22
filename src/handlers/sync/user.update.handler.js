@@ -49,7 +49,7 @@ export const userUpdateNotificationHandler = async (socket) => {
       userUpdateNotification,
     );
   } catch (error) {
-    console.error('유저 상태 업데이트 오류 터졌슴..');
+    console.error('유저 상태 업데이트 오류 터졌슴..', error);
   }
 };
 
