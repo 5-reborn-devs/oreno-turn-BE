@@ -1,4 +1,4 @@
-import { CARD_TYPES } from "../../constants/cardTypes.js";
+import { CARD_TYPES } from "../../../constants/cardTypes.js";
 
 export const laserPointerHandler = async (user, gameDeck, targetUserId) => {
     const character = user.character;
