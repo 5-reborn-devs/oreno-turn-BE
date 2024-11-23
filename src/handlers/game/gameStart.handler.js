@@ -46,13 +46,13 @@ export const gameStart = (socket) => {
           positionKeys[Math.floor(Math.random() * positionKeys.length)];
       } while (usedPositions.has(positionKey));
       usedPositions.add(positionKey);
-      console.log('x,y값', RANDOM_POSITIONS[positionKey]);
+      // console.log('x,y값', RANDOM_POSITIONS[positionKey]);
       characterPositions.push({
         id: user.id,
         x: RANDOM_POSITIONS[positionKey].x,
         y: RANDOM_POSITIONS[positionKey].y,
       });
-    })
+    });
 
     const gameStartNotification = {
       gameState,
@@ -65,7 +65,7 @@ export const gameStart = (socket) => {
       failCode: failCode.NONE_FAILCODE,
     };
 
-    console.log([...clients.keys()])
+    console.log([...clients.keys()]);
     multiCast(usersInRoom, PACKET_TYPE.GAME_START_NOTIFICATION, {
       gameStartNotification,
     });

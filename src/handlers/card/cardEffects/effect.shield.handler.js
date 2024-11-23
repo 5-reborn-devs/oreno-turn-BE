@@ -1,13 +1,8 @@
-import { PACKET_TYPE } from '../../../constants/header.js';
-import { getUsersInRoom } from '../../../session/room.session.js';
-import { rooms, users } from '../../../session/session.js';
-import {
-  multiCast,
-  sendResponsePacket,
-} from '../../../utils/response/createResponse.js';
 import { getFailCode } from '../../../utils/response/failCode.js';
 import { getProtoMessages } from '../../../init/loadProto.js';
 import { getUserById } from '../../../session/user.session.js';
+import { reactionHandler } from '../../game/game.reaction.handler.js';
+import { clients } from '../../../session/session.js';
 
 // enum CharacterStateType {
 //     NONE_CHARACTER_STATE = 0;
@@ -42,37 +37,38 @@ import { getUserById } from '../../../session/user.session.js';
 // }
 
 export const shieldEffectHandler = async (user, targetUserId) => {
-  const failCode = getFailCode();
   let errorMessage = '';
-  // 캐릭터 스테이트 enum을 getProtomessages에서 불러기
   const protoMessages = getProtoMessages();
-  const stateType = protoMessages.enum.CharacterStateType.values; // values 붙여줘야함!
+  const stateType = protoMessages.enum.CharacterStateType.values;
 
   try {
     // 유저 캐릭터 들고오기
     const myCharacter = user.character;
     let stateInfo = myCharacter.CharacterState;
+    console.log('targetId', targetUserId);
+    console.log('userId', user.id);
 
     // 유저 캐릭터의 상태를 바꾸기 // 뱅 상태 -> 0
-    stateInfo = {
-        state: stateType.BBANG_SHOOTER,
-        nextState: 0,
-        nextStateAt: Date.now() + 1000,
-        stateTargetUserId: targetUserId,
-    }
+    // stateInfo = {
+    //   state: 0,
+    //   nextState: 0,
+    //   nextStateAt: 1,
+    //   stateTargetUserId: targetUserId,
+    // };
 
     // 상대 캐릭터 들고오기
     const targetUser = getUserById(targetUserId);
     const targetCharacter = targetUser.character;
 
     // 상대 캐릭터 상태 바꾸기 // 뱅타겟 -> 0
-    targetCharacter.stateInfo = {
-        state: stateType.BBANG_TARGET,
-        nextState: 0,
-        nextStateAt: Date.now() + 1000,
-        stateTargetUserId: user.id,
-    }
+    // targetCharacter.stateInfo = {
+    //   state: 0,
+    //   nextState: 0,
+    //   nextStateAt: 1,
+    //   stateTargetUserId: user.id,
+    // };
 
+    // reactionHandler(clients.get(user.id), {});
   } catch (error) {
     console.error(errorMessage, error);
     return errorMessage;

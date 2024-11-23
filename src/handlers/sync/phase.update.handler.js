@@ -54,7 +54,7 @@ export const phaseUpdateNotificationHandler = async (socket) => {
           positionKeys[Math.floor(Math.random() * positionKeys.length)];
       } while (usedPositions.has(positionKey));
       usedPositions.add(positionKey);
-      console.log('x,y값', RANDOM_POSITIONS[positionKey]);
+      // console.log('x,y값', RANDOM_POSITIONS[positionKey]);
       characterPositions.push({
         id: user.id,
         x: RANDOM_POSITIONS[positionKey].x,
