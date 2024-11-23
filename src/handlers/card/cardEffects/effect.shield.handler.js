@@ -3,6 +3,7 @@ import { getProtoMessages } from '../../../init/loadProto.js';
 import { getUserById } from '../../../session/user.session.js';
 import { reactionHandler } from '../../game/game.reaction.handler.js';
 import { clients } from '../../../session/session.js';
+import CharacterState from '../../../classes/models/character.state.class.js';
 
 // enum CharacterStateType {
 //     NONE_CHARACTER_STATE = 0;
@@ -44,34 +45,20 @@ export const shieldEffectHandler = async (user, targetUserId) => {
   try {
     // 유저 캐릭터 들고오기
     const myCharacter = user.character;
-    let stateInfo = myCharacter.CharacterState;
     console.log('targetId', targetUserId);
     console.log('userId', user.id);
 
-    // 유저 캐릭터의 상태를 바꾸기 // 뱅 상태 -> 0
-    // stateInfo = {
-    //   state: 0,
-    //   nextState: 0,
-    //   nextStateAt: 1,
-    //   stateTargetUserId: targetUserId,
-    // };
+    // 유저 캐릭터의 상태 초기화
+    myCharacter.stateInfo = new CharacterState();
 
     // 상대 캐릭터 들고오기
     const targetUser = getUserById(targetUserId);
     const targetCharacter = targetUser.character;
 
-    // 상대 캐릭터 상태 바꾸기 // 뱅타겟 -> 0
-    // targetCharacter.stateInfo = {
-    //   state: 0,
-    //   nextState: 0,
-    //   nextStateAt: 1,
-    //   stateTargetUserId: user.id,
-    // };
-
-    // reactionHandler(clients.get(user.id), {});
+    // 상대 캐릭터 상태 초기화
+    targetCharacter.stateInfo = new CharacterState();
   } catch (error) {
     console.error(errorMessage, error);
     return errorMessage;
   }
 };
-// 이거거던
