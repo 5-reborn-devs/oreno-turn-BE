@@ -8,7 +8,7 @@ import { fleamarketNotificationHanlder } from '../fleamarket/fleamarketNotificat
 import { maturedSavingsHandler } from './cardEffects/effect.maturedSavings.handler.js';
 import { bbangEffectHandler } from './cardEffects/effect.bang.handler.js';
 import { shieldEffectHandler } from './cardEffects/effect.shield.handler.js';
-import { laserPointerHandler } from './laserPointer.handler.js';
+import { laserPointerHandler } from './cardEffects/effect.laserPointer.handler.js';
 
 const handlers = {
   [CARD_TYPES.NONE]: {
