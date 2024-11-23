@@ -7,16 +7,16 @@ import sendResponsePacket, {
 
 export const leaveRoomHandler = async (socket, payloadData) => {
   const failCode = getFailCode();
+  const roomId = socket.roomId;
   let leaveRoomResponse;
 
   try {
-    const room = rooms.get(socket.roomId);
+    const room = rooms.get(roomId);
     if (!room) {
       throw new Error('해당 방이 존재하지 않습니다');
     }
 
     const user = users.get(socket.token);
-    console.log('user data:', JSON.stringify(user));
     if (room.removeUserById(user.id)) {
       leaveRoomResponse = {
         success: true,
@@ -33,10 +33,15 @@ export const leaveRoomHandler = async (socket, payloadData) => {
       userId: user.id,
     };
 
-    // 유저들에게 떠남을 알림.
-    multiCast(usersInRoom, PACKET_TYPE.LEAVE_ROOM_NOTIFICATION, {
-      leaveRoomNotification,
-    });
+    // 남은 유저가 없다면 방 삭제
+    if (!usersInRoom.length) {
+      rooms.delete(roomId);
+    } else {
+      // 남은 유저가 있다면 유저들에게 떠남을 알림.
+      multiCast(usersInRoom, PACKET_TYPE.LEAVE_ROOM_NOTIFICATION, {
+        leaveRoomNotification,
+      });
+    }
   } catch (error) {
     leaveRoomResponse = {
       success: false,
