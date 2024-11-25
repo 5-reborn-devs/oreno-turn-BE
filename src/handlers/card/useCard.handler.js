@@ -6,15 +6,11 @@
 import { GLOBAL_FAIL_CODES } from '../../constants/globalFailCodes.js';
 import { PACKET_TYPE } from '../../constants/header.js';
 import { getAllUsersInRoom, getUserRoom } from '../../session/room.session.js';
-import {
-  getOtherUsersById,
-  getUserById,
-  getUserBySocket,
-} from '../../session/user.session.js';
-import { parseUserData } from '../../utils/notification/userDatas.js';
+import { getUserBySocket } from '../../session/user.session.js';
 import sendResponsePacket, {
   multiCast,
 } from '../../utils/response/createResponse.js';
+import { getFailCode } from '../../utils/response/failCode.js';
 import { getHandlerByCardType, makeCardDeck } from './index.js';
 
 export const useCardHandler = async (socket, payload) => {
@@ -24,6 +20,7 @@ export const useCardHandler = async (socket, payload) => {
   const user = getUserBySocket(socket);
   const userCharacter = user.character;
   const userRoomId = socket.roomId;
+  const failCode = getFailCode();
 
   let message;
 
@@ -57,7 +54,7 @@ export const useCardHandler = async (socket, payload) => {
     sendResponsePacket(socket, PACKET_TYPE.USE_CARD_RESPONSE, {
       useCardResponse: {
         success: true,
-        failcode: 0,
+        failCode: failCode.NONE_FAILCODE,
       },
     });
 
@@ -83,8 +80,10 @@ export const useCardHandler = async (socket, payload) => {
   } catch (e) {
     console.log('카드 사용 중 에러 발생:', e);
     sendResponsePacket(socket, PACKET_TYPE.USE_CARD_RESPONSE, {
-      success: false,
-      failcode: GLOBAL_FAIL_CODES.CARD_USE_ERROR,
+      useCardResponse: {
+        success: false,
+        failCode: GLOBAL_FAIL_CODES.CARD_USE_ERROR,
+      },
     });
   }
 };

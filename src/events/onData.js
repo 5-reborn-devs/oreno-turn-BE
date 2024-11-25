@@ -54,7 +54,14 @@ export const onData = (socket) => async (data) => {
 
       try {
         // 모든 패킷을 게임패킷으로 처리 가능하다고 한다
+        if (packetType == 35) {
+          console.log(payload);
+        }
         const decodedPacket = decoder(payload);
+
+        if (packetType == 35) {
+          console.log(decodedPacket);
+        }
 
         // 인자로 받을 패킷 타입 전송
         const handler = getHandlerByPacketType(packetType);

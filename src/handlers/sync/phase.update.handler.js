@@ -54,7 +54,7 @@ export const phaseUpdateNotificationHandler = async (socket) => {
           positionKeys[Math.floor(Math.random() * positionKeys.length)];
       } while (usedPositions.has(positionKey));
       usedPositions.add(positionKey);
-      console.log('x,y값', RANDOM_POSITIONS[positionKey]);
+      // console.log('x,y값', RANDOM_POSITIONS[positionKey]);
       characterPositions.push({
         id: user.id,
         x: RANDOM_POSITIONS[positionKey].x,
@@ -65,8 +65,8 @@ export const phaseUpdateNotificationHandler = async (socket) => {
     //phaseShift
     if (room.phaseType === 1) {
       console.log(`밤으로 전환합니다. 현재 PhaseType: ${room.phaseType}.`);
-      room.phaseType = 3;
-    } else if (room.phaseType === 3) {
+      room.phaseType = 2;
+    } else if (room.phaseType === 2) {
       console.log(`낮으로 전환합니다. 현재 PhaseType: ${room.phaseType}.`);
       room.phaseType = 1;
     } else {
@@ -89,18 +89,20 @@ export const phaseUpdateNotificationHandler = async (socket) => {
     //페이즈별 시간처리
     let nextPhaseAt = Date.now();
     if (!room.phaseType === 3) {
-      nextPhaseAt += 180000;
+      nextPhaseAt += 18000;
     }
-    nextPhaseAt += 60000;
+    nextPhaseAt += 6000;
     // 노티 만들기
-    const notification = {
+    const phaseUpdateNotification = {
       phaseType: room.phaseType,
       nextPhaseAt,
       characterPositions: characterPositions,
     };
     // 방 전체 슛
     const usersInRoom = getUsersInRoom(socket.roomId);
-    multiCast(usersInRoom, PACKET_TYPE.PHASE_UPDATE_NOTIFICATION, notification);
+    multiCast(usersInRoom, PACKET_TYPE.PHASE_UPDATE_NOTIFICATION, {
+      phaseUpdateNotification,
+    });
     //여기서 황혼 카드 수급 핸들링 하거나,
     //publicPoolDrawHandler()?
     //클라에 한번 페이즈 전환을 보내서 동기화 시키고, 황혼 카드 수급 핸들러를 클라에서 호출하는 방식.

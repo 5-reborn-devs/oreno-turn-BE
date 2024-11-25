@@ -11,7 +11,10 @@ class Character {
     this.stateInfo = new CharacterState();
     this.equips = [];
     this.debuffs = [];
-    this.handCards = [{ type: 1, count: 1 }];
+    this.handCards = [
+      { type: 1, count: 1 },
+      { type: 3, count: 1 },
+    ];
     this.bbangCount = 0;
     this.handCardsCount = 0;
   }
