@@ -5,8 +5,9 @@
 
 import { GLOBAL_FAIL_CODES } from '../../constants/globalFailCodes.js';
 import { PACKET_TYPE } from '../../constants/header.js';
-import { getAllUsersInRoom, getUserRoom } from '../../session/room.session.js';
+import { getUsersInRoom, getUserRoom } from '../../session/room.session.js';
 import { getUserBySocket } from '../../session/user.session.js';
+import animationNotify from '../../utils/notification/notify.animation.js';
 import sendResponsePacket, {
   multiCast,
 } from '../../utils/response/createResponse.js';
@@ -15,8 +16,10 @@ import { getHandlerByCardType, makeCardDeck } from './index.js';
 
 export const useCardHandler = async (socket, payload) => {
   const { cardType, targetUserId } = payload;
+
+  // 유저아이디가 Long으로 보내지고 받을 때도 그렇다. Js는 Long타입이 없어 변환해줘야한다.
   const targetUserIdNumber = targetUserId.toNumber();
-  console.log('이쪽타입정보', typeof targetUserIdNumber); // 정수형이긴한데 Number
+
   const user = getUserBySocket(socket);
   const userCharacter = user.character;
   const userRoomId = socket.roomId;
@@ -62,7 +65,7 @@ export const useCardHandler = async (socket, payload) => {
     const roomId = socket.roomId;
     if (!roomId) return;
 
-    const allUsersInRoom = getAllUsersInRoom(roomId);
+    const allUsersInRoom = getUsersInRoom(roomId);
 
     // 전체 유저에게 카드 사용 노티
     multiCast(allUsersInRoom, PACKET_TYPE.USE_CARD_NOTIFICATION, {
@@ -77,6 +80,8 @@ export const useCardHandler = async (socket, payload) => {
     multiCast(allUsersInRoom, PACKET_TYPE.USER_UPDATE_NOTIFICATION, {
       userUpdateNotification: { user: allUsersInRoom },
     });
+
+    // animationNotify(user, 'NO_ANIMATION');
   } catch (e) {
     console.log('카드 사용 중 에러 발생:', e);
     sendResponsePacket(socket, PACKET_TYPE.USE_CARD_RESPONSE, {
