@@ -59,7 +59,7 @@ export const useCardHandler = async (socket, payload) => {
     sendResponsePacket(socket, PACKET_TYPE.USE_CARD_RESPONSE, {
       useCardResponse: {
         success: true,
-        failcode: 0,
+        failCode: 0,
       },
     });
 
