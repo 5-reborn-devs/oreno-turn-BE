@@ -22,17 +22,10 @@ class Character {
   addCard(card) {
     // 해당 타입 카드가 존재하면 handCards에서 count만 +1 시켜주고
     // 존재하지 않는다면 handCards에서 type과 count를 1로 설정하여 set
-    const existCard = this.handCards.find(
-      (existingCard) => existingCard.type === card.type,
-    );
-
-    if (existCard) {
-      existCard.count += card.count;
-    } else {
-      this.handCards.push({ type: card.type, count: card.count });
-    }
+    const existCard = this.handCards.has(card.type)
+    let handCardCount = existCard ? this.handCards.get(card.type) : 0;
+    this.handCards.set(card.type, ++handCardCount)
     this.handCardsCount += card.count;
-
     console.log('카드는', this.handCards);
   }
 
