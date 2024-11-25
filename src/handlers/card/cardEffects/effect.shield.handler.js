@@ -1,6 +1,6 @@
 import { getUserById } from '../../../session/user.session.js';
 import CharacterState from '../../../classes/models/character.state.class.js';
-import animationNotify from '../../../utils/notification/notify.animation.js';
+import { animationNotify } from '../../../utils/notification/notify.animation.js';
 
 export const shieldEffectHandler = async (user, targetUserId) => {
   let errorMessage = '';
@@ -18,9 +18,6 @@ export const shieldEffectHandler = async (user, targetUserId) => {
 
     // 상대 캐릭터 상태 초기화
     targetCharacter.stateInfo = new CharacterState();
-
-    // 쉴드 애니메이션 알림
-    animationNotify(user, 'SHIELD_ANIMATION');
   } catch (error) {
     console.error(errorMessage, error);
     return errorMessage;

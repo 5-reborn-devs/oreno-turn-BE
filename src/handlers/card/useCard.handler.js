@@ -7,7 +7,7 @@ import { GLOBAL_FAIL_CODES } from '../../constants/globalFailCodes.js';
 import { PACKET_TYPE } from '../../constants/header.js';
 import { getUsersInRoom, getUserRoom } from '../../session/room.session.js';
 import { getUserBySocket } from '../../session/user.session.js';
-import animationNotify from '../../utils/notification/notify.animation.js';
+import { animationNotify } from '../../utils/notification/notify.animation.js';
 import sendResponsePacket, {
   multiCast,
 } from '../../utils/response/createResponse.js';
@@ -80,8 +80,6 @@ export const useCardHandler = async (socket, payload) => {
     multiCast(allUsersInRoom, PACKET_TYPE.USER_UPDATE_NOTIFICATION, {
       userUpdateNotification: { user: allUsersInRoom },
     });
-
-    // animationNotify(user, 'NO_ANIMATION');
   } catch (e) {
     console.log('카드 사용 중 에러 발생:', e);
     sendResponsePacket(socket, PACKET_TYPE.USE_CARD_RESPONSE, {

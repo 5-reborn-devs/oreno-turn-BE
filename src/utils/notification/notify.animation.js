@@ -4,7 +4,7 @@ import { getUsersInRoom } from '../../session/room.session.js';
 import { clients } from '../../session/session.js';
 import { multiCast } from '../response/createResponse.js';
 
-function animationNotify(user, type) {
+export const animationNotify = (user, type) => {
   const protoMessages = getProtoMessages();
   const animationType = protoMessages.enum.AnimationType.values;
 
@@ -19,6 +19,4 @@ function animationNotify(user, type) {
   multiCast(users, PACKET_TYPE.ANIMATION_NOTIFICATION, {
     animationNotification,
   });
-}
-
-export default animationNotify;
+};
