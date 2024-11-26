@@ -1,4 +1,4 @@
-import { rooms } from './session.js';
+import { rooms, roomIdSet } from './session.js';
 
 export const createRoom = (roomData) => {
   rooms.set(roomData.id, roomData);
@@ -32,4 +32,20 @@ export const getUsersWithoutMe = (roomId, userId) => {
   const users = [...room.users];
 
   return users.filter((user) => user.id != userId);
+};
+
+export let nextRoomId = 1;
+// 방 번호 생성
+export const getNextRoomId = () => {
+  if (roomIdSet.size > 0) {
+    const roomId = roomIdSet.values().next().value;
+    roomIdSet.delete(roomId);
+    return roomId;
+  }
+  return nextRoomId++;
+};
+
+// 방 번호 반납
+export const releaseRoomId = (roomId) => {
+  roomIdSet.add(roomId);
 };
