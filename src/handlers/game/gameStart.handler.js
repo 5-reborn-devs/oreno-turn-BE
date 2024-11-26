@@ -18,9 +18,11 @@ export const gameStart = (socket) => {
     //  let currentPhase = protoMessages.enum.PhaseType.values['DAY'];
 
     // 낮에만 캐릭터가 이동 가능
+    
     let nextPhaseAt = Date.now() + 18000; // 3분후에 넥스트 페이즈 타입으로 이동 // 테스트용 10초
     const roomId = socket.roomId;
     const room = rooms.get(roomId);
+
 
     const gameState = {
       phaseType: room.phaseType,
@@ -83,6 +85,7 @@ export const gameStart = (socket) => {
     //   18000, // 밤으로 변한뒤
 
     // );
+
     // 인터벌  룸 클래스 > 페이즈 업데이트 핸들러 기동
   } catch (err) {
     gameStartResponse = {
