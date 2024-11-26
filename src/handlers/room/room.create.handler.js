@@ -9,6 +9,7 @@ let count = 1;
 
 export const createRoomHandler = async (socket, payloadData) => {
   const protoMessages = getProtoMessages();
+  const roomStateType = protoMessages.enum.RoomStateType.values;
   const { name, maxUserNum } = payloadData;
   const failCode = getFailCode();
 
@@ -21,7 +22,7 @@ export const createRoomHandler = async (socket, payloadData) => {
       user.id,
       name,
       maxUserNum,
-      protoMessages.enum.RoomStateType.values['WAIT'],
+      roomStateType.WAIT,
       usersInRoom,
     );
 

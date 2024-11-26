@@ -7,8 +7,6 @@ import sendResponsePacket, {
 import { users } from '../../session/session.js';
 import { PACKET_TYPE } from '../../constants/header.js';
 
-//{}
-
 export const joinRandomRoomHandler = async (socket, payload) => {
   const failCode = getFailCode();
   let joinRoomResponse;
@@ -50,13 +48,3 @@ export const joinRandomRoomHandler = async (socket, payload) => {
     joinRoomResponse,
   });
 };
-
-// {
-//     bool success = 1,
-//      RoomData room = 2,
-//      GlobalFailCode failCode = 3
-//  }
-
-// message S2CJoinRoomNotification {
-//   UserData joinUser = 1;
-// }

@@ -11,6 +11,7 @@ import { joinRandomRoomHandler } from './room/room.joinRandom.handler.js';
 import { leaveRoomHandler } from './room/room.leave.handler.js';
 import { positionUpdateHandler } from './sync/user.position.handler.js';
 import { useCardHandler } from './card/useCard.handler.js';
+import { reactionHandler } from './game/game.reaction.handler.js';
 const handlers = {
   [PACKET_TYPE.REGISTER_REQUEST]: {
     handler: registerHandler,
@@ -59,6 +60,10 @@ const handlers = {
   [PACKET_TYPE.POSITION_UPDATE_REQUEST]: {
     handler: positionUpdateHandler,
     protoType: 'request.C2SPositionUpdateRequest',
+  },
+  [PACKET_TYPE.REACTION_REQUEST]: {
+    handler: reactionHandler,
+    protoType: 'request.C2SReactionRequest',
   },
 };
 
