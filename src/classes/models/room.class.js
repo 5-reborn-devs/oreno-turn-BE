@@ -3,7 +3,6 @@ import { makeCardDeck } from '../../handlers/card/index.js';
 import Card from './card.class.js';
 import { phaseUpdateNotificationHandler } from '../../handlers/sync/phase.update.handler.js';
 
-
 class Room {
   constructor(
     id,
@@ -65,7 +64,7 @@ class Room {
     console.log('겟 인터벌 매니저!');
     return this.intervalManager;
   }
-  positionUpdateOn(){
+  positionUpdateOn() {
     this.positionUpdateOn = true;
   } //포지션 업데이트 노티 받기 위한 스위치 온
 
@@ -78,7 +77,7 @@ class Room {
   }
 
   startCustomInterval() {
-    const intervals = [18000, 6000, 18000];
+    const intervals = [1800000000, 6000, 18000];
     let currentIndex = 0;
     const room = this;
     function runInterval() {
@@ -91,7 +90,6 @@ class Room {
     }
     setTimeout(runInterval, intervals[currentIndex]);
   }
-
 
   // 클래스의 입력값이 맞는지 확인하는 검증이 필요할까?
 }

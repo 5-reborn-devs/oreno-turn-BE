@@ -1,6 +1,8 @@
 import { rooms, users } from '../session/session.js';
 import { PACKET_TYPE } from '../constants/header.js';
-import { multiCast } from '../utils/response/createResponse.js';
+import sendResponsePacket, {
+  multiCast,
+} from '../utils/response/createResponse.js';
 import { getFailCode } from '../utils/response/failCode.js';
 import { releaseRoomId } from '../session/room.session.js';
 
@@ -9,14 +11,20 @@ export const onEnd = (socket) => async () => {
   const room = rooms.get(socket.roomId);
   const user = users.get(socket.token);
   const failCode = getFailCode();
-
+  const leaveRoomResponse = {
+    success: true,
+    failCode: failCode.NONE_FAILCODE,
+  };
   try {
     //console.log('클라이언트 연결이 종료되었습니다.');
     // 유저가 로비에 있는 경우
-    if (socket.roomId === null) {
+    if (!socket.roomId) {
+      // socket.roomId가 create에서 생기니까
       // 유저 세션에서 제거
       users.delete(socket.token);
-      console.log(`유저 ${user.nickname}이 로비에서 연결이 종료되었습니다.`);
+      throw new Error(
+        `유저 ${user.nickname}이 로비에서 연결이 종료되었습니다.`,
+      );
     }
 
     if (socket.roomId !== null) {
@@ -35,10 +43,7 @@ export const onEnd = (socket) => async () => {
       } else {
         if (room.ownerId === user.id) {
           // 유저가 방에 있는지
-          const leaveRoomResponse = {
-            success: true,
-            failCode: failCode.NONE_FAILCODE,
-          };
+
           multiCast(room.users, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
             leaveRoomResponse,
           });
@@ -57,4 +62,7 @@ export const onEnd = (socket) => async () => {
   } catch (err) {
     console.error('클라이언트 연결 종료 처리 중 오류 발생', err);
   }
+  sendResponsePacket(socket, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
+    leaveRoomResponse,
+  });
 };
