@@ -50,7 +50,7 @@ export const getOtherUsersById = (userId) => {
 export const removeUser = (socket) => {
   const user = users.get(socket.token);
   console.log('user : ', user)
-  if (user !== null || undefined) {
+  if (user) {
     return user.delete(socket.token);
   } else {
     throw new Error(`${socket.token}가 유저 세션에 존재하지 않습니다.`);
