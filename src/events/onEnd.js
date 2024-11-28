@@ -44,6 +44,9 @@ export const onEnd = (socket) => async () => {
           rooms.delete(socket.roomId);
           releaseRoomId(socket.roomId);
           message = `${socket.roomId}번 방이 방장 ${user.nickname}에 의해 종료되었습니다.`;
+          multiCast(room.users, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
+            leaveRoomResponse,
+          });
         }
       }
       room.removeUserById(user.id); //방에서 유저 제거
