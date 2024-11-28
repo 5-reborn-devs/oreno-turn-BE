@@ -13,3 +13,25 @@ export const fleamarketNotificationHanlder = (socket) => {
 
   multiCast(allUsersInRoom, PACKET_TYPE.FLEAMARKET_NOTIFICATION, {});
 };
+
+/*
+Packet [Id : 30]
+message S2CFleaMarketNotification {
+    repeated CardType cardTypes = 1;
+    repeated int32 pickIndex = 2;
+}
+Packet [Id : 31]
+message C2SFleaMarketPickRequest {
+    int32 pickIndex = 1;
+}
+Packet [Id : 32]
+message S2CFleaMarketPickResponse {
+    bool success = 1;
+    GlobalFailCode failCode = 2;
+}
+
+응답 정보
+나에게 : [Id : 32] S2CFleaMarketPickResponse 
+모두에게 : [Id : 30] S2CFleaMarketNotification 
+*/
+

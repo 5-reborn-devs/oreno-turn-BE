@@ -1,3 +1,4 @@
+import { makeCardDeck } from '../../handlers/card/index.js';
 import { getProtoMessages } from '../../init/loadProto.js';
 import CharacterState from './character.state.class.js';
 
@@ -17,6 +18,7 @@ class Character {
     ];
     this.bbangCount = 0;
     this.handCardsCount = 0;
+    this.privateDeck = makeCardDeck();
   }
   /**message CardData {
     CardType type = 1;
