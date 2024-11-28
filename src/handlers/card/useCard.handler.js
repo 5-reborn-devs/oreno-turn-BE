@@ -27,9 +27,6 @@ export const useCardHandler = async (socket, payload) => {
 
   let message;
 
-  const userRoom = getUserRoom(userRoomId);
-  // const gameDeck = userRoom.gameDeck;
-
   try {
     // 페이로드 값 검증
     if (!cardType) {
@@ -48,10 +45,6 @@ export const useCardHandler = async (socket, payload) => {
     // 핸들러 돌려준다 - 여기서 너무 길어지면 안되므로 동혁님이 card.js로 핸들러 맵핑을 따로 뺀것
     const handler = getHandlerByCardType(cardType);
     await handler(user, targetUserIdNumber);
-
-    // 사용한 카드를 타입으로 찾아 손패에서 지워줌
-    // let usedCardCount = userCharacter.handCards.get(cardType);
-    // handCards.set(cardType, --usedCardCount);
 
     // 나에게 카드 사용 리스폰스
     sendResponsePacket(socket, PACKET_TYPE.USE_CARD_RESPONSE, {
@@ -91,20 +84,3 @@ export const useCardHandler = async (socket, payload) => {
   }
 };
 
-// { useCardResponse
-//     bool success = 1,
-//     GlobalFailCode failCode = 2
-// }
-
-// 카드 사용 성공 시에만 반환.
-// 대상 유저 효과는 유저 정보 업데이트로 통지
-
-// { useCardnoti
-//     CardType cardType = 1,
-//     string userId = 2,
-//     string targetUserId = 3
-// }
-
-// message S2CUserUpdateNotification {
-//   repeated UserData user = 1;
-// }

@@ -7,7 +7,7 @@ import sendResponsePacket, {
 import { users } from '../../session/session.js';
 import { PACKET_TYPE } from '../../constants/header.js';
 
-export const joinRandomRoomHandler = async (socket, payload) => {
+export const joinRandomRoomHandler = async (socket) => {
   const failCode = getFailCode();
   let joinRoomResponse;
 
@@ -20,7 +20,6 @@ export const joinRandomRoomHandler = async (socket, payload) => {
     const user = users.get(socket.token);
     selectedRoom.addUser(user);
     socket.roomId = selectedRoom.id;
-    console.log('들어온 룸 정보', selectedRoom);
 
     joinRoomResponse = {
       success: true,

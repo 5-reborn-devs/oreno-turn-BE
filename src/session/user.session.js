@@ -49,7 +49,6 @@ export const getOtherUsersById = (userId) => {
 // 유저를 찾아서 지워주는 함수
 export const removeUser = (socket) => {
   const user = users.get(socket.token);
-  console.log('user : ', user)
   if (user) {
     return user.delete(socket.token);
   } else {
