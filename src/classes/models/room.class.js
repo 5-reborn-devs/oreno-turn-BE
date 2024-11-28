@@ -28,7 +28,6 @@ class Room {
 
   distributeCards() {
     // 첫 카드 분배
-    console.log('카드덱 보기', this.gameDeck);
     const cardsPerUser = 5; // 처음에 주는 카드 개수 5개 // 리롤
     this.users.forEach((user) => {
       user.character.handCardsCount = 0;
@@ -36,7 +35,6 @@ class Room {
 
       for (let i = 0; i < cardsPerUser; i++) {
         const cardType = this.gameDeck.pop();
-        console.log('뽑은카드', cardType);
         if (cardType) {
           const card = new Card(cardType, 1);
           cards.push(card);
@@ -62,7 +60,6 @@ class Room {
     }
   }
   getIntervalManager() {
-    console.log('겟 인터벌 매니저!');
     return this.intervalManager;
   }
   positionUpdateOn() {
@@ -71,18 +68,16 @@ class Room {
 
   button(socket) {
     if (this.isPushed) {
-      console.log('button', socket.roomId);
       this.startCustomInterval();
       this.isPushed = false;
     }
   }
 
   startCustomInterval() {
-    const intervals = [1800000000, 6000, 18000];
+    const intervals = [18000, 6000, 18000];
     let currentIndex = 0;
     const room = this;
     function runInterval() {
-      console.log('작업 실행: ', currentIndex); // 원하는 작업 수행
       // 다음 인터벌 설정
       currentIndex = (currentIndex + 1) % intervals.length;
       const nextState = intervals[currentIndex];
@@ -92,7 +87,6 @@ class Room {
     setTimeout(runInterval, intervals[currentIndex]);
   }
 
-  // 클래스의 입력값이 맞는지 확인하는 검증이 필요할까?
 }
 
 export default Room;

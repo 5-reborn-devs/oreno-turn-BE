@@ -15,8 +15,6 @@ export const eveningDraw = async(room) => {
 
     //개인에게 전달할 카드 장수
     const cardsPerUser = 3;
-
-    console.log('드로우전 공용풀 소지 장수: ',room.gameDeck.length);
   
     //반복문을 돌며, 공용풀에서 카드를 뽑아, 뽑힌 카드 배열에 집어넣기
     room.users.forEach((user)=>{
@@ -31,8 +29,6 @@ export const eveningDraw = async(room) => {
           cards.push(card);
         }
       }
-      console.log("뽑힌 카드 : ", cards);
-      console.log("첫번째 카드 :", cards[0]);
   
       //노티 만들기
       const eveningDrawResponse = {
@@ -74,19 +70,12 @@ export const eveningDraw = async(room) => {
       //임시 유저 검색
       const user = getUserById(targetUserId);
     
-      // 로그 위치 변경해야 할 듯
-      console.log("카드 선택전, 캐릭터의 소지 카드 장수: ",user.character.privateDeck.length);
-      console.log("카드 선택전, 공용 덱의 소지 카드 장수: ",socket.gameDeck.length);
-    
       //픽한 카드 개인덱에 추가.
       pickIndex.forEach(index =>user.character.privateDeck = [...user.character.privateDeck, index]);
-      console.log("카드 푸쉬후, 캐릭터의 소지 카드 장수: ",user.character.privateDeck.length);
-    
     
       //픽하지 않은 카드들 다시 공용덱에 넣고 셔플.
       unPickedIndex.forEach(index => socket.gameDeck = [...socket.gameDeck, index]);
       fyShuffle(socket.gameDeck);
-      console.log("카드 푸쉬후, 공용 덱의 소지 카드 장수: ",socket.gameDeck.length);
     
       //노티 생성
       const eveningPick = {

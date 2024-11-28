@@ -20,10 +20,6 @@ class Character {
     this.handCardsCount = 0;
     this.privateDeck = makeCardDeck();
   }
-  /**message CardData {
-    CardType type = 1;
-    int32 count = 2;
-  }*/
   addCard(card) {
     // 해당 타입 카드가 존재하면 handCards에서 count만 +1 시켜주고
     // 존재하지 않는다면 handCards에서 type과 count를 1로 설정하여 set

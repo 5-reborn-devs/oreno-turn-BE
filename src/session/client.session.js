@@ -15,5 +15,4 @@ export const removeClient = (email) => {
 export const clearClients = () => {
   clients.clear();
   users.clear();
-  console.log('All clients cleared');
 };
