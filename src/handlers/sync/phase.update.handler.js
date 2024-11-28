@@ -16,7 +16,6 @@ export const phaseUpdateNotificationHandler = async (room, nextState) => {
   try {
 
     // const room = rooms.get(socket.roomId);
-
     // characterPositions
     const characterPositions = [];
     //const positionKeys = Object.keys(RANDOM_POSITIONS);
