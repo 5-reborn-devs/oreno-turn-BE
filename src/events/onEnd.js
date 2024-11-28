@@ -62,4 +62,7 @@ export const onEnd = (socket) => async () => {
   sendResponsePacket(socket, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
     leaveRoomResponse,
   });
+  sendResponsePacket(socket, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
+    leaveRoomResponse,
+  });
 };

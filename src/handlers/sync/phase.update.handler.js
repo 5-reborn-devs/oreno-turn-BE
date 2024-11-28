@@ -50,12 +50,10 @@ export const phaseUpdateNotificationHandler = async (room, nextState) => {
       //공통 드로우 & 상점 오픈
       eveningDraw(room);
       marketOpen(room);
-      
-      room.phaseType = 2;
 
+      room.phaseType = 2;
     } else if (room.phaseType === 2) {
       console.log(`밤으로 전환합니다. 현재 PhaseType: ${room.phaseType}.`);
-
 
       room.isMarketOpen = false;
       room.phaseType = 3;
@@ -70,7 +68,6 @@ export const phaseUpdateNotificationHandler = async (room, nextState) => {
     //페이즈별 시간처리
     let nextPhaseAt = Date.now() + nextState;
 
-
     // 노티 만들기
     const phaseUpdateNotification = {
       phaseType: room.phaseType,
@@ -83,7 +80,6 @@ export const phaseUpdateNotificationHandler = async (room, nextState) => {
     multiCast(usersInRoom, PACKET_TYPE.PHASE_UPDATE_NOTIFICATION, {
       phaseUpdateNotification,
     });
-
   } catch (error) {
     console.error('페이즈 전환중 에러', error);
   }
@@ -96,13 +92,8 @@ message S2CPhaseUpdateNotification {
 }
 */
 
-
-
-
 //Remain Problem : 드로우에서나 상점에서 고르지 않은 카드들은 다시 덱으로 반환해서 섞는다. : 확인
 //카드 매수 확인 : 확인 완료
 //함수 분리 : 확인
 
-//덱의 카드들을 전부 다썼을때, 공통 덱을 다시 생성해주는가? 
-
-
+//덱의 카드들을 전부 다썼을때, 공통 덱을 다시 생성해주는가?

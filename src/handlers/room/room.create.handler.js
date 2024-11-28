@@ -23,7 +23,6 @@ export const createRoomHandler = async (socket, payloadData) => {
     const roomId = getNextRoomId();
 
     const room = new Room(
-      //count,
       roomId,
       user.id,
       name,

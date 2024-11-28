@@ -7,7 +7,7 @@ class Character {
     const protoMessages = getProtoMessages();
     this.characterType = 0;
     this.roleType = 0;
-    this.hp = 3;
+    this.hp = 5;
     this.weapon = null;
     this.stateInfo = new CharacterState();
     this.equips = [];
