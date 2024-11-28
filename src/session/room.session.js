@@ -37,8 +37,8 @@ export const getUsersWithoutMe = (roomId, userId) => {
 export let nextRoomId = 1;
 // 방 번호 생성
 export const getNextRoomId = () => {
-  if (roomIdSet.size > 0) {
-    const roomId = roomIdSet.values().next().value;
+  if (roomIdSet.size > 0) { // 반환 받은 방번호가 있다면
+    const roomId = roomIdSet.values().next().value; // 
     roomIdSet.delete(roomId);
     return roomId;
   }
