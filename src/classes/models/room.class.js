@@ -23,6 +23,7 @@ class Room {
     this.phaseType = 1; // DAY:1, NIGHT:3
     this.gameDeck = makeCardDeck(); // 무작위로 섞인 카드들이 존재함 (기존기획)
     this.positionUpdateSwitch = false;
+    this.isMarketOpen = false;
     this.isPushed = true;
   }
 
