@@ -12,25 +12,30 @@ class Character {
     this.stateInfo = new CharacterState();
     this.equips = [];
     this.debuffs = [];
-    this.handCards = [
-      { type: 1, count: 1 },
-      { type: 3, count: 1 },
-    ];
+    this.handCards = new Map();
+    
     this.bbangCount = 0;
-    this.handCardsCount = 0;
-    this.privateDeck = makeCardDeck();
+    this.handCardsCount = this.handCards.size;
+    // this.privateDeck = makeCardDeck();
   }
   /**message CardData {
     CardType type = 1;
     int32 count = 2;
   }*/
-  addCard(card) {
+
+  addCardByType(cardType) {
+    const existCard = this.handCards.has(cardType);
+    let handCardCount = existCard ? this.handCards.get(cardType) : 0;
+    this.handCards.set(cardType, ++handCardCount)
+    }
+
+  addCardByMap(card) {
     // 해당 타입 카드가 존재하면 handCards에서 count만 +1 시켜주고
     // 존재하지 않는다면 handCards에서 type과 count를 1로 설정하여 set
-    const existCard = this.handCards.has(card.type)
+    const existCard = this.handCards.has(card.type);
     let handCardCount = existCard ? this.handCards.get(card.type) : 0;
-    this.handCards.set(card.type, ++handCardCount)
-    this.handCardsCount += card.count;
+    this.handCards.set(card.type, ++handCardCount);
+    this.handCardsCount += 1;
     console.log('카드는', this.handCards);
   }
 
