@@ -8,8 +8,8 @@ class Character {
     this.characterType = 0;
     this.roleType = 0;
     this.hp = 5;
-    this.weapon = null;
     this.stateInfo = new CharacterState();
+    this.weapon = null;
     this.equips = [];
     this.debuffs = [];
     this.handCards = [

@@ -47,7 +47,7 @@ export const reactionHandler = async (socket) => {
       const winner = survivers[0];
 
       const gameEndNotification = {
-        winners: [winner],
+        winners: [winner.id],
         winType: 2, // 배틀로얄이라 사이코 밖에 없음.
       };
 
