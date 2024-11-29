@@ -21,4 +21,5 @@ export const RANDOM_POSITIONS = {
   20: { x: -15.202, y: -4.736 },
   21: { x: 3, y: 4 },
   22: { x: 4, y: 5 },
+  23: { x: 7, y: 7 },
 };
