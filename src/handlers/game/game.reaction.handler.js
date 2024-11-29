@@ -1,8 +1,14 @@
 import CharacterState from '../../classes/models/character.state.class.js';
 import { PACKET_TYPE } from '../../constants/header.js';
 import { getProtoMessages } from '../../init/loadProto.js';
-import { rooms, users } from '../../session/session.js';
+import {
+  getUsersInRoom,
+  getUsersWithoutMe,
+} from '../../session/room.session.js';
+import { clients, rooms, users } from '../../session/session.js';
 import { getUserById } from '../../session/user.session.js';
+import { parseMyData } from '../../utils/notification/myUserData.js';
+import { parseUserDatas } from '../../utils/notification/userDatas.js';
 import {
   multiCast,
   sendResponsePacket,
@@ -43,10 +49,19 @@ export const reactionHandler = async (socket, payloadData) => {
       failCode: failCode.NONE_FAILCODE,
     };
 
-    // 총에 맞았음으로 유저 상태를 동기화
-    const room = rooms.get(socket.roomId);
-    multiCast(room.users, PACKET_TYPE.USER_UPDATE_NOTIFICATION, {
-      userUpdateNotification: { user: room.users },
+    // 리액션 종료 후 유저 상태 동기화
+    const roomId = socket.roomId;
+    const allUsersInRoom = getUsersInRoom(roomId);
+    allUsersInRoom.forEach((user) => {
+      const otherUsers = getUsersWithoutMe(roomId, user.id);
+      // client 세션 데이터 검색
+      const socketById = clients.get(user.id);
+      const userDatas = [parseMyData(user), ...parseUserDatas(otherUsers)];
+      sendResponsePacket(socketById, PACKET_TYPE.USER_UPDATE_NOTIFICATION, {
+        userUpdateNotification: {
+          user: userDatas,
+        },
+      });
     });
   } catch (error) {
     reactionResponse = {
