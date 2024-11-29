@@ -13,9 +13,8 @@ class Character {
     this.equips = [];
     this.debuffs = [];
     this.handCards = new Map();
-    
     this.bbangCount = 0;
-    this.handCardsCount = this.handCards.size;
+    this.handCardsCount = this.handCards.size !== 0 ? [...this.handCards.values()].reduce((acc, cur) => acc + cur) : 0;
     // this.privateDeck = makeCardDeck();
   }
   /**message CardData {
