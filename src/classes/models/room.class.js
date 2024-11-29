@@ -32,22 +32,38 @@ class Room {
     const cardsPerUser = 5; // 처음에 주는 카드 개수 5개 // 리롤
     this.users.forEach((user) => {
       user.character.handCardsCount = 0;
-      const cards = [];
 
-      for (let i = 0; i < cardsPerUser; i++) {
-        const cardType = this.gameDeck.pop();
-        console.log('뽑은카드', cardType);
-        if (cardType) {
-          const card = new Card(cardType, 1);
-          cards.push(card);
-        }
-      }
-
-      cards.forEach((card) => {
-        user.character.addCard(card);
+      const pickedCards = this.gameDeck.splice(0, cardsPerUser);
+      pickedCards.forEach((card) => {
+        user.character.addCardByType(card);
       });
+      
+      user.character.handCardsCount = user.character.handCards.size;
     });
   }
+
+  // distributeCards() {
+  //   // 첫 카드 분배
+  //   console.log('카드덱 보기', this.gameDeck);
+  //   const cardsPerUser = 5; // 처음에 주는 카드 개수 5개 // 리롤
+  //   this.users.forEach((user) => {
+  //     user.character.handCardsCount = 0;
+  //     const cards = [];
+
+  //     for (let i = 0; i < cardsPerUser; i++) {
+  //       const cardType = this.gameDeck.pop();
+  //       console.log('뽑은카드', cardType);
+  //       if (cardType) {
+  //         const card = new Card(cardType, 1);
+  //         cards.push(card);
+  //       }
+  //     }
+
+  //     cards.forEach((card) => {
+  //       user.character.addCard(card);
+  //     });
+  //   });
+  // }
 
   addUser(userData) {
     this.users.push(userData);
