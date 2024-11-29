@@ -12,6 +12,7 @@ import { leaveRoomHandler } from './room/room.leave.handler.js';
 import { positionUpdateHandler } from './sync/user.position.handler.js';
 import { useCardHandler } from './card/useCard.handler.js';
 import { reactionHandler } from './game/game.reaction.handler.js';
+import { destroyCardsHandler } from './card/card.destroy.handler.js';
 const handlers = {
   [PACKET_TYPE.REGISTER_REQUEST]: {
     handler: registerHandler,
@@ -64,6 +65,10 @@ const handlers = {
   [PACKET_TYPE.REACTION_REQUEST]: {
     handler: reactionHandler,
     protoType: 'request.C2SReactionRequest',
+  },
+  [PACKET_TYPE.DESTROY_CARD_REQUEST]: {
+    handler: destroyCardsHandler,
+    protoType: 'request.C2SDestroyCardReqeset',
   },
 };
 

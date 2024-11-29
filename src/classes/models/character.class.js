@@ -33,8 +33,6 @@ class Character {
       this.handCards.push({ type: card.type, count: card.count });
     }
     this.handCardsCount += card.count;
-
-    console.log('카드는', this.handCards);
   }
 
   addEquip(itemId) {
