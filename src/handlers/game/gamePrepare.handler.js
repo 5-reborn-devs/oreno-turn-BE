@@ -1,7 +1,7 @@
 import { PACKET_TYPE } from '../../constants/header.js';
 import { roleMapping } from '../../constants/roleMapping.js';
 import { getProtoMessages } from '../../init/loadProto.js';
-import { rooms } from '../../session/session.js';
+import { games, rooms } from '../../session/session.js';
 import { fyShuffle } from '../../utils/fisherYatesShuffle.js';
 import { multiCast } from '../../utils/response/createResponse.js';
 import { sendResponsePacket } from '../../utils/response/createResponse.js';
@@ -39,6 +39,7 @@ export const gamePrepare = async (socket) => {
       user.character.characterType = shuffledCharacters[index];
     });
 
+    // 방 유저들에게 초기 카드를 분배
     room.distributeCards();
 
     const gamePrepareNotification = { room: room };
@@ -52,6 +53,8 @@ export const gamePrepare = async (socket) => {
       failcode: failCode.NONE_FAILCODE,
     };
     multiCast(usersInRoom, PACKET_TYPE.GAME_PREPARE_NOTIFICATION, Notification);
+
+    // 방 정보를 게임세션으로 이전 후 방을 삭제
   } catch (err) {
     gamePrepareResponse = {
       success: false,

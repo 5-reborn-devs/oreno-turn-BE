@@ -4,7 +4,6 @@ import CharacterState from './character.state.class.js';
 
 class Character {
   constructor() {
-    const protoMessages = getProtoMessages();
     this.characterType = 0;
     this.roleType = 0;
     this.hp = 5;
@@ -20,6 +19,7 @@ class Character {
     this.handCardsCount = 0;
     this.privateDeck = makeCardDeck();
   }
+
   addCard(card) {
     // 해당 타입 카드가 존재하면 handCards에서 count만 +1 시켜주고
     // 존재하지 않는다면 handCards에서 type과 count를 1로 설정하여 set
