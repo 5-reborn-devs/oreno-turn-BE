@@ -5,6 +5,6 @@ export const winLotteryHandler = async (user, gameDeck, targetUserId) => {
     const pickedCards = gameDeck.splice(0, earningCount);
     // 얻은 카드의 타입과 장수를 handCards에 set으로 넣어준다
     pickedCards.forEach((pickedCard) => {
-      character.addCard(pickedCard)
+      character.addCardByType(pickedCard)
     });
   };
