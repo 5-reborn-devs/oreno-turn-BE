@@ -29,13 +29,13 @@ export const gamePrepare = async (socket) => {
     characterTypes.shift();
 
     // 역할과 캐릭터를 셔플
-    const shuffledRoles = await fyShuffle([...roleMapping[userCount]]);
+    // const shuffledRoles = await fyShuffle([...roleMapping[userCount]]);
     const shuffledCharacters = await fyShuffle([...characterTypes]);
 
     // 역할과 캐릭터를 유저에게 랜덤으로 할당
     usersInRoom.forEach((user, index) => {
       user.character.roleType =
-        protoMessages.enum.RoleType.values[shuffledRoles[index]];
+        protoMessages.enum.RoleType.values['PSYCHOPATH'];
       user.character.characterType = shuffledCharacters[index];
     });
 

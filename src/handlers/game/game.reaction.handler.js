@@ -48,7 +48,7 @@ export const reactionHandler = async (socket) => {
 
       const gameEndNotification = {
         winners: [winner],
-        winType: 4, // 배틀로얄이라 사이코 밖에 없음.
+        winType: 2, // 배틀로얄이라 사이코 밖에 없음.
       };
 
       multiCast(room.users, PACKET_TYPE.GAME_END_NOTIFICATION, {
