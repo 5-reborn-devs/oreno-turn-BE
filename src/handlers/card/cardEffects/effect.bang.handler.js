@@ -18,8 +18,6 @@ export const bbangEffectHandler = async (user, targetUserId) => {
       targetUserId,
     );
 
-    console.log('상태', myCharacter.stateInfo);
-
     const targetUser = getUserById(targetUserId);
     const targetCharacter = targetUser.character;
 

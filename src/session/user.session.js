@@ -45,3 +45,13 @@ export const getOtherUsersById = (userId) => {
   const otherUsers = [...users.values()].filter((user) => user.id !== userId);
   return otherUsers;
 };
+
+// 유저를 찾아서 지워주는 함수
+export const removeUser = (socket) => {
+  const user = users.get(socket.token);
+  if (user) {
+    return user.delete(socket.token);
+  } else {
+    throw new Error(`${socket.token}가 유저 세션에 존재하지 않습니다.`);
+  }
+}

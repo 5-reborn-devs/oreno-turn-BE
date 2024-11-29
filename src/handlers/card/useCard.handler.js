@@ -30,7 +30,6 @@ export const useCardHandler = async (socket, payload) => {
 
   let message;
   const userRoom = getUserRoom(userRoomId);
-  // const gameDeck = userRoom.gameDeck;
 
   try {
     // 페이로드 값 검증
@@ -119,20 +118,3 @@ export const useCardHandler = async (socket, payload) => {
   }
 };
 
-// { useCardResponse
-//     bool success = 1,
-//     GlobalFailCode failCode = 2
-// }
-
-// 카드 사용 성공 시에만 반환.
-// 대상 유저 효과는 유저 정보 업데이트로 통지
-
-// { useCardnoti
-//     CardType cardType = 1,
-//     string userId = 2,
-//     string targetUserId = 3
-// }
-
-// message S2CUserUpdateNotification {
-//   repeated UserData user = 1;
-// }

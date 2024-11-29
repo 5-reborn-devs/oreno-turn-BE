@@ -17,16 +17,26 @@ class Character {
     this.handCardsCount = this.handCards.size !== 0 ? [...this.handCards.values()].reduce((acc, cur) => acc + cur) : 0;
     // this.privateDeck = makeCardDeck();
   }
-  /**message CardData {
-    CardType type = 1;
-    int32 count = 2;
-  }*/
+  addCard(card) {
+    // 해당 타입 카드가 존재하면 handCards에서 count만 +1 시켜주고
+    // 존재하지 않는다면 handCards에서 type과 count를 1로 설정하여 set
+    const existCard = this.handCards.find(
+      (existingCard) => existingCard.type === card.type,
+    );
+    
+    if (existCard) {
+      existCard.count += card.count;
+    } else {
+      this.handCards.push({ type: card.type, count: card.count });
+    }
+    this.handCardsCount += card.count;
+  }
 
   addCardByType(cardType) {
     const existCard = this.handCards.has(cardType);
     let handCardCount = existCard ? this.handCards.get(cardType) : 0;
     this.handCards.set(cardType, ++handCardCount)
-    }
+  }
 
   addCardByMap(card) {
     // 해당 타입 카드가 존재하면 handCards에서 count만 +1 시켜주고

@@ -15,21 +15,11 @@ import {
 } from '../../utils/response/createResponse.js';
 import { getFailCode } from '../../utils/response/failCode.js';
 
-// message C2SReactionRequest {
-//     ReactionType reactionType = 1; // NOT_USE_CARD = 1
-// }
-
-export const reactionHandler = async (socket, payloadData) => {
-  const protoMessages = getProtoMessages();
-  const reactionType = protoMessages.enum.ReactionType.values;
+export const reactionHandler = async (socket) => {
   const failCode = getFailCode();
-  const { reactRequest } = payloadData;
   let reactionResponse;
 
   try {
-    console.log('reactRequest/', JSON.stringify(payloadData));
-    console.log('reationType/', reactionType);
-
     // 공격당한 유저의 정보
     const user = users.get(socket.token);
     const character = user.character;
@@ -77,7 +67,3 @@ export const reactionHandler = async (socket, payloadData) => {
   });
 };
 
-// message S2CReactionResponse {
-//     bool success = 1;
-//     GlobalFailCode failCode = 2;
-// }
