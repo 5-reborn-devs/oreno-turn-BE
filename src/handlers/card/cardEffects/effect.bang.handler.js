@@ -2,7 +2,7 @@ import CharacterState from '../../../classes/models/character.state.class.js';
 import { getProtoMessages } from '../../../init/loadProto.js';
 import { getUserById } from '../../../session/user.session.js';
 
-export const bbangEffectHandler = async (user, targetUserId) => {
+export const bbangEffectHandler = async (user, gameDeck, targetUserId) => {
   let errorMessage = '';
   const protoMessages = getProtoMessages();
   const stateType = protoMessages.enum.CharacterStateType.values;
