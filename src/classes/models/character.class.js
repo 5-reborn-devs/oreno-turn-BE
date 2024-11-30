@@ -15,7 +15,7 @@ class Character {
     this.handCards = new Map();
     this.bbangCount = 0;
     this.handCardsCount = this.handCards.size !== 0 ? [...this.handCards.values()].reduce((acc, cur) => acc + cur) : 0;
-    // this.privateDeck = makeCardDeck();
+    this.privateDeck = makeCardDeck();
   }
   addCard(card) {
     // 해당 타입 카드가 존재하면 handCards에서 count만 +1 시켜주고
