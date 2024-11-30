@@ -1,20 +1,51 @@
+import { makeCardDeck } from '../../handlers/card/index.js';
 import { getProtoMessages } from '../../init/loadProto.js';
-import CharacterState from './character.state.class.js.js';
+import CharacterState from './character.state.class.js';
 
 class Character {
   constructor() {
     const protoMessages = getProtoMessages();
-    this.characterType =
-      protoMessages.enum.CharacterType.values['NONE_CHARACTER'];
-    this.roleType = protoMessages.enum.RoleType.values['NONE_ROLE'];
-    this.hp = 50;
+    this.characterType = 0;
+    this.roleType = 0;
+    this.hp = 5;
     this.weapon = null;
     this.stateInfo = new CharacterState();
     this.equips = [];
     this.debuffs = [];
     this.handCards = new Map();
     this.bbangCount = 0;
-    this.handCardsCount = 0;
+    this.handCardsCount = this.handCards.size !== 0 ? [...this.handCards.values()].reduce((acc, cur) => acc + cur) : 0;
+    this.privateDeck = makeCardDeck();
+  }
+  addCard(card) {
+    // 해당 타입 카드가 존재하면 handCards에서 count만 +1 시켜주고
+    // 존재하지 않는다면 handCards에서 type과 count를 1로 설정하여 set
+    const existCard = this.handCards.find(
+      (existingCard) => existingCard.type === card.type,
+    );
+    
+    if (existCard) {
+      existCard.count += card.count;
+    } else {
+      this.handCards.push({ type: card.type, count: card.count });
+    }
+    this.handCardsCount += card.count;
+  }
+
+  addCardByType(cardType) {
+    const existCard = this.handCards.has(cardType);
+    let handCardCount = existCard ? this.handCards.get(cardType) : 0;
+    this.handCards.set(cardType, ++handCardCount)
+  }
+
+  addCardByMap(card) {
+    // 해당 타입 카드가 존재하면 handCards에서 count만 +1 시켜주고
+    // 존재하지 않는다면 handCards에서 type과 count를 1로 설정하여 set
+    const existCard = this.handCards.has(card.type);
+    let handCardCount = existCard ? this.handCards.get(card.type) : 0;
+    this.handCards.set(card.type, ++handCardCount);
+    this.handCardsCount += 1;
+    console.log('카드는', this.handCards);
   }
 
   addEquip(itemId) {
