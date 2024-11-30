@@ -1,3 +1,5 @@
+import { userUpdateNotiforEachUser } from "../../../utils/notification/userUpdateNoti.js";
+
 export const winLotteryHandler = async (user, gameDeck, targetUserId) => {
     const character = user.character
     const earningCount = 3;
@@ -7,4 +9,6 @@ export const winLotteryHandler = async (user, gameDeck, targetUserId) => {
     pickedCards.forEach((pickedCard) => {
       character.addCardByType(pickedCard)
     });
+
+    userUpdateNotiforEachUser(user)
   };
