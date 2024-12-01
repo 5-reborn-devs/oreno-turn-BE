@@ -1,5 +1,5 @@
-import { fyShuffle } from '../../utils/fisherYatesShuffle';
-import Card from '../models/card.class';
+import { fyShuffle } from '../../utils/fisherYatesShuffle.js';
+import Card from '../models/card.class.js';
 
 class CardManager {
   constructor(deck) {
@@ -7,6 +7,7 @@ class CardManager {
     this.deck = deck;
     this.discard = [];
     this.handLimit = 5;
+    this.handCardsCount = 0;
   }
 
   // 패 데이터 가져오기
@@ -19,6 +20,7 @@ class CardManager {
     this.hands.has(cardType)
       ? this.hands.get(cardType).count++
       : this.hands.set(cardType, new Card(cardType, 1));
+    this.handCardsCount++;
   }
 
   // 패에 카드를 한장 제거함.
@@ -30,6 +32,7 @@ class CardManager {
       throw new Error('targetCard Count:', targetCard);
     }
     targetCard.count--;
+    this.handCardsCount--;
   }
 
   discardHands(cardType) {
@@ -42,7 +45,10 @@ class CardManager {
     for (const [cardType, cardObj] of this.hands.entries()) {
       this.discard.concat(new Array(cardObj.count).fill(cardType));
     }
-    this.hands = new Map(); // 패 초기화
+
+    // 패 초기화
+    this.hands = new Map();
+    this.handCardsCount = 0;
   }
 
   // 버린 카드 덱과 합치기.
@@ -71,6 +77,7 @@ class CardManager {
       this.addHands(this.deck.pop());
     }
 
+    this.handCardsCount = this.handLimit;
     return [...this.hands.values()];
   }
 

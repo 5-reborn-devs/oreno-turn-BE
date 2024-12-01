@@ -31,9 +31,9 @@ const handlers = {
     handler: fleamarketNotificationHanlder,
     typeName: CARD_TYPES_INDEX[CARD_TYPES.FLEA_MARKET],
   },
-  [CARD_TYPES.LASER_POINTER]:{
+  [CARD_TYPES.LASER_POINTER]: {
     handler: laserPointerHandler,
-    typeName: CARD_TYPES_INDEX[CARD_TYPES.LASER_POINTER]
+    typeName: CARD_TYPES_INDEX[CARD_TYPES.LASER_POINTER],
   },
 };
 
@@ -46,11 +46,10 @@ export const getHandlerByCardType = (cardType) => {
 
 // 게임 시작 시 준비되어야 할 카드더미 -> (카드 타입값 * 제한 매수) 한 int 배열을 섞은 것
 export const makeCardDeck = (deckInfo) => {
-  const gameDeck = [];
+  let gameDeck = [];
   for (const [cardType, count] of Object.entries(deckInfo)) {
-    const cards = new Array(count).fill(cardType);
-    gameDeck.concat(cards);
+    gameDeck = gameDeck.concat(new Array(count).fill(cardType));
   }
-  fyShuffle(gameDeck);
+  gameDeck = fyShuffle(gameDeck);
   return gameDeck;
 };

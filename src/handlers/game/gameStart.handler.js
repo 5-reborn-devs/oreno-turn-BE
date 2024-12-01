@@ -3,6 +3,7 @@ import { RANDOM_POSITIONS } from '../../constants/randomPositions.js';
 import { getProtoMessages } from '../../init/loadProto.js';
 import { rooms, clients } from '../../session/session.js';
 import { parseMyData } from '../../utils/notification/myUserData.js';
+import { gameStartMultiCast } from '../../utils/notification/notify.gameStart.js';
 import {
   multiCast,
   sendResponsePacket,
@@ -46,14 +47,14 @@ export const gameStart = (socket) => {
       });
     });
 
-    const startUserData = []
-    usersInRoom.forEach((user) => {
-      startUserData.push(parseMyData(user))
-    })
+    // const startUserData = []
+    // usersInRoom.forEach((user) => {
+    //   startUserData.push(parseMyData(user))
+    // })
 
     const gameStartNotification = {
       gameState,
-      users: startUserData,
+      users: usersInRoom,
       characterPositions,
     };
 
@@ -64,9 +65,10 @@ export const gameStart = (socket) => {
 
     room.button(socket);
 
-    multiCast(usersInRoom, PACKET_TYPE.GAME_START_NOTIFICATION, {
-      gameStartNotification
-    });
+    // multiCast(usersInRoom, PACKET_TYPE.GAME_START_NOTIFICATION, {
+    //   gameStartNotification,
+    // });
+    gameStartMultiCast(gameStartNotification);
 
     // 인터벌  룸 클래스 > 페이즈 업데이트 핸들러 기동
   } catch (err) {
