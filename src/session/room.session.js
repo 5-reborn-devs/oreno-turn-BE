@@ -14,7 +14,7 @@ export const clearRooms = () => {
 
 export const getUserRoom = (userRoomId) => {
   const room = rooms.get(userRoomId);
-  return [...room]
+  return room
 };
 
 export const getEmptyRooms = () => {
