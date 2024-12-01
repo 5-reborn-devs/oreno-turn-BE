@@ -1,4 +1,4 @@
-import { userUpdateNotiforEachUser } from "../../../utils/notification/userUpdateNoti.js";
+import { userUpdateNotifyForEachUser } from "../../../utils/notification/userUpdateNoti.js";
 
 export const winLotteryHandler = async (user, gameDeck, targetUserId) => {
     const character = user.character
@@ -10,5 +10,5 @@ export const winLotteryHandler = async (user, gameDeck, targetUserId) => {
       character.addCardByType(pickedCard)
     });
 
-    userUpdateNotiforEachUser(user)
+    userUpdateNotifyForEachUser(user)
   };
