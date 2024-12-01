@@ -5,7 +5,7 @@ import sendResponsePacket from "../response/createResponse.js";
 import { parseMyData } from "./myUserData.js";
 import { parseUserDatas } from "./userDatas.js";
 
-export const userUpdateNotiforEachUser = (user) => {
+export const userUpdateNotifyForEachUser = (user) => {
     const userSocket = clients.get(user.id)
     const roomId = userSocket.roomId;
     const allUsersInRoom = getUsersInRoom(roomId);
