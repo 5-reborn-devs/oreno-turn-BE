@@ -43,7 +43,7 @@ class CardManager {
   //남은 패 전부 버리기
   AllDiscardHands() {
     for (const [cardType, cardObj] of this.hands.entries()) {
-      this.discard.concat(new Array(cardObj.count).fill(cardType));
+      this.discard.push(...new Array(cardObj.count).fill(cardType));
     }
 
     // 패 초기화
@@ -53,7 +53,7 @@ class CardManager {
 
   // 버린 카드 덱과 합치기.
   discard2Deck() {
-    this.deck.push(...this.discard.splice(0, this.discard.lenth)); // 이원화 방지
+    this.deck.push(...this.discard.splice(0, this.discard.length)); // 이원화 방지
   }
 
   // 모든 카드를 덱으로
