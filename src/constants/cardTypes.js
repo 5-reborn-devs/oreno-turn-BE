@@ -1,4 +1,4 @@
-import { getCardSum } from "../utils/getCardSum.js";
+import { getCardSum } from '../utils/getCardSum.js';
 
 export const CARD_TYPES = {
   NONE: 0,
@@ -82,3 +82,8 @@ export const CARD_LIMIT = {
 };
 
 export const CARD_SUM = getCardSum(CARD_LIMIT);
+
+export const INIT_DECK = {
+  [CARD_TYPES.BBANG]: 5,
+  [CARD_TYPES.SHIELD]: 5,
+};

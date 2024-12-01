@@ -15,10 +15,9 @@ class Room {
     this.id = id;
     this.ownerId = ownerId;
     this.name = name;
-    this.maxUserNum = maxUserNum < 1 ? 1 : maxUserNum;
+    this.maxUserNum = maxUserNum < 2 ? 2 : maxUserNum;
     this.state = state;
     this.users = users;
-    this.intervalManager = new IntervalManager();
     this.phaseType = 1; // DAY:1, NIGHT:3
     this.gameDeck = makeCardDeck(); // 무작위로 섞인 카드들이 존재함 (기존기획)
     this.positionUpdateSwitch = false;
@@ -87,6 +86,12 @@ class Room {
     setTimeout(runInterval, intervals[currentIndex]);
   }
 
+  // 유저 캐릭터의 정보를 숨김
+  hideUsersData() {
+    this.users.forEach((user) => {
+      user.character = new MaskedCharacter(user.character);
+    });
+  }
 }
 
 export default Room;

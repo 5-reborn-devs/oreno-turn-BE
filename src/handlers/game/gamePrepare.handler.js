@@ -40,7 +40,7 @@ export const gamePrepare = async (socket) => {
     });
 
     // 방 유저들에게 초기 카드를 분배
-    room.distributeCards();
+    // room.distributeCards();
 
     const gamePrepareNotification = { room: room };
 

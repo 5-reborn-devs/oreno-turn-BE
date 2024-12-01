@@ -22,25 +22,22 @@ export const useCardHandler = async (socket, payload) => {
 
   const user = getUserBySocket(socket);
   const userCharacter = user.character;
-  const userRoomId = socket.roomId;
+  const roomId = socket.roomId;
   const failCode = getFailCode();
-
-  let message;
 
   try {
     // 페이로드 값 검증
     if (!cardType) {
-      console.error('카드 타입 값이 없습니다.');
+      throw new Error('카드 타입 값이 없습니다.');
     }
     if (!targetUserIdNumber) {
-      console.error('유효하지 않은 대상입니다.');
+      throw new Error('유효하지 않은 대상입니다.');
     }
     // 손에 있는 카드인지 검증
     if (!userCharacter.handCards.some((card) => card.type === cardType)) {
-      message = '소유하고 있는 카드가 아닙니다.';
-      console.error(message);
-      throw new Error(message);
+      throw new Error('소유하고 있는 카드가 아닙니다.');
     }
+    if (!roomId) throw new Error('존재하지 않는 방 호출');
 
     // 핸들러 돌려준다 - 여기서 너무 길어지면 안되므로 동혁님이 card.js로 핸들러 맵핑을 따로 뺀것
     const handler = getHandlerByCardType(cardType);
@@ -55,9 +52,6 @@ export const useCardHandler = async (socket, payload) => {
     });
 
     // 방 생성할때 소켓에 넣어준 id 가져옴
-    const roomId = socket.roomId;
-    if (!roomId) return;
-
     const allUsersInRoom = getUsersInRoom(roomId);
 
     // 전체 유저에게 카드 사용 노티
@@ -74,7 +68,7 @@ export const useCardHandler = async (socket, payload) => {
       userUpdateNotification: { user: allUsersInRoom },
     });
   } catch (e) {
-    console.log('카드 사용 중 에러 발생:', e);
+    console.error('카드 사용 중 에러 발생:', e);
     sendResponsePacket(socket, PACKET_TYPE.USE_CARD_RESPONSE, {
       useCardResponse: {
         success: false,
@@ -83,4 +77,3 @@ export const useCardHandler = async (socket, payload) => {
     });
   }
 };
-

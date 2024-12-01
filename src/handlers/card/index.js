@@ -40,14 +40,11 @@ export const getHandlerByCardType = (cardType) => {
 };
 
 // 게임 시작 시 준비되어야 할 카드더미 -> (카드 타입값 * 제한 매수) 한 int 배열을 섞은 것
-export const makeCardDeck = () => {
+export const makeCardDeck = (deckInfo) => {
   const gameDeck = [];
-  for (let i = 0; i < Object.keys(CARD_TYPES).length; i++) {
-    const deckCard = Object.keys(CARD_TYPES_INDEX)[i];
-
-    for (let j = 0; j < Object.values(CARD_LIMIT)[i]; j++) {
-      gameDeck.push(parseInt(deckCard));
-    }
+  for (const [cardType, count] of Object.entries(deckInfo)) {
+    const cards = new Array(count).fill(cardType);
+    gameDeck.concat(cards);
   }
   fyShuffle(gameDeck);
   return gameDeck;
