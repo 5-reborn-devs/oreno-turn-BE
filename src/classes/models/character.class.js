@@ -9,10 +9,7 @@ class Character {
     this.weapon = null;
     this.equips = [];
     this.debuffs = [];
-    this.handCards = [
-      { type: 1, count: 1 },
-      { type: 3, count: 1 },
-    ];
+    this.handCards = new Map();
     this.bbangCount = 0;
     this.handCardsCount = 0;
   }

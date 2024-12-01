@@ -2,6 +2,8 @@ import CharacterState from '../../classes/models/character.state.class.js';
 import { PACKET_TYPE } from '../../constants/header.js';
 import { clients, rooms, users } from '../../session/session.js';
 import { getUserById } from '../../session/user.session.js';
+import { parseMyData } from '../../utils/notification/myUserData.js';
+import { parseUserDatas } from '../../utils/notification/userDatas.js';
 import {
   multiCast,
   sendResponsePacket,

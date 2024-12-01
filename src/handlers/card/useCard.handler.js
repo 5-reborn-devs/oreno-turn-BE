@@ -6,13 +6,15 @@
 import { GLOBAL_FAIL_CODES } from '../../constants/globalFailCodes.js';
 import { PACKET_TYPE } from '../../constants/header.js';
 import { getUsersInRoom, getUserRoom } from '../../session/room.session.js';
-import { getUserBySocket } from '../../session/user.session.js';
-import { animationNotify } from '../../utils/notification/notify.animation.js';
+import { getUserById, getUserBySocket } from '../../session/user.session.js';
+import { parseMyData } from '../../utils/notification/myUserData.js';
+import { parseUserDatas } from '../../utils/notification/userDatas.js';
 import sendResponsePacket, {
   multiCast,
 } from '../../utils/response/createResponse.js';
 import { getFailCode } from '../../utils/response/failCode.js';
-import { getHandlerByCardType, makeCardDeck } from './index.js';
+import { getHandlerByCardType } from './index.js';
+import { clients } from '../../session/session.js';
 
 export const useCardHandler = async (socket, payload) => {
   const { cardType, targetUserId } = payload;
@@ -39,9 +41,12 @@ export const useCardHandler = async (socket, payload) => {
     }
     if (!roomId) throw new Error('존재하지 않는 방 호출');
 
-    // 핸들러 돌려준다 - 여기서 너무 길어지면 안되므로 동혁님이 card.js로 핸들러 맵핑을 따로 뺀것
     const handler = getHandlerByCardType(cardType);
     await handler(user, targetUserIdNumber);
+
+    // 사용한 카드를 타입으로 찾아 손패에서 지워줌
+    let handCardCount = character.handCards.get(cardType);
+    character.handCards.set(cardType, --handCardCount);
 
     // 나에게 카드 사용 리스폰스
     sendResponsePacket(socket, PACKET_TYPE.USE_CARD_RESPONSE, {
@@ -63,10 +68,33 @@ export const useCardHandler = async (socket, payload) => {
       },
     });
 
-    // 유저 업데이트 노티
-    multiCast(allUsersInRoom, PACKET_TYPE.USER_UPDATE_NOTIFICATION, {
-      userUpdateNotification: { user: allUsersInRoom },
+    // 카드 사용자와 타겟유저의 상태만 업데이트 노티
+    const targetUser = getUserById(targetUserIdNumber);
+    const updatedUsers = [user, targetUser];
+
+    updatedUsers.forEach((updatedUser) => {
+      const otherUsers = [
+        updatedUsers.find((otherUser) => otherUser.id !== updatedUser.id),
+      ];
+
+      const socketById = clients.get(updatedUser.id);
+      const userData = [
+        parseMyData(updatedUser),
+        ...parseUserDatas(otherUsers),
+      ];
+
+      sendResponsePacket(socketById, PACKET_TYPE.USER_UPDATE_NOTIFICATION, {
+        userUpdateNotification: {
+          user: userData,
+        },
+      });
     });
+
+    // 유저 업데이트 노티
+
+    // multiCast(allUsersInRoom, PACKET_TYPE.USER_UPDATE_NOTIFICATION, {
+    //   userUpdateNotification: { user: allUsersInRoom },
+    // });
   } catch (e) {
     console.error('카드 사용 중 에러 발생:', e);
     sendResponsePacket(socket, PACKET_TYPE.USE_CARD_RESPONSE, {
