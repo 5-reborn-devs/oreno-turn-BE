@@ -21,15 +21,16 @@ export const useCardHandler = async (socket, payload) => {
 
   // 유저아이디가 Long으로 보내지고 받을 때도 그렇다. Js는 Long타입이 없어 변환해줘야한다.
   const targetUserIdNumber = targetUserId.toNumber();
-
   const user = getUserBySocket(socket);
   const character = user.character;
 
-  const userRoomId = socket.roomId;
   const failCode = getFailCode();
 
-  let message;
+  const userRoomId = socket.roomId;
   const userRoom = getUserRoom(userRoomId);
+  const gameDeck = userRoom.gameDeck;
+
+  let message;
 
   try {
     // 페이로드 값 검증
@@ -51,11 +52,13 @@ export const useCardHandler = async (socket, payload) => {
     }
 
     const handler = getHandlerByCardType(cardType);
-    await handler(user, targetUserIdNumber);
+    await handler(user, gameDeck, targetUserIdNumber);
 
     // 사용한 카드를 타입으로 찾아 손패에서 지워줌
     let handCardCount = character.handCards.get(cardType);
-    character.handCards.set(cardType, --handCardCount);
+    handCardCount === 1
+      ? character.handCards.delete(cardType)
+      : character.handCards.set(cardType, --handCardCount);
 
     // 나에게 카드 사용 리스폰스
     sendResponsePacket(socket, PACKET_TYPE.USE_CARD_RESPONSE, {
@@ -82,13 +85,13 @@ export const useCardHandler = async (socket, payload) => {
 
     // 카드 사용자와 타겟유저의 상태만 업데이트 노티
     const targetUser = getUserById(targetUserIdNumber);
+    // 난사, 만기적금 등 타겟유저가 0이거나 자신인 카드 존재 -> 카드타입에 따라 다른 로직 필요
+    
     const updatedUsers = [user, targetUser];
-
     updatedUsers.forEach((updatedUser) => {
       const otherUsers = [
-        updatedUsers.find((otherUser) => otherUser.id !== updatedUser.id),
+        updatedUsers.find((otherUser) => otherUser !== updatedUser),
       ];
-
       const socketById = clients.get(updatedUser.id);
       const userData = [
         parseMyData(updatedUser),
@@ -117,4 +120,3 @@ export const useCardHandler = async (socket, payload) => {
     });
   }
 };
-
