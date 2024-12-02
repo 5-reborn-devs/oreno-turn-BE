@@ -71,9 +71,9 @@ export const eveningPick = async (socket, payloadData) => {
 
     //픽하지 않은 카드들 다시 공용덱에 넣고 셔플.
     unPickedIndex.forEach(
-      (index) => (room.gameDeck = [...room.gameDeck, index]),
+      (index) => (socket.gameDeck = [...socket.gameDeck, index]),
     );
-    fyShuffle(room.gameDeck);
+    fyShuffle(socket.gameDeck);
 
     //노티 생성
     const eveningPick = {

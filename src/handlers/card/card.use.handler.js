@@ -79,7 +79,6 @@ export const useCardHandler = async (socket, payload) => {
 
       // 어떨땐 타겟유저가 0이고 어떨땐 타겟유저가 나임 <- 이 상황의 기준을 모르겠음
       // 어떤 카드일때 어떤 타겟유저ID가 오는지만 정리해보고 그에 맞춰 오늘안에 와꾸 완성 예정
-
       default:
         targetUser = getUserById(targetUserIdNumber);
         updatedUsers = [user, targetUser];

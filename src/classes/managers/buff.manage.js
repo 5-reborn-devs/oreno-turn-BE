@@ -1,4 +1,4 @@
-import Buff from '../models/buff.class';
+import Buff from '../models/buff.class.js';
 
 class BuffManager {
   constructor() {
