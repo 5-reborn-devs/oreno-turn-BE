@@ -1,5 +1,4 @@
 import { PACKET_TYPE } from '../../constants/header.js';
-import { roleMapping } from '../../constants/roleMapping.js';
 import { getProtoMessages } from '../../init/loadProto.js';
 import { games, rooms } from '../../session/session.js';
 import { fyShuffle } from '../../utils/fisherYatesShuffle.js';
@@ -28,8 +27,7 @@ export const gamePrepare = async (socket) => {
 
     characterTypes.shift();
 
-    // 역할과 캐릭터를 셔플
-    // const shuffledRoles = await fyShuffle([...roleMapping[userCount]]);
+    // 캐릭터를 셔플
     const shuffledCharacters = await fyShuffle([...characterTypes]);
 
     // 역할과 캐릭터를 유저에게 랜덤으로 할당

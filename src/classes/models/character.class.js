@@ -1,5 +1,6 @@
 import { INIT_DECK } from '../../constants/cardTypes.js';
 import { makeCardDeck } from '../../handlers/card/index.js';
+import BuffManager from '../managers/buff.manage.js';
 import CardManager from '../managers/card.manager.js';
 import CharacterState from './character.state.class.js';
 
@@ -15,6 +16,7 @@ class Character {
     this.bbangCount = 0;
     this.handCardsCount = 0;
     this.cards = new CardManager(makeCardDeck(INIT_DECK));
+    this.buffs = new BuffManager();
   }
 
   activeData() {

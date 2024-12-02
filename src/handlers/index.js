@@ -10,7 +10,7 @@ import { joinRoomHandler } from './room/room.join.handler.js';
 import { joinRandomRoomHandler } from './room/room.joinRandom.handler.js';
 import { leaveRoomHandler } from './room/room.leave.handler.js';
 import { positionUpdateHandler } from './sync/user.position.handler.js';
-import { useCardHandler } from './card/useCard.handler.js';
+import { useCardHandler } from './card/card.use.handler.js';
 import { reactionHandler } from './game/game.reaction.handler.js';
 import { destroyCardsHandler } from './card/card.destroy.handler.js';
 const handlers = {
