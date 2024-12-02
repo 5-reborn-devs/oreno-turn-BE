@@ -45,8 +45,8 @@ export const useCardHandler = async (socket, payload) => {
     await handler(user, targetUserIdNumber);
 
     // 사용한 카드를 타입으로 찾아 손패에서 지워줌
-    let handCardCount = character.handCards.get(cardType);
-    character.handCards.set(cardType, --handCardCount);
+    let handCardCount = userCharacter.handCards.get(cardType);
+        userCharacter.handCards.set(cardType, --handCardCount);
 
     // 나에게 카드 사용 리스폰스
     sendResponsePacket(socket, PACKET_TYPE.USE_CARD_RESPONSE, {

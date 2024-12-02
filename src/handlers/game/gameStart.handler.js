@@ -65,10 +65,10 @@ export const gameStart = (socket) => {
 
     room.button(socket);
 
-    // multiCast(usersInRoom, PACKET_TYPE.GAME_START_NOTIFICATION, {
-    //   gameStartNotification,
-    // });
-    gameStartMultiCast(gameStartNotification);
+    multiCast(usersInRoom, PACKET_TYPE.GAME_START_NOTIFICATION, {
+      gameStartNotification,
+    });
+    // gameStartMultiCast(gameStartNotification);
 
     // 인터벌  룸 클래스 > 페이즈 업데이트 핸들러 기동
   } catch (err) {

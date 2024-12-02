@@ -2,16 +2,18 @@ import { PACKET_TYPE } from '../../constants/header.js';
 import { rooms, users } from '../../session/session.js';
 import { getUsersInRoom } from '../../session/room.session.js';
 import { getFailCode } from '../../utils/response/failCode.js';
-import { multiCast } from '../../utils/response/createResponse.js';
+import sendResponsePacket, { multiCast } from '../../utils/response/createResponse.js';
 import { RANDOM_POSITIONS } from '../../constants/randomPositions.js';
 import Card from '../../classes/models/card.class.js';
 import { fyShuffle } from '../../utils/fisherYatesShuffle.js';
 import { getUserById, getUserBySocket } from '../../session/user.session.js';
-import { eveningDraw, eveningPick } from './evening.phase.handler.js';
-import { marketOpen } from './market.handler.js';
+import { eveningDrawHandler } from './evening.phase.handler.js';
+import { userUpdateNotificationHandler } from './user.update.handler.js';
+
 
 //페이즈가 넘어갈때, 호출 넘어갔는지 체크.
 export const phaseUpdateNotificationHandler = async (room, nextState) => {
+
   //페일 코드
   const failCode = getFailCode();
   const phaseUpdateNotification = {
@@ -19,9 +21,13 @@ export const phaseUpdateNotificationHandler = async (room, nextState) => {
     failCode: failCode.UNKNOWN_ERROR,
   };
   try {
-    //const room = rooms.get(socket.roomId);
+        // 유저 업데이트 노티
+         multiCast(room.users, PACKET_TYPE.USER_UPDATE_NOTIFICATION, {
+          userUpdateNotification: { user: room.users },
+        });
 
-    // characterPositions
+
+    // characterPositions : 캐릭터 위치 랜덤
     const characterPositions = [];
     //const positionKeys = Object.keys(RANDOM_POSITIONS);
     const positionKeys = [21, 22];
@@ -35,6 +41,7 @@ export const phaseUpdateNotificationHandler = async (room, nextState) => {
           positionKeys[Math.floor(Math.random() * positionKeys.length)];
       } while (usedPositions.has(positionKey));
       usedPositions.add(positionKey);
+      // console.log('x,y값', RANDOM_POSITIONS[positionKey]);
       characterPositions.push({
         id: user.id,
         x: RANDOM_POSITIONS[positionKey].x,
@@ -42,29 +49,31 @@ export const phaseUpdateNotificationHandler = async (room, nextState) => {
       });
     });
 
-    //phaseShift : 황혼 코드 수정
+    //phaseType : 황혼 코드 수정
     if (room.phaseType === 1) {
       console.log(`황혼으로 전환합니다. 현재 PhaseType: ${room.phaseType}.`);
-
-      //공통 드로우 & 상점 오픈
-      eveningDraw(room);
-      marketOpen(room);
-
       room.phaseType = 2;
+
+      //여기서부터
+      eveningDrawHandler(room);
+
     } else if (room.phaseType === 2) {
       console.log(`밤으로 전환합니다. 현재 PhaseType: ${room.phaseType}.`);
-
-      room.isMarketOpen = false;
       room.phaseType = 3;
+      
+      //패 초기화
+      room.users.forEach((user)=>{
+        user.character.cardManager.reRoll();
+      })
+
     } else if (room.phaseType === 3) {
       console.log(`낮으로 전환합니다. 현재 PhaseType: ${room.phaseType}.`);
-      room.isMarketOpen = false;
       room.phaseType = 1;
     } else {
       //기타 처리
     }
 
-    //페이즈별 시간처리
+    //nextPhaseAt : 페이즈별 시간처리
     let nextPhaseAt = Date.now() + nextState;
 
     // 노티 만들기
@@ -79,6 +88,7 @@ export const phaseUpdateNotificationHandler = async (room, nextState) => {
     multiCast(usersInRoom, PACKET_TYPE.PHASE_UPDATE_NOTIFICATION, {
       phaseUpdateNotification,
     });
+
   } catch (error) {
     console.error('페이즈 전환중 에러', error);
   }
@@ -90,9 +100,3 @@ message S2CPhaseUpdateNotification {
     repeated CharacterPositionData characterPositions = 3; // 변경된 캐릭터 위치
 }
 */
-
-//Remain Problem : 드로우에서나 상점에서 고르지 않은 카드들은 다시 덱으로 반환해서 섞는다. : 확인
-//카드 매수 확인 : 확인 완료
-//함수 분리 : 확인
-
-//덱의 카드들을 전부 다썼을때, 공통 덱을 다시 생성해주는가?
