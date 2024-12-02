@@ -1,6 +1,5 @@
-import IntervalManager from '../managers/interval.manager.js';
+import { CARD_LIMIT } from '../../constants/cardTypes.js';
 import { makeCardDeck } from '../../handlers/card/index.js';
-import Card from './card.class.js';
 import { phaseUpdateNotificationHandler } from '../../handlers/sync/phase.update.handler.js';
 
 class Room {
@@ -15,12 +14,11 @@ class Room {
     this.id = id;
     this.ownerId = ownerId;
     this.name = name;
-    this.maxUserNum = maxUserNum < 1 ? 1 : maxUserNum;
+    this.maxUserNum = maxUserNum < 2 ? 2 : maxUserNum;
     this.state = state;
     this.users = users;
-    this.intervalManager = new IntervalManager();
     this.phaseType = 1; // DAY:1, NIGHT:3
-    this.gameDeck = makeCardDeck(); // 무작위로 섞인 카드들이 존재함 (기존기획)
+    this.gameDeck = makeCardDeck(CARD_LIMIT); // 무작위로 섞인 카드들이 존재함 (기존기획)
     this.positionUpdateSwitch = false;
     this.isMarketOpen = false;
     this.isPushed = true;
@@ -34,19 +32,19 @@ class Room {
 
       const pickedCards = this.gameDeck.splice(0, cardsPerUser);
       pickedCards.forEach((card) => {
-        user.character.addCardByType(card);
-//       for (let i = 0; i < cardsPerUser; i++) {
-//         const cardType = this.gameDeck.pop();
-//         if (cardType) {
-//           const card = new Card(cardType, 1);
-//           cards.push(card);
-//         }
-//       }
+        user.character.addCard(card);
+        //       for (let i = 0; i < cardsPerUser; i++) {
+        //         const cardType = this.gameDeck.pop();
+        //         if (cardType) {
+        //           const card = new Card(cardType, 1);
+        //           cards.push(card);
+        //         }
+        //       }
 
-//       cards.forEach((card) => {
-//         user.character.addCard(card);
+        //       cards.forEach((card) => {
+        //         user.character.addCard(card);
       });
-      
+
       user.character.handCardsCount = user.character.handCards.size;
     });
   }
@@ -114,6 +112,12 @@ class Room {
     setTimeout(runInterval, intervals[currentIndex]);
   }
 
+  // 유저 캐릭터의 정보를 숨김
+  hideUsersData() {
+    this.users.forEach((user) => {
+      user.character = new MaskedCharacter(user.character);
+    });
+  }
 }
 
 export default Room;
