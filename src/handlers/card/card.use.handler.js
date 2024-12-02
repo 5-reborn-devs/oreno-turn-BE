@@ -21,6 +21,7 @@ export const useCardHandler = async (socket, payload) => {
   const userCharacter = user.character;
   const roomId = socket.roomId;
   const failCode = getFailCode();
+  const gameDeck = getUserRoom(roomId).gameDeck
 
   try {
     // 페이로드 값 검증
@@ -37,7 +38,7 @@ export const useCardHandler = async (socket, payload) => {
     if (!roomId) throw new Error('존재하지 않는 방 호출');
 
     const handler = getHandlerByCardType(cardType);
-    await handler(user, targetUserIdNumber);
+    await handler(user, gameDeck, targetUserIdNumber);
 
     // 사용한 카드를 버림. (소멸카드가 생길 경우 분기 필요)
     userCharacter.cards.discardHands(cardType);
