@@ -1,6 +1,7 @@
 import CharacterState from '../../classes/models/character.state.class.js';
 import { PACKET_TYPE } from '../../constants/header.js';
-import { getUserRoom, getUsersInRoom, users } from '../../session/session.js';
+import { getUserRoom, getUsersInRoom } from '../../session/room.session.js';
+import { rooms, users } from '../../session/session.js'
 import { getUserById } from '../../session/user.session.js';
 import {
   multiCast,
@@ -22,21 +23,22 @@ export const reactionHandler = async (socket) => {
     // 뱅을 쏜 유저의 상태를 초기화
     const shooterId = stateInfo.stateTargetUserId;
     const shooter = getUserById(shooterId);
-    //shooter.character.stateInfo = new CharacterState();
+    shooter.character.stateInfo = new CharacterState();
 
     // 공격당한 유저의 상태를 초기화
-    //character.stateInfo = new CharacterState(); // 만약 state = new CharacterState로 초기화하면 반영안됨.
+    character.stateInfo = new CharacterState(); // 만약 state = new CharacterState로 초기화하면 반영안됨.
     character.hp -= 1;
 
-    reactionResponse = {
-      success: true,
-      failCode: failCode.NONE_FAILCODE,
-    };
+    // reactionResponse = {
+    //   success: true,
+    //   failCode: failCode.NONE_FAILCODE,
+    // };
 
     // 리액션 종료 후 유저 상태 동기화
     const roomId = socket.roomId;
-    const room = getUserRoom(roomId);
-    userUpdateMultiCast(room);
+    // const room = getUserRoom(roomId);
+    const room = rooms.get(roomId);
+    userUpdateMultiCast(room.users);
 
     // 방에 피가 1이상 남은 생존자 찾기
     const survivers = room.users.filter((user) => user.character.hp > 0);
@@ -64,6 +66,6 @@ export const reactionHandler = async (socket) => {
   }
 
   sendResponsePacket(socket, PACKET_TYPE.REACTION_RESPONSE, {
-    reactionResponse,
+    gameEndNotification,
   });
 };
