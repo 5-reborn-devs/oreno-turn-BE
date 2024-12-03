@@ -55,7 +55,7 @@ export const gameStart = (socket) => {
     };
 
     // 페이즈 업데이트 인터벌 기동
-    room.button(socket);
+    room.button();
 
     // 게임 유저 정보 동기화
     gameStartMultiCast(gameStartNotification);

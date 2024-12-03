@@ -8,7 +8,7 @@ class Character {
   constructor() {
     this.characterType = 0;
     this.roleType = 0;
-    this.hp = 5;
+    this.hp = 50;
     this.stateInfo = new CharacterState();
     this.debuffs = [];
     this._weapon = null;
