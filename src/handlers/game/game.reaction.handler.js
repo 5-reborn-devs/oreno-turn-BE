@@ -1,6 +1,7 @@
 import CharacterState from '../../classes/models/character.state.class.js';
 import { PACKET_TYPE } from '../../constants/header.js';
-import { getUserRoom, getUsersInRoom, users } from '../../session/session.js';
+import { users } from '../../session/session.js';
+import { getUserRoom } from '../../session/room.session.js';
 import { getUserById } from '../../session/user.session.js';
 import {
   multiCast,

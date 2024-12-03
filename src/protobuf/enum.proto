@@ -137,8 +137,8 @@ enum AnimationType {
 
 // 추가됨.
 enum BuffType {
-    NONE = 0;
+    NONE_BUFF = 0;
     POISON = 1;
     POWER = 2;
-    SHIELD = 3;
+    ARMOR = 3;
 }

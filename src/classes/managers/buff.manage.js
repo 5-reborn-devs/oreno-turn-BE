@@ -57,7 +57,7 @@ class BuffManager {
 
     // 데미지 영향 버프
     const POWER = this.getBuff(BUFF_TYPES.POWER);
-    const SHIELD = targetBuffs.getBuff(BUFF_TYPES.SHIELD);
+    const ARMOR = targetBuffs.getBuff(BUFF_TYPES.ARMOR);
     const isVulnerable = this.isBuff(BUFF_TYPES.VULNERABLE);
     const isWeakened = targetBuffs.isBuff(BUFF_TYPES.WEAKENED);
 
@@ -78,7 +78,7 @@ class BuffManager {
     }
 
     // 최종 데미지
-    const finalDamage = SHIELD - damage;
+    const finalDamage = ARMOR - damage;
 
     // 쉴드로 전부 방어한 경우
     if (finalDamage > 0) {
@@ -87,7 +87,7 @@ class BuffManager {
     }
 
     // 전부 막지 못한 경우
-    targetBuffs.deleteBuff(BUFF_TYPES.SHIELD);
+    targetBuffs.deleteBuff(BUFF_TYPES.ARMOR);
     return finalDamage;
   }
 }
