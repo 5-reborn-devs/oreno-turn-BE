@@ -1,8 +1,9 @@
 import { PACKET_TYPE } from '../../constants/header.js';
-import { rooms, users } from '../../session/session.js';
 import { getUsersInRoom } from '../../session/room.session.js';
 import { getFailCode } from '../../utils/response/failCode.js';
-import sendResponsePacket, { multiCast } from '../../utils/response/createResponse.js';
+import sendResponsePacket, {
+  multiCast,
+} from '../../utils/response/createResponse.js';
 import { RANDOM_POSITIONS } from '../../constants/randomPositions.js';
 import Card from '../../classes/models/card.class.js';
 import { fyShuffle } from '../../utils/fisherYatesShuffle.js';
@@ -10,10 +11,8 @@ import { getUserById, getUserBySocket } from '../../session/user.session.js';
 import { eveningDrawHandler } from './evening.phase.handler.js';
 import { userUpdateNotificationHandler } from './user.update.handler.js';
 
-
 //페이즈가 넘어갈때, 호출 넘어갔는지 체크.
 export const phaseUpdateNotificationHandler = async (room, nextState) => {
-
   //페일 코드
   const failCode = getFailCode();
   const phaseUpdateNotification = {
@@ -21,16 +20,15 @@ export const phaseUpdateNotificationHandler = async (room, nextState) => {
     failCode: failCode.UNKNOWN_ERROR,
   };
   try {
-        // 유저 업데이트 노티
-         multiCast(room.users, PACKET_TYPE.USER_UPDATE_NOTIFICATION, {
-          userUpdateNotification: { user: room.users },
-        });
-
+    // 유저 업데이트 노티
+    multiCast(room.users, PACKET_TYPE.USER_UPDATE_NOTIFICATION, {
+      userUpdateNotification: { user: room.users },
+    });
 
     // characterPositions : 캐릭터 위치 랜덤
     const characterPositions = [];
     //const positionKeys = Object.keys(RANDOM_POSITIONS);
-    const positionKeys = [21, 22];
+    const positionKeys = [21, 22, 23];
     const usedPositions = new Set();
     room.users.forEach((user) => {
       let positionKey;
@@ -56,16 +54,14 @@ export const phaseUpdateNotificationHandler = async (room, nextState) => {
 
       //여기서부터
       eveningDrawHandler(room);
-
     } else if (room.phaseType === 2) {
       console.log(`밤으로 전환합니다. 현재 PhaseType: ${room.phaseType}.`);
       room.phaseType = 3;
-      
-      //패 초기화
-      room.users.forEach((user)=>{
-        user.character.cardManager.reRoll();
-      })
 
+      //패 초기화
+      room.users.forEach((user) => {
+        user.character.cardManager.reRoll();
+      });
     } else if (room.phaseType === 3) {
       console.log(`낮으로 전환합니다. 현재 PhaseType: ${room.phaseType}.`);
       room.phaseType = 1;
@@ -88,7 +84,6 @@ export const phaseUpdateNotificationHandler = async (room, nextState) => {
     multiCast(usersInRoom, PACKET_TYPE.PHASE_UPDATE_NOTIFICATION, {
       phaseUpdateNotification,
     });
-
   } catch (error) {
     console.error('페이즈 전환중 에러', error);
   }

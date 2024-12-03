@@ -1,17 +1,15 @@
 import { CARD_LIMIT, INIT_DECK } from '../../constants/cardTypes.js';
 import { makeCardDeck } from '../../handlers/card/index.js';
-import { getProtoMessages } from '../../init/loadProto.js';
+import BuffManager from '../managers/buff.manage.js';
 import CardManager from '../managers/card.manager.js';
 import CharacterState from './character.state.class.js';
-
 
 class Character {
   constructor() {
     const protoMessages = getProtoMessages();
     this.characterType = 0;
     this.roleType = 0;
-    this.hp = 5;
-    this.weapon = null;
+    this.hp = 50;
     this.stateInfo = new CharacterState();
     this.equips = [];
     this.debuffs = [];
@@ -21,8 +19,8 @@ class Character {
     ];
     this.bbangCount = 0;
     this.handCardsCount = 0;
-    this.eveningList = []; 
-    this.cardManager = new CardManager(makeCardDeck(INIT_DECK));
+    this.cards = new CardManager(makeCardDeck(INIT_DECK));
+    this.buffs = new BuffManager();
   }
   addCard(card) {
     // 해당 타입 카드가 존재하면 handCards에서 count만 +1 시켜주고

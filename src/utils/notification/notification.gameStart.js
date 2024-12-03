@@ -7,9 +7,9 @@ export const gameStartMultiCast = ({
   users,
   characterPositions,
 }) => {
-  users.forEach((user, idx) => {
+  users.forEach((user) => {
     const character = user.character;
-    character.cards.reRoll(); // 카드 패 리롤
+    character.cards.reroll(); // 카드 패 리롤
     character.activeData(); // 자신만 모든 정보를 공개
 
     const gameStartNotification = {

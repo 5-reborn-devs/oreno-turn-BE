@@ -48,7 +48,7 @@ export const getHandlerByCardType = (cardType) => {
 export const makeCardDeck = (deckInfo) => {
   const gameDeck = [];
   for (const [cardType, count] of Object.entries(deckInfo)) {
-    gameDeck.push(...new Array(count).fill(cardType));
+    gameDeck.push(...new Array(count).fill(Number(cardType)));
   }
   return fyShuffle(gameDeck);
 };

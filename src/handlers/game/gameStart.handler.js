@@ -1,13 +1,9 @@
 import { PACKET_TYPE } from '../../constants/header.js';
 import { RANDOM_POSITIONS } from '../../constants/randomPositions.js';
 import { getProtoMessages } from '../../init/loadProto.js';
-import { rooms, clients } from '../../session/session.js';
-import { parseMyData } from '../../utils/notification/myUserData.js';
-import { gameStartMultiCast } from '../../utils/notification/notify.gameStart.js';
-import {
-  multiCast,
-  sendResponsePacket,
-} from '../../utils/response/createResponse.js';
+import { rooms } from '../../session/session.js';
+import { gameStartMultiCast } from '../../utils/notification/notification.gameStart.js';
+import { sendResponsePacket } from '../../utils/response/createResponse.js';
 import { getFailCode } from '../../utils/response/failCode.js';
 
 export const gameStart = (socket) => {
@@ -47,11 +43,6 @@ export const gameStart = (socket) => {
       });
     });
 
-    // const startUserData = []
-    // usersInRoom.forEach((user) => {
-    //   startUserData.push(parseMyData(user))
-    // })
-
     const gameStartNotification = {
       gameState,
       users: usersInRoom,
@@ -63,14 +54,11 @@ export const gameStart = (socket) => {
       failCode: failCode.NONE_FAILCODE,
     };
 
-    room.button(socket);
+    // 페이즈 업데이트 인터벌 기동
+    room.button();
 
-    multiCast(usersInRoom, PACKET_TYPE.GAME_START_NOTIFICATION, {
-      gameStartNotification,
-    });
-    // gameStartMultiCast(gameStartNotification);
-
-    // 인터벌  룸 클래스 > 페이즈 업데이트 핸들러 기동
+    // 게임 유저 정보 동기화
+    gameStartMultiCast(gameStartNotification);
   } catch (err) {
     gameStartResponse = {
       success: false,
