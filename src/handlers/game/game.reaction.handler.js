@@ -1,6 +1,6 @@
 import CharacterState from '../../classes/models/character.state.class.js';
 import { PACKET_TYPE } from '../../constants/header.js';
-import { users } from '../../session/session.js';
+import { users, rooms } from '../../session/session.js';
 import { getUserRoom } from '../../session/room.session.js';
 import { getUserById } from '../../session/user.session.js';
 import {
@@ -36,8 +36,11 @@ export const reactionHandler = async (socket) => {
 
     // 리액션 종료 후 유저 상태 동기화
     const roomId = socket.roomId;
-    const room = getUserRoom(roomId);
-    userUpdateMultiCast(room);
+    // const room = getUserRoom(roomId);
+    // const roomInUser = getUsersInRoom(roomId);
+    const room = rooms.get(roomId); // 클라이언트가 들어가 있는 방정보를 가져옴
+    console.log('룸정보 가져와', room);
+    userUpdateMultiCast(room.users);
 
     // 방에 피가 1이상 남은 생존자 찾기
     const survivers = room.users.filter((user) => user.character.hp > 0);

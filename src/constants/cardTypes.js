@@ -89,5 +89,28 @@ export const INIT_DECK = {
 };
 
 export const CARD_CONFIG = {
+  [CARD_TYPES.NONE]: { cost: 1, coin: 100 },
   [CARD_TYPES.BBANG]: { cost: 1, coin: 100 },
+  [CARD_TYPES.BIG_BBANG]: { cost: 1, coin: 100 },
+  [CARD_TYPES.SHIELD]: { cost: 1, coin: 100 },
+  [CARD_TYPES.VACCINE]: { cost: 1, coin: 100 },
+  [CARD_TYPES.CALL_119]: { cost: 1, coin: 100 },
+  [CARD_TYPES.DEATH_MATCH]: { cost: 1, coin: 100 },
+  [CARD_TYPES.GUERRILLA]: { cost: 1, coin: 100 },
+  [CARD_TYPES.ABSORB]: { cost: 1, coin: 100 },
+  [CARD_TYPES.HALLUCINATION]: { cost: 1, coin: 100 },
+  [CARD_TYPES.FLEA_MARKET]: { cost: 1, coin: 100 },
+  [CARD_TYPES.MATURED_SAVINGS]: { cost: 1, coin: 100 },
+  [CARD_TYPES.WIN_LOTTERY]: { cost: 1, coin: 100 },
+  [CARD_TYPES.SNIPER_GUN]: { cost: 1, coin: 100 },
+  [CARD_TYPES.HAND_GUN]: { cost: 1, coin: 100 },
+  [CARD_TYPES.DESERT_EAGLE]: { cost: 1, coin: 100 },
+  [CARD_TYPES.AUTO_RIFLE]: { cost: 1, coin: 100 },
+  [CARD_TYPES.LASER_POINTER]: { cost: 1, coin: 100 },
+  [CARD_TYPES.RADAR]: { cost: 1, coin: 100 },
+  [CARD_TYPES.AUTO_SHIELD]: { cost: 1, coin: 100 },
+  [CARD_TYPES.STEALTH_SUIT]: { cost: 1, coin: 100 },
+  [CARD_TYPES.CONTAINMENT_UNIT]: { cost: 1, coin: 100 },
+  [CARD_TYPES.SATELLITE_TARGET]: { cost: 1, coin: 100 },
+  [CARD_TYPES.BOMB]: { cost: 1, coin: 100 },
 };
