@@ -1,13 +1,12 @@
 import CharacterState from '../../classes/models/character.state.class.js';
 import { PACKET_TYPE } from '../../constants/header.js';
-import { getUserRoom, getUsersInRoom } from '../../session/room.session.js';
-import { users } from '../../session/session.js';
+import { getUserRoom, getUsersInRoom, users } from '../../session/session.js';
 import { getUserById } from '../../session/user.session.js';
-import { userUpdateMultiCast } from '../../utils/notification/notification.userUpdate.js';
 import {
   multiCast,
   sendResponsePacket,
 } from '../../utils/response/createResponse.js';
+import { userUpdateMultiCast } from '../../utils/notification/notification.userUpdate.js';
 import { getFailCode } from '../../utils/response/failCode.js';
 
 export const reactionHandler = async (socket) => {
@@ -36,10 +35,9 @@ export const reactionHandler = async (socket) => {
 
     // 리액션 종료 후 유저 상태 동기화
     const roomId = socket.roomId;
-    const allUsersInRoom = getUsersInRoom(roomId);
-    userUpdateMultiCast(allUsersInRoom);
-    
-    const room = getUserRoom(roomId)
+    const room = getUserRoom(roomId);
+    userUpdateMultiCast(room);
+
     // 방에 피가 1이상 남은 생존자 찾기
     const survivers = room.users.filter((user) => user.character.hp > 0);
 

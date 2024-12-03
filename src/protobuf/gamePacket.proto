@@ -93,5 +93,22 @@ message GamePacket {
 
         // 효과 알림
         S2CAnimationNotification animationNotification = 45;
+        
+        //-------------------------------------------------여기부터 추가
+
+        // 황혼 카드 선택
+        C2SEveningPickRequest eveningPickRequest = 46;
+        S2CEveningPickResponse eveningPickResponse = 47;
+        
+        //마켓 카드 제거
+        C2SMarketCardDeleteRequest MarketCardDeleteRequest = 48;
+        S2CMarketCardDeleteResponse MarketCardDeleteResponse = 49;
+        
+        // 카드 리롤 
+        C2SRerollRequest rerollRequest = 50;
+        S2CRerollResponse rerollResponse = 51;
+        
+        // 황혼 카드 분배
+        S2CEveningDistributionNotification eveningDistributionNotification = 52;
     }
 }

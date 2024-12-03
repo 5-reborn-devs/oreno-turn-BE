@@ -8,17 +8,16 @@ class Character {
   constructor() {
     this.characterType = 0;
     this.roleType = 0;
-    this.hp = 5;
+    this.hp = 50;
     this.stateInfo = new CharacterState();
-    this.debuffs = [];
     this._weapon = null;
     this._equips = [];
+    this._debuffs = [];
     this.bbangCount = 0;
     this.handCardsCount = 0;
     this.cards = new CardManager(makeCardDeck(INIT_DECK));
     this.buffs = new BuffManager();
   }
-
   activeData() {
     this.handCardsCount = this.cards.handCardsCount;
     this.handCards = this.cards.getHands();
