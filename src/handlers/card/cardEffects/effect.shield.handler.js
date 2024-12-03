@@ -1,6 +1,5 @@
 import { getUserById } from '../../../session/user.session.js';
 import CharacterState from '../../../classes/models/character.state.class.js';
-import { animationNotify } from '../../../utils/notification/notify.animation.js';
 
 export const shieldEffectHandler = async (user, targetUserId) => {
   let errorMessage = '';

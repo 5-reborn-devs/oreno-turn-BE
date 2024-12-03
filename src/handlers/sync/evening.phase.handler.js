@@ -7,97 +7,105 @@ import { RANDOM_POSITIONS } from '../../constants/randomPositions.js';
 import Card from '../../classes/models/card.class.js';
 import { fyShuffle } from '../../utils/fisherYatesShuffle.js';
 import { getUserById, getUserBySocket } from '../../session/user.session.js';
+import sendResponsePacket from '../../utils/response/createResponse.js';
+import { clients } from '../../session/session.js';
 
-// 황혼 공통 드로우
-export const eveningDraw = async(room) => {
-
-    try{
-
+//황혼 공통 드로우
+export const eveningDrawHandler = async (room) => {
+  try {
     //개인에게 전달할 카드 장수
     const cardsPerUser = 3;
-  
-    //반복문을 돌며, 공용풀에서 카드를 뽑아, 뽑힌 카드 배열에 집어넣기
-    room.users.forEach((user)=>{
-    const targetUserId = user.id
-    const cards = [];
-    
-      for(let i = 0; i< cardsPerUser; i++){
-  
-        const cardType = room.gameDeck.pop();
-        if(cardType){
-          const card = new Card(cardType,1);
-          cards.push(card);
+
+    //반복 돌면서 드로우 리스트에 추가
+    room.users.forEach((user) => {
+      const client = clients.get(user.id);
+
+      user.character.cardManager.getDeckMap();
+
+      for (let i = 0; i < cardsPerUser; i++) {
+        const cardType = room.cardManager.deck.pop();
+        if (cardType) {
+          const card = new Card(cardType, 1);
+          user.character.eveningList.push(card.type);
         }
       }
-  
+      console.log('이브닝 드로우 리스트 : ', user.character.eveningList);
+
       //노티 만들기
-      const eveningDrawResponse = {
-        targetUserId,
-        cards,
-      }
-  
-      //임시 드로우 피드백
-      eveningPick(room,eveningDrawResponse);
-  
+      const eveningDistributionNotification = {
+        cardTypes: user.character.eveningList,
+      };
+
+      //페이즈 넘어갈때 리롤 고민 필요.
       // 개인에게 리스폰스
-      // sendResponsePacket(room, PACKET_TYPE.EVENING_DRAW_RESPONSE, {eveningDrawResponse});
+      sendResponsePacket(client, PACKET_TYPE.EVENING_DRAW_NOTIFICATION, {
+        eveningDistributionNotification,
+      });
+      eveningPickHandler(client, { cardType: 1 });
     });
-    }catch(error){
-      console.error('황혼 드로우중 에러', error);
-    }
-  
+  } catch (error) {
+    console.error('공용 카드 선택 검증 에러', error);
   }
+};
 
+//드로우 픽 핸들러
+export const eveningPickHandler = async (socket, payloadData) => {
+  const failCode = getFailCode();
+  const { cardType } = payloadData;
 
-  export const eveningPick = async(socket, payloadData)=>{
+  // 소켓 유저&룸 검색
+  const user = users.get(socket.token);
+  const roomId = socket.roomId;
+  const room = rooms.get(roomId);
 
-    //const { pickIndex, unPickedIndex } = payloadData;
-     const failCode = getFailCode();
-     const {cards, targetUserId } = payloadData;
-    
-      //임시 고른카드, 고르지 않은 카드 할당
-      const pickIndex = [cards[0]];
-      const unPickedIndex = [cards[1],cards[2]];
-      
-    
-      try{
-    
-      // 소켓 유저&룸 검색
-      // const user = users.get(socket.token);
-      // const roomId = socket.roomId;
-      // const room = rooms.get(roomId);
-      
-      //임시 유저 검색
-      const user = getUserById(targetUserId);
-    
-      //픽한 카드 개인덱에 추가.
-      pickIndex.forEach(index =>user.character.privateDeck = [...user.character.privateDeck, index]);
-    
-      //픽하지 않은 카드들 다시 공용덱에 넣고 셔플.
-      unPickedIndex.forEach(index => socket.gameDeck = [...socket.gameDeck, index]);
-      fyShuffle(socket.gameDeck);
-    
-      //노티 생성
-      const eveningPick = {
-        success: true,
-        failCode: failCode.NONE_FAILCODE,
+  try {
+    // 카드 정리
+    for (let i = 0; i < user.character.eveningList.length; i++) {
+      //일치하는 카드타입 패에 추가
+      if (user.character.eveningList[i] === cardType) {
+        user.character.cardManager.addHands(cardType);
+        continue;
       }
-    
-      //결과 반환
-      //sendResponsePacket(socket, PACKET_TYPE.EVENING_PICK_RESPONSE, {eveningPick});
-      
-      }catch(error){
-        console.error('공용 카드 선택 검증 에러', error);
-      }
+      //나머지 공용덱으로
+      room.cardManager.deck.push(user.character.eveningList[i]);
     }
+    //console.log("패에 카드 추가 cardType: ", cardType);
 
-    /*
-message C2SEveningPickRequest { 
-    int32 pickIndex = 1;
-    repeated int32 unPickedIndex = 2; 
+    //노티 만들기
+    const eveningDrawResponse = {
+      success: true,
+      failCode: failCode.NONE_FAILCODE,
+    };
+
+    //리스폰스 슛
+    sendResponsePacket(socket, PACKET_TYPE.EVENING_DRAW_RESPONSE, {
+      eveningDrawResponse,
+    });
+
+    //유저의 드로우 목록 초기화.
+    user.character.eveningList = [];
+  } catch (error) {
+    console.error('공용카드 드로우중 에러:', error);
+
+    sendResponsePacket(socket, PACKET_TYPE.EVENING_DRAW_RESPONSE, {
+      eveningDrawResponse: {
+        success: false,
+        failCode: failCode.UNKNOWN_ERROR,
+      },
+    });
+  }
+};
+
+/*
+message S2CEveningDistributionNotification {
+    repeated CardType cardType = 1;
 }
 
-message S2CEveningPickResponse { 
+message C2SEveningPickRequest  {
+    CardType cardType = 1;
+}
+
+message C2SEveningPickResponse  {
     bool success = 1;
     GlobalFailCode failCode = 2;
 }

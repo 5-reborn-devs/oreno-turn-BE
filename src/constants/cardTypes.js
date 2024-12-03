@@ -1,4 +1,4 @@
-import { getCardSum } from "../utils/getCardSum.js";
+import { getCardSum } from '../utils/getCardSum.js';
 
 export const CARD_TYPES = {
   NONE: 0,
@@ -58,7 +58,7 @@ export const CARD_LIMIT = {
   [CARD_TYPES.NONE]: 0,
   [CARD_TYPES.BBANG]: 20,
   [CARD_TYPES.BIG_BBANG]: 1,
-  [CARD_TYPES.SHIELD]: 10,
+  [CARD_TYPES.SHIELD]: 0,
   [CARD_TYPES.VACCINE]: 6,
   [CARD_TYPES.CALL_119]: 2,
   [CARD_TYPES.DEATH_MATCH]: 4, // 현피 - 클라 설명서 카드 정보에는 한타로 되어있음
@@ -82,3 +82,12 @@ export const CARD_LIMIT = {
 };
 
 export const CARD_SUM = getCardSum(CARD_LIMIT);
+
+export const INIT_DECK = {
+  [CARD_TYPES.BBANG]: 5,
+  [CARD_TYPES.VACCINE]: 5,
+};
+
+export const CARD_CONFIG = {
+  [CARD_TYPES.BBANG]: { cost: 1, coin: 100 },
+};

@@ -1,11 +1,12 @@
 import CharacterState from '../../classes/models/character.state.class.js';
 import { PACKET_TYPE } from '../../constants/header.js';
-import { rooms, users } from '../../session/session.js';
+import { getUserRoom, getUsersInRoom, users } from '../../session/session.js';
 import { getUserById } from '../../session/user.session.js';
 import {
   multiCast,
   sendResponsePacket,
 } from '../../utils/response/createResponse.js';
+import { userUpdateMultiCast } from '../../utils/notification/notification.userUpdate.js';
 import { getFailCode } from '../../utils/response/failCode.js';
 
 export const reactionHandler = async (socket) => {
@@ -32,11 +33,27 @@ export const reactionHandler = async (socket) => {
       failCode: failCode.NONE_FAILCODE,
     };
 
-    // 총에 맞았음으로 유저 상태를 동기화
-    const room = rooms.get(socket.roomId);
-    multiCast(room.users, PACKET_TYPE.USER_UPDATE_NOTIFICATION, {
-      userUpdateNotification: { user: room.users },
-    });
+    // 리액션 종료 후 유저 상태 동기화
+    const roomId = socket.roomId;
+    const room = getUserRoom(roomId);
+    userUpdateMultiCast(room);
+
+    // 방에 피가 1이상 남은 생존자 찾기
+    const survivers = room.users.filter((user) => user.character.hp > 0);
+
+    // 생존자가 1명이면 그 사람이 승리
+    if (survivers.length === 1) {
+      const winner = survivers[0];
+
+      const gameEndNotification = {
+        winners: [winner.id],
+        winType: 2, // 배틀로얄이라 사이코 밖에 없음.
+      };
+
+      multiCast(room.users, PACKET_TYPE.GAME_END_NOTIFICATION, {
+        gameEndNotification,
+      });
+    }
   } catch (error) {
     reactionResponse = {
       success: false,
@@ -50,4 +67,3 @@ export const reactionHandler = async (socket) => {
     reactionResponse,
   });
 };
-

@@ -1,7 +1,6 @@
 import { PACKET_TYPE } from '../../constants/header.js';
-import { roleMapping } from '../../constants/roleMapping.js';
 import { getProtoMessages } from '../../init/loadProto.js';
-import { rooms } from '../../session/session.js';
+import { games, rooms } from '../../session/session.js';
 import { fyShuffle } from '../../utils/fisherYatesShuffle.js';
 import { multiCast } from '../../utils/response/createResponse.js';
 import { sendResponsePacket } from '../../utils/response/createResponse.js';
@@ -28,18 +27,18 @@ export const gamePrepare = async (socket) => {
 
     characterTypes.shift();
 
-    // 역할과 캐릭터를 셔플
-    const shuffledRoles = await fyShuffle([...roleMapping[userCount]]);
+    // 캐릭터를 셔플
     const shuffledCharacters = await fyShuffle([...characterTypes]);
 
     // 역할과 캐릭터를 유저에게 랜덤으로 할당
     usersInRoom.forEach((user, index) => {
       user.character.roleType =
-        protoMessages.enum.RoleType.values[shuffledRoles[index]];
+        protoMessages.enum.RoleType.values['PSYCHOPATH'];
       user.character.characterType = shuffledCharacters[index];
     });
 
-    room.distributeCards();
+    // 방 유저들에게 초기 카드를 분배
+    // room.distributeCards();
 
     const gamePrepareNotification = { room: room };
 
@@ -52,6 +51,8 @@ export const gamePrepare = async (socket) => {
       failcode: failCode.NONE_FAILCODE,
     };
     multiCast(usersInRoom, PACKET_TYPE.GAME_PREPARE_NOTIFICATION, Notification);
+
+    // 방 정보를 게임세션으로 이전 후 방을 삭제
   } catch (err) {
     gamePrepareResponse = {
       success: false,

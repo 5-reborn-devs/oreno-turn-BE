@@ -27,13 +27,16 @@ message CharacterData {
     CharacterType characterType = 1;
     RoleType roleType = 2;
     int32 hp = 3;
-    int32 weapon = 4;
-    CharacterStateInfoData stateInfo = 5;
-    repeated int32 equips = 6;
-    repeated int32 debuffs = 7;
-    repeated CardData handCards = 8;
-    int32 bbangCount = 9;
-    int32 handCardsCount = 10;
+    int32 mp = 4;
+    int32 coin = 5;
+    int32 weapon = 6;
+    CharacterStateInfoData stateInfo = 7;
+    repeated int32 equips = 8;
+    repeated int32 debuffs = 9;
+    repeated CardData handCards = 10;
+    repeated BuffData buffs = 11;
+    int32 bbangCount = 12;
+    int32 handCardsCount = 13;
 }
 
 message CharacterPositionData {
@@ -45,6 +48,8 @@ message CharacterPositionData {
 message CardData {
     CardType type = 1;
     int32 count = 2;
+    int32 cost = 3; // 마나 코스트
+    int32 coin = 4; // 구매 비용
 }
 
 message GameStateData {
@@ -57,4 +62,11 @@ message CharacterStateInfoData {
     CharacterStateType nextState = 2;
     int64 nextStateAt = 3; // state가 nextState로 풀리는 밀리초 타임스탬프. state가 NONE이면 0
     int64 stateTargetUserId = 4; // state에 target이 있을 경우
+}
+
+// 여기부터 추가
+
+message BuffData {
+    BuffType type = 1;
+    int32 count = 2;
 }
