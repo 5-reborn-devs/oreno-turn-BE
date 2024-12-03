@@ -27,8 +27,6 @@ export const bbangEffectHandler = async (user, targetUserId) => {
       0,
       user.id,
     );
-
-    myCharacter.bbangCount += 1;
   } catch (error) {
     console.error(errorMessage, error);
     return errorMessage;
