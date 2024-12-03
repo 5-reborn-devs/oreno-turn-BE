@@ -1,7 +1,7 @@
 export const BUFF_TYPES = {
-  NONE: 0,
+  NONE_BUFF: 0,
   POWER: 1,
-  SHIELD: 2,
+  ARMOR: 2,
   VULNERABLE: 3,
   WEAKENED: 4,
 };
