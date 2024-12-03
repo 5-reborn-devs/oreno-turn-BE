@@ -37,7 +37,9 @@ export const onData = (socket) => async (data) => {
 
         // 인자로 받을 패킷 타입 전송
         const handler = getHandlerByPacketType(packetType);
-        console.log('클라가 보낸 패킷타입 request', packetType);
+        if (packetType !== 23) {
+          console.log('클라가 보낸 패킷타입 request', packetType);
+        }
         await handler(socket, decodedPacket);
       } catch (err) {
         console.error(err);

@@ -19,7 +19,6 @@ class Room {
     this.maxUserNum = maxUserNum < 1 ? 1 : maxUserNum;
     this.state = state;
     this.users = users;
-    this.intervalManager = new IntervalManager();
     this.phaseType = 1; // DAY:1, NIGHT:3
     //this.gameDeck = makeCardDeck(CARD_LIMIT); // 무작위로 섞인 카드들이 존재함 (기존기획)
     this.positionUpdateSwitch = false;

@@ -44,6 +44,25 @@ export const onEnd = (socket) => async () => {
           });
 
           message = `유저 ${user.id}가 게임을 나갔습니다.`;
+
+          const survivers = room.users.filter((user) => user.character.hp > 0);
+
+          // 만약 남은 유저의 탈주로 인해 생존자가 한 명일 경우
+          if (survivers.length === 1) {
+            const winner = survivers[0];
+
+            const gameEndNotification = {
+              winners: [winner.id],
+              winType: 2, // 배틀로얄이라 사이코 밖에 없음.
+            };
+
+            multiCast(room.users, PACKET_TYPE.GAME_END_NOTIFICATION, {
+              gameEndNotification,
+            });
+            
+            room.stopCustomInterval();
+          }
+
         }
 
         // 방에 유저가 남아있는데 방장이 종료할 경우
@@ -56,7 +75,7 @@ export const onEnd = (socket) => async () => {
           });
         }
       }
-      
+
       room.removeUserById(user.id); //방에서 유저 제거
       users.delete(socket.token);
       console.log(message);
