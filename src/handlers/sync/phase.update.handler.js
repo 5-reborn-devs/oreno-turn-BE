@@ -53,7 +53,7 @@ export const phaseUpdateNotificationHandler = async (room, nextState) => {
       room.phaseType = 2;
 
       //여기서부터
-      eveningDrawHandler(room);
+      //eveningDrawHandler(room);
     } else if (room.phaseType === 2) {
       console.log(`밤으로 전환합니다. 현재 PhaseType: ${room.phaseType}.`);
       room.phaseType = 3;

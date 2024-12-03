@@ -1,4 +1,3 @@
-import IntervalManager from '../managers/interval.manager.js';
 import { makeCardDeck } from '../../handlers/card/index.js';
 import Card from './card.class.js';
 import { phaseUpdateNotificationHandler } from '../../handlers/sync/phase.update.handler.js';

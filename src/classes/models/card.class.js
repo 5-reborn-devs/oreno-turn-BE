@@ -1,4 +1,4 @@
-import { CARD_CONFIG } from '../../constants/cardTypes';
+import { CARD_CONFIG } from '../../constants/cardTypes.js';
 
 class Card {
   constructor(type, count) {
