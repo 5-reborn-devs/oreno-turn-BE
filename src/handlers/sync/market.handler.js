@@ -84,8 +84,8 @@ export const marketPickHandler = (socket, payloadData) => {
     //나머지 공용덱으로
     room.cards.deck.push(user.character.eveningList[i]);
   }
-  console.log("추가후 핸드패 :",user.character.cards.getHands());
-  console.log("추가후 덱 :",room.cards.deck);
+  // console.log("추가후 핸드패 :",user.character.cards.getHands());
+  // console.log("추가후 덱 :",room.cards.deck);
 
   //리스폰스 슛
   sendResponsePacket(socket, PACKET_TYPE.FLEAMARKET_PICK_RESPONSE, {

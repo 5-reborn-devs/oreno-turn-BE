@@ -22,8 +22,8 @@ export const phaseUpdateNotificationHandler = async (room, nextState) => {
     //패 초기화
     room.users.forEach((user) => {
       user.character.cards.reroll();
-      console.log("리롤 후 플레이어의 손패:",user.character.cards.getHands());  
-      console.log("리롤 후  개인 덱 :",user.character.cards.deck);
+      //console.log("리롤 후 플레이어의 손패:",user.character.cards.getHands());  
+      //console.log("리롤 후  개인 덱 :",user.character.cards.deck);
     });
     userUpdateMultiCast(room.users);
 

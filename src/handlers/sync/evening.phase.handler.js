@@ -27,8 +27,8 @@ export const eveningDrawHandler = async (room) => {
           user.character.eveningList.push(card.type);
         }
       }
-      console.log('이브닝 드로우 리스트 : ', user.character.eveningList);
-      console.log("플레이어의 손패:",user.character.cards.getHands());  
+      //console.log('이브닝 드로우 리스트 : ', user.character.eveningList);
+      //console.log("플레이어의 손패:",user.character.cards.getHands());  
 
       //노티 만들기
       const eveningDistributionNotification = {
