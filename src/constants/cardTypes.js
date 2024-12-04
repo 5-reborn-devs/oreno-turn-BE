@@ -26,6 +26,11 @@ export const CARD_TYPES = {
   CONTAINMENT_UNIT: 21, // 3장
   SATELLITE_TARGET: 22, // 1장
   BOMB: 23, // 1장
+  ARMOR: 24, // 20장
+  STRENGTH: 25, // 3장
+  VULNERABLE: 26, // 5장
+  WEAKENED: 27, // 2장
+  MANA_RECOVERY: 28, // 10장
 };
 
 export const CARD_TYPES_INDEX = {
@@ -53,6 +58,11 @@ export const CARD_TYPES_INDEX = {
   [CARD_TYPES.CONTAINMENT_UNIT]: 'CONTAINMENT_UNIT',
   [CARD_TYPES.SATELLITE_TARGET]: 'SATELLITE_TARGET',
   [CARD_TYPES.BOMB]: 'BOMB',
+  [CARD_TYPES.ARMOR]: 'ARMOUR',
+  [CARD_TYPES.STRENGTH]: 'STRENGTH',
+  [CARD_TYPES.VULNERABLE]: 'VULNERABILITY',
+  [CARD_TYPES.WEAKENED]: 'WEAKNESS',
+  [CARD_TYPES.MANA_RECOVERY]: 'MANA_RECOVERY',
 };
 
 export const CARD_LIMIT = {
@@ -80,6 +90,11 @@ export const CARD_LIMIT = {
   [CARD_TYPES.CONTAINMENT_UNIT]: 3,
   [CARD_TYPES.SATELLITE_TARGET]: 1,
   [CARD_TYPES.BOMB]: 1,
+  [CARD_TYPES.ARMOR]: 20,
+  [CARD_TYPES.STRENGTH]: 3,
+  [CARD_TYPES.VULNERABLE]: 5,
+  [CARD_TYPES.WEAKENED]: 2,
+  [CARD_TYPES.MANA_RECOVERY]: 10,
 };
 
 export const CARD_SUM = getCardSum(CARD_LIMIT);
@@ -118,6 +133,27 @@ export const CARD_CONFIG = {
   [CARD_TYPES.CONTAINMENT_UNIT]: { cost: 1, coin: 100 },
   [CARD_TYPES.SATELLITE_TARGET]: { cost: 1, coin: 100 },
   [CARD_TYPES.BOMB]: { cost: 1, coin: 100 },
+  [CARD_TYPES.ARMOR]: {
+    cost: 1,
+    coin: 100,
+    param: { buffType: BUFF_TYPES.ARMOR, stack: 10 },
+  },
+  [CARD_TYPES.STRENGTH]: {
+    cost: 4,
+    coin: 100,
+    param: { buffType: BUFF_TYPES.POWER, stack: 10 },
+  },
+  [CARD_TYPES.VULNERABLE]: {
+    cost: 2,
+    coin: 100,
+    param: { buffType: BUFF_TYPES.VULNERABLE, stack: 3 },
+  },
+  [CARD_TYPES.WEAKENED]: {
+    cost: 3,
+    coin: 100,
+    param: { buffType: BUFF_TYPES.WEAKENED, stack: 3 },
+  },
+  [CARD_TYPES.MANA_RECOVERY]: { cost: 0, coin: 100, param: { manaRecovery: 2 } },
 };
 
 export const EF = {
@@ -129,7 +165,7 @@ export const EF = {
     // 데미지 영향 버프
     const POWER = userBuffs.getBuff(BUFF_TYPES.POWER);
     const ARMOR = targetBuffs.getBuff(BUFF_TYPES.ARMOR);
-    const isVulnerable = userBuffs.isBuff(BUFF_TYPES.VULNERABLE);
+    const isVulnerable = userBuffs.isBuff(BUFF_TYPES.VULNERABLE); // 내가 약화됨 - 손이 미끄러짐
     const isWeakened = targetBuffs.isBuff(BUFF_TYPES.WEAKENED);
 
     // 기초 데미지가 0이하라면 0 반환
@@ -179,10 +215,25 @@ export const EF = {
     console.log('hp', user.character.hp);
     return user.character.hp < 50;
   },
+  manaRecovery: (type, user, targetUser) => {
+    const { manaRecovery } = CARD_CONFIG[type].param;
+    user.character.mp += manaRecovery;
+    user.character.mp -= CARD_CONFIG[type].cost; // 사용한 유저의 마나를 그 카드의 cost만큼 감소
+    return true;
+  },
+  isMaxMp: (type, user, targetUser) => {
+    console.log('mp', user.character.mp);
+    return user.character.mp < 10;
+  },
 };
 
 export const CARD_EFFECTS = {
   [CARD_TYPES.BBANG]: [EF.attack],
   [CARD_TYPES.SHIELD]: [EF.buff],
   [CARD_TYPES.VACCINE]: [EF.isMaxHp, EF.heal],
+  [CARD_TYPES.ARMOR]: [EF.buff],
+  [CARD_TYPES.STRENGTH]: [EF.buff],
+  [CARD_TYPES.VULNERABLE]: [EF.buff],
+  [CARD_TYPES.WEAKENED]: [EF.buff],
+  [CARD_TYPES.MANA_RECOVERY]: [EF.isMaxMp, EF.manaRecovery],
 };
