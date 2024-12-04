@@ -91,14 +91,14 @@ export const INIT_DECK = {
 
 export const CARD_CONFIG = {
   [CARD_TYPES.NONE]: { cost: 1, coin: 100 },
-  [CARD_TYPES.BBANG]: { cost: 1, coin: 100, param: { attack: 10 } },
+  [CARD_TYPES.BBANG]: { cost: 3, coin: 100, param: { attack: 10 } },
   [CARD_TYPES.BIG_BBANG]: { cost: 1, coin: 100 },
   [CARD_TYPES.SHIELD]: {
     cost: 1,
     coin: 100,
     param: { buffType: BUFF_TYPES.ARMOR, stack: 10 },
   },
-  [CARD_TYPES.VACCINE]: { cost: 1, coin: 100, param: { heal: 10 } },
+  [CARD_TYPES.VACCINE]: { cost: 2, coin: 100, param: { heal: 10 } },
   [CARD_TYPES.CALL_119]: { cost: 1, coin: 100 },
   [CARD_TYPES.DEATH_MATCH]: { cost: 1, coin: 100 },
   [CARD_TYPES.GUERRILLA]: { cost: 1, coin: 100 },
@@ -160,16 +160,19 @@ export const EF = {
     // 전부 막지 못한 경우
     targetBuffs.deleteBuff(BUFF_TYPES.ARMOR);
     targetUser.character.hp += finalDamage;
+    user.character.mp -= CARD_CONFIG[type].cost; // 사용한 유저의 마나를 그 카드의 cost만큼 감소
     return true;
   },
   buff: (type, user, targetUser) => {
     const { buffType, stack } = CARD_CONFIG[type].param;
     targetUser.character.buffs.addBuff(buffType, stack);
+    user.character.mp -= CARD_CONFIG[type].cost; // 사용한 유저의 마나를 그 카드의 cost만큼 감소
     return true;
   },
   heal: (type, user, targetUser) => {
     const { heal } = CARD_CONFIG[type].param;
     user.character.hp += heal;
+    user.character.mp -= CARD_CONFIG[type].cost; // 사용한 유저의 마나를 그 카드의 cost만큼 감소
     return true;
   },
   isMaxHp: (type, user, targetUser) => {
