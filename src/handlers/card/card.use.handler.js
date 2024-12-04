@@ -1,15 +1,13 @@
 import { GLOBAL_FAIL_CODES } from '../../constants/globalFailCodes.js';
 import { PACKET_TYPE } from '../../constants/header.js';
-import { CARD_EFFECTS, CARD_TYPES } from '../../constants/cardTypes.js';
+import { CARD_EFFECTS } from '../../constants/cardTypes.js';
 import { getUsersInRoom, getUserRoom } from '../../session/room.session.js';
 import { getUserById, getUserBySocket } from '../../session/user.session.js';
 import sendResponsePacket, {
   multiCast,
 } from '../../utils/response/createResponse.js';
 import { getFailCode } from '../../utils/response/failCode.js';
-import { getHandlerByCardType } from './index.js';
 import { userUpdateMultiCast } from '../../utils/notification/notification.userUpdate.js';
-import { getUsersWithoutMe } from '../../session/room.session.js';
 
 export const useCardHandler = async (socket, payload) => {
   const { cardType, targetUserId } = payload;
@@ -53,9 +51,6 @@ export const useCardHandler = async (socket, payload) => {
     if (effectList.length) {
       throw new Error('사용 조건 실패');
     } else {
-      // const handler = getHandlerByCardType(cardType);
-      // await handler(user, targetUserIdNumber);
-
       // 사용한 카드를 버림. (소멸카드가 생길 경우 분기 필요)
       userCharacter.cards.discardHands(cardType);
 
@@ -78,29 +73,6 @@ export const useCardHandler = async (socket, payload) => {
           targetUserId: targetUserIdNumber,
         },
       });
-
-      // let updatedUsers;
-
-      // // 타겟 유저ID가 자기 자신으로 오는 경우 = 타겟 지정이 안된 경우(난사, 게릴라, 119호출[내체력 or 나머지체력 회복]) & 타겟이 자신인 경우(만기적금, 복권당첨, 백신)
-      // switch (cardType) {
-      //   case CARD_TYPES.MATURED_SAVINGS:
-      //   case CARD_TYPES.WIN_LOTTERY:
-      //     targetUser = user;
-      //     updatedUsers = [user];
-
-      //   case CARD_TYPES.BIG_BBANG:
-      //   case CARD_TYPES.GUERRILLA:
-      //     targetUser = getUsersWithoutMe(roomId, user.id);
-      //     updatedUsers = [user, targetUser];
-
-      //   // 어떨땐 타겟유저가 0이고 어떨땐 타겟유저가 나임 <- 이 상황의 기준을 모르겠음
-      //   // 어떤 카드일때 어떤 타겟유저ID가 오는지만 정리해보고 그에 맞춰 오늘안에 와꾸 완성 예정
-      //   default:
-      //     targetUser = getUserById(targetUserIdNumber);
-      //     updatedUsers = [user, targetUser];
-      //     break;
-      // }
-
       // 카드 사용자와 타겟유저의 상태만 업데이트 노티
       const usersInRoom = getUsersInRoom(roomId);
       userUpdateMultiCast(usersInRoom);
