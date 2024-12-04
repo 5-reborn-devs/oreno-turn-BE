@@ -9,6 +9,7 @@ class Character {
     this.characterType = 0;
     this.roleType = 0;
     this.hp = 50;
+    this.mp = 10;
     this.stateInfo = new CharacterState();
     this._weapon = null;
     this._equips = [];
