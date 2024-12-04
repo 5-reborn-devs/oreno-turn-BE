@@ -15,7 +15,7 @@ import { reactionHandler } from './game/game.reaction.handler.js';
 import { destroyCardsHandler } from './card/card.destroy.handler.js';
 import { eveningPickHandler } from './sync/evening.phase.handler.js';
 import { marketCardDeletePickHandler, marketPickHandler } from './sync/market.handler.js';
-
+import { rerollHandler } from './card/card.reroll.handler.js';
 
 const handlers = {
   [PACKET_TYPE.REGISTER_REQUEST]: {
@@ -81,6 +81,11 @@ const handlers = {
   [PACKET_TYPE.MARKET_CARD_DELETE_REQUEST]: {
     handler: marketCardDeletePickHandler,
     protoType: 'requst.C2SEveningPickRequest',
+  },
+  [PACKET_TYPE.REROLL_REQUEST]: {
+    handler: rerollHandler,
+    protoType: 'request.C2SRerollReqeset',
+
   },
 };
 
