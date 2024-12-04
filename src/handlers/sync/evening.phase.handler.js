@@ -1,12 +1,7 @@
 import { PACKET_TYPE } from '../../constants/header.js';
 import { rooms, users } from '../../session/session.js';
-import { getUsersInRoom } from '../../session/room.session.js';
 import { getFailCode } from '../../utils/response/failCode.js';
-import { multiCast } from '../../utils/response/createResponse.js';
-import { RANDOM_POSITIONS } from '../../constants/randomPositions.js';
 import Card from '../../classes/models/card.class.js';
-import { fyShuffle } from '../../utils/fisherYatesShuffle.js';
-import { getUserById, getUserBySocket } from '../../session/user.session.js';
 import sendResponsePacket from '../../utils/response/createResponse.js';
 import { clients } from '../../session/session.js';
 
