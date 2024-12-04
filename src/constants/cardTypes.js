@@ -1,4 +1,5 @@
 import { getCardSum } from '../utils/getCardSum.js';
+import { BUFF_TYPES } from './buffTypes.js';
 
 export const CARD_TYPES = {
   NONE: 0,
@@ -90,10 +91,14 @@ export const INIT_DECK = {
 
 export const CARD_CONFIG = {
   [CARD_TYPES.NONE]: { cost: 1, coin: 100 },
-  [CARD_TYPES.BBANG]: { cost: 1, coin: 100 },
+  [CARD_TYPES.BBANG]: { cost: 3, coin: 100, param: { attack: 10 } },
   [CARD_TYPES.BIG_BBANG]: { cost: 1, coin: 100 },
-  [CARD_TYPES.SHIELD]: { cost: 1, coin: 100 },
-  [CARD_TYPES.VACCINE]: { cost: 1, coin: 100 },
+  [CARD_TYPES.SHIELD]: {
+    cost: 1,
+    coin: 100,
+    param: { buffType: BUFF_TYPES.ARMOR, stack: 10 },
+  },
+  [CARD_TYPES.VACCINE]: { cost: 2, coin: 100, param: { heal: 10 } },
   [CARD_TYPES.CALL_119]: { cost: 1, coin: 100 },
   [CARD_TYPES.DEATH_MATCH]: { cost: 1, coin: 100 },
   [CARD_TYPES.GUERRILLA]: { cost: 1, coin: 100 },
@@ -113,4 +118,71 @@ export const CARD_CONFIG = {
   [CARD_TYPES.CONTAINMENT_UNIT]: { cost: 1, coin: 100 },
   [CARD_TYPES.SATELLITE_TARGET]: { cost: 1, coin: 100 },
   [CARD_TYPES.BOMB]: { cost: 1, coin: 100 },
+};
+
+export const EF = {
+  attack: (type, user, targetUser) => {
+    const { attack } = CARD_CONFIG[type].param;
+    const userBuffs = user.character.buffs;
+    const targetBuffs = targetUser.character.buffs;
+
+    // 데미지 영향 버프
+    const POWER = userBuffs.getBuff(BUFF_TYPES.POWER);
+    const ARMOR = targetBuffs.getBuff(BUFF_TYPES.ARMOR);
+    const isVulnerable = userBuffs.isBuff(BUFF_TYPES.VULNERABLE);
+    const isWeakened = targetBuffs.isBuff(BUFF_TYPES.WEAKENED);
+
+    // 기초 데미지가 0이하라면 0 반환
+    let damage = attack + POWER;
+    if (damage <= 0) return true;
+
+    // 약화 계산 뒤 소비
+    if (isVulnerable) {
+      damage = Math.floor(damage * 0.75);
+      this.comsumeBuff(BUFF_TYPES.VULNERABLE);
+    }
+
+    // 쇠약 계산 뒤 소비
+    if (isWeakened) {
+      damage = Math.floor(damage * 1.5);
+      targetBuffs.comsumeBuff(BUFF_TYPES.VULNERABLE);
+    }
+
+    // 최종 데미지
+    const finalDamage = ARMOR - damage;
+
+    // 쉴드로 전부 방어한 경우
+    if (finalDamage > 0) {
+      targetBuffs.setBuff(new Buff(BUFF_TYPES.SHIELD, finalDamage));
+      return true;
+    }
+
+    // 전부 막지 못한 경우
+    targetBuffs.deleteBuff(BUFF_TYPES.ARMOR);
+    targetUser.character.hp += finalDamage;
+    user.character.mp -= CARD_CONFIG[type].cost; // 사용한 유저의 마나를 그 카드의 cost만큼 감소
+    return true;
+  },
+  buff: (type, user, targetUser) => {
+    const { buffType, stack } = CARD_CONFIG[type].param;
+    targetUser.character.buffs.addBuff(buffType, stack);
+    user.character.mp -= CARD_CONFIG[type].cost; // 사용한 유저의 마나를 그 카드의 cost만큼 감소
+    return true;
+  },
+  heal: (type, user, targetUser) => {
+    const { heal } = CARD_CONFIG[type].param;
+    user.character.hp += heal;
+    user.character.mp -= CARD_CONFIG[type].cost; // 사용한 유저의 마나를 그 카드의 cost만큼 감소
+    return true;
+  },
+  isMaxHp: (type, user, targetUser) => {
+    console.log('hp', user.character.hp);
+    return user.character.hp < 50;
+  },
+};
+
+export const CARD_EFFECTS = {
+  [CARD_TYPES.BBANG]: [EF.attack],
+  [CARD_TYPES.SHIELD]: [EF.buff],
+  [CARD_TYPES.VACCINE]: [EF.isMaxHp, EF.heal],
 };

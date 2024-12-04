@@ -9,6 +9,7 @@ class Character {
     this.characterType = 0;
     this.roleType = 0;
     this.hp = 50;
+    this.mp = 10;
     this.stateInfo = new CharacterState();
     this._weapon = null;
     this._equips = [];
@@ -17,6 +18,7 @@ class Character {
     this.handCardsCount = 0;
     this.cards = new CardManager(makeCardDeck(INIT_DECK));
     this.buffs = new BuffManager();
+    this.eveningList = [];
   }
   activeData() {
     this.handCardsCount = this.cards.handCardsCount;

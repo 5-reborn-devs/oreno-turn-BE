@@ -12,10 +12,10 @@ class BuffManager {
   }
 
   // 버프 추가
-  addBuff(buffType) {
+  addBuff(buffType, stack = 1) {
     this.buff.has(buffType)
-      ? this.buff.get(buffType).count++
-      : this.buff.set(buffType, new Buff(buffType, 1));
+      ? (this.buff.get(buffType).count += stack)
+      : this.buff.set(buffType, new Buff(buffType, stack));
   }
 
   // 버프 소모

@@ -27,7 +27,7 @@ export const reactionHandler = async (socket) => {
 
     // 공격당한 유저의 상태를 초기화
     character.stateInfo = new CharacterState(); // 만약 state = new CharacterState로 초기화하면 반영안됨.
-    character.hp -= 1;
+    character.hp -= 10;
 
     reactionResponse = {
       success: true,
@@ -48,6 +48,7 @@ export const reactionHandler = async (socket) => {
     // 생존자가 1명이면 그 사람이 승리
     if (survivers.length === 1) {
       const winner = survivers[0];
+      room.stopCustomInterval();
 
       const gameEndNotification = {
         winners: [winner.id],

@@ -27,7 +27,7 @@ class Room {
     this.intervalId = null;
     this.isEveningDraw = false;
     this.marketRestocked = [];
-    this.cardManager = new CardManager(makeCardDeck(CARD_LIMIT));
+    this.cards = new CardManager(makeCardDeck(CARD_LIMIT));
   }
   addUser(userData) {
     this.users.push(userData);
@@ -54,7 +54,7 @@ class Room {
   }
 
   startCustomInterval() {
-    const intervals = [1800000000, 6000, 18000];
+    const intervals = [36000, 6000, 18000];
     let currentIndex = 0;
     const room = this;
     function runInterval() {
@@ -68,6 +68,8 @@ class Room {
   }
 
   stopCustomInterval() {
+    console.log('커스텀 인터벌 지우기 실행 되었음!!!!');
+
     if (this.intervalId) {
       clearTimeout(this.intervalId);
       // 타이머 중지
