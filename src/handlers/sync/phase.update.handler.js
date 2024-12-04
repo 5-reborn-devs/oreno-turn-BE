@@ -1,7 +1,7 @@
 import { PACKET_TYPE } from '../../constants/header.js';
 import { getUsersInRoom } from '../../session/room.session.js';
 import { getFailCode } from '../../utils/response/failCode.js';
-import sendResponsePacket, {
+import  { sendResponsePacket,
   multiCast,
 } from '../../utils/response/createResponse.js';
 import { RANDOM_POSITIONS } from '../../constants/randomPositions.js';
@@ -9,7 +9,9 @@ import Card from '../../classes/models/card.class.js';
 import { fyShuffle } from '../../utils/fisherYatesShuffle.js';
 import { getUserById, getUserBySocket } from '../../session/user.session.js';
 import { eveningDrawHandler } from './evening.phase.handler.js';
-import { userUpdateNotificationHandler } from './user.update.handler.js';
+import { clients } from '../../session/session.js';
+import { userUpdateMultiCast } from '../../utils/notification/notification.userUpdate.js';
+
 
 //페이즈가 넘어갈때, 호출 넘어갔는지 체크.
 export const phaseUpdateNotificationHandler = async (room, nextState) => {
@@ -19,11 +21,17 @@ export const phaseUpdateNotificationHandler = async (room, nextState) => {
     success: false,
     failCode: failCode.UNKNOWN_ERROR,
   };
+
+
   try {
-    // 유저 업데이트 노티
-    multiCast(room.users, PACKET_TYPE.USER_UPDATE_NOTIFICATION, {
-      userUpdateNotification: { user: room.users },
+
+    //패 초기화
+    room.users.forEach((user) => {
+      user.character.cards.reroll();
+      console.log("리롤 후 플레이어의 손패:",user.character.cards.getHands());  
+      console.log("리롤 후  개인 덱 :",user.character.cards.deck);
     });
+    userUpdateMultiCast(room.users);
 
     // characterPositions : 캐릭터 위치 랜덤
     const characterPositions = [];
@@ -53,15 +61,12 @@ export const phaseUpdateNotificationHandler = async (room, nextState) => {
       room.phaseType = 2;
 
       //여기서부터
-      //eveningDrawHandler(room);
+      eveningDrawHandler(room);
     } else if (room.phaseType === 2) {
       console.log(`밤으로 전환합니다. 현재 PhaseType: ${room.phaseType}.`);
       room.phaseType = 3;
 
-      //패 초기화
-      room.users.forEach((user) => {
-        user.character.cardManager.reRoll();
-      });
+
     } else if (room.phaseType === 3) {
       console.log(`낮으로 전환합니다. 현재 PhaseType: ${room.phaseType}.`);
       room.phaseType = 1;

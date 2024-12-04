@@ -4,7 +4,7 @@ import { registerHandler } from './auth/register.handler.js';
 import { gamePrepare } from './game/gamePrepare.handler.js';
 import { gameStart } from './game/gameStart.handler.js';
 import { createRoomHandler } from './room/room.create.handler.js';
-import { fleamarketPickHandler } from './fleamarket/fleamarketPick.handler.js';
+//import { fleamarketPickHandler } from './fleamarket/fleamarketPick.handler.js';
 import { getRoomListHandler } from './room/room.getList.handler.js';
 import { joinRoomHandler } from './room/room.join.handler.js';
 import { joinRandomRoomHandler } from './room/room.joinRandom.handler.js';
@@ -13,6 +13,10 @@ import { positionUpdateHandler } from './sync/user.position.handler.js';
 import { useCardHandler } from './card/card.use.handler.js';
 import { reactionHandler } from './game/game.reaction.handler.js';
 import { destroyCardsHandler } from './card/card.destroy.handler.js';
+import { eveningPickHandler } from './sync/evening.phase.handler.js';
+import { marketCardDeletePickHandler, marketPickHandler } from './sync/market.handler.js';
+
+
 const handlers = {
   [PACKET_TYPE.REGISTER_REQUEST]: {
     handler: registerHandler,
@@ -55,7 +59,7 @@ const handlers = {
     protoType: 'request.C2SUseCardRequest',
   },
   [PACKET_TYPE.FLEAMARKET_PICK_REQUEST]: {
-    handler: fleamarketPickHandler,
+    handler: marketPickHandler,
     protoType: 'request.C2SFleaMarketPickRequest',
   },
   [PACKET_TYPE.POSITION_UPDATE_REQUEST]: {
@@ -69,6 +73,14 @@ const handlers = {
   [PACKET_TYPE.DESTROY_CARD_REQUEST]: {
     handler: destroyCardsHandler,
     protoType: 'request.C2SDestroyCardReqeset',
+  },
+  [PACKET_TYPE.EVENING_DRAW_REQUEST]: {
+    handler: eveningPickHandler,
+    protoType: 'requst.C2SEveningPickRequest',
+  },
+  [PACKET_TYPE.MARKET_CARD_DELETE_REQUEST]: {
+    handler: marketCardDeletePickHandler,
+    protoType: 'requst.C2SEveningPickRequest',
   },
 };
 
