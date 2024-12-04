@@ -1,3 +1,4 @@
+import { CARD_TYPES_INDEX } from '../../constants/cardTypes.js';
 import { fyShuffle } from '../../utils/fisherYatesShuffle.js';
 import Card from '../models/card.class.js';
 
@@ -29,15 +30,25 @@ class CardManager {
   }
 
   // 패에 카드를 한장 제거함.
-  removeHands(cardType) {
+  removeHands(input) {
+    let cardType;
+    let count;
+    if (input instanceof Card) {
+      cardType = input.type;
+      count = input.count;
+    } else {
+      cardType = input;
+      count = 1;
+    }
+
     const targetCard = this.hands.get(cardType);
 
     // 대상 카드가 존재하지 않는다면
-    if (!targetCard || targetCard.count < 0) {
-      throw new Error('targetCard Count:', targetCard);
+    if (!this.hands.has(cardType)) {
+      throw new Error(`${CARD_TYPES_INDEX[cardType]} 카드가 패에 없습니다.`);
     }
-    targetCard.count--;
-    this.handCardsCount--;
+    targetCard.count -= count;
+    this.handCardsCount -= count;
   }
 
   discardHands(cardType) {

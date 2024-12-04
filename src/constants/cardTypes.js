@@ -123,8 +123,8 @@ export const CARD_CONFIG = {
 export const EF = {
   attack: (type, user, targetUser) => {
     const { attack } = CARD_CONFIG[type].param;
-    const userBuffs = user.character.buffs;
-    const targetBuffs = targetUser.character.buffs;
+    const userBuffs = user.character.buffStack;
+    const targetBuffs = targetUser.character.buffStack;
 
     // 데미지 영향 버프
     const POWER = userBuffs.getBuff(BUFF_TYPES.POWER);
@@ -165,7 +165,7 @@ export const EF = {
   },
   buff: (type, user, targetUser) => {
     const { buffType, stack } = CARD_CONFIG[type].param;
-    targetUser.character.buffs.addBuff(buffType, stack);
+    targetUser.character.buffStack.addBuff(buffType, stack);
     user.character.mp -= CARD_CONFIG[type].cost; // 사용한 유저의 마나를 그 카드의 cost만큼 감소
     return true;
   },

@@ -17,17 +17,19 @@ class Character {
     this.bbangCount = 0;
     this.handCardsCount = 0;
     this.cards = new CardManager(makeCardDeck(INIT_DECK));
-    this.buffs = new BuffManager();
+    this.buffStack = new BuffManager();
     this.eveningList = [];
   }
   activeData() {
     this.handCardsCount = this.cards.handCardsCount;
     this.handCards = this.cards.getHands();
+    this.buffs = this.buffStack.getBuffList();
   }
 
   hideData() {
     try {
       delete this.handCards;
+      delete this.buffs;
     } catch (error) {
       console.error(error);
     }

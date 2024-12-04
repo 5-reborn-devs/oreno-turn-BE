@@ -1,11 +1,10 @@
 import { PACKET_TYPE } from '../../constants/header.js';
 import { getUsersInRoom } from '../../session/room.session.js';
 import { getFailCode } from '../../utils/response/failCode.js';
-import  { multiCast} from '../../utils/response/createResponse.js';
+import { multiCast } from '../../utils/response/createResponse.js';
 import { RANDOM_POSITIONS } from '../../constants/randomPositions.js';
 import { eveningDrawHandler } from './evening.phase.handler.js';
 import { userUpdateMultiCast } from '../../utils/notification/notification.userUpdate.js';
-
 
 //페이즈가 넘어갈때, 호출 넘어갔는지 체크.
 export const phaseUpdateNotificationHandler = async (room, nextState) => {
@@ -16,13 +15,29 @@ export const phaseUpdateNotificationHandler = async (room, nextState) => {
     failCode: failCode.UNKNOWN_ERROR,
   };
 
-
   try {
+    // 방에 피가 1이상 남은 생존자 찾기
+    const survivers = room.users.filter((user) => user.character.hp > 0);
+
+    // 생존자가 1명이면 그 사람이 승리
+    if (survivers.length === 1) {
+      const winner = survivers[0];
+      room.stopCustomInterval();
+
+      const gameEndNotification = {
+        winners: [winner.id],
+        winType: 2, // 배틀로얄이라 사이코 밖에 없음.
+      };
+
+      multiCast(room.users, PACKET_TYPE.GAME_END_NOTIFICATION, {
+        gameEndNotification,
+      });
+    }
 
     //패 초기화
     room.users.forEach((user) => {
       user.character.cards.reroll();
-      //console.log("리롤 후 플레이어의 손패:",user.character.cards.getHands());  
+      //console.log("리롤 후 플레이어의 손패:",user.character.cards.getHands());
       //console.log("리롤 후  개인 덱 :",user.character.cards.deck);
     });
     userUpdateMultiCast(room.users);
@@ -59,8 +74,6 @@ export const phaseUpdateNotificationHandler = async (room, nextState) => {
     } else if (room.phaseType === 2) {
       console.log(`밤으로 전환합니다. 현재 PhaseType: ${room.phaseType}.`);
       room.phaseType = 3;
-
-
     } else if (room.phaseType === 3) {
       console.log(`낮으로 전환합니다. 현재 PhaseType: ${room.phaseType}.`);
       room.phaseType = 1;
