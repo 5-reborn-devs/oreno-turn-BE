@@ -13,6 +13,7 @@ import { positionUpdateHandler } from './sync/user.position.handler.js';
 import { useCardHandler } from './card/card.use.handler.js';
 import { reactionHandler } from './game/game.reaction.handler.js';
 import { destroyCardsHandler } from './card/card.destroy.handler.js';
+import { rerollHandler } from './card/card.reroll.handler.js';
 const handlers = {
   [PACKET_TYPE.REGISTER_REQUEST]: {
     handler: registerHandler,
@@ -69,6 +70,10 @@ const handlers = {
   [PACKET_TYPE.DESTROY_CARD_REQUEST]: {
     handler: destroyCardsHandler,
     protoType: 'request.C2SDestroyCardReqeset',
+  },
+  [PACKET_TYPE.REROLL_REQUEST]: {
+    handler: rerollHandler,
+    protoType: 'request.C2SRerollReqeset',
   },
 };
 
