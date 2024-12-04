@@ -67,8 +67,7 @@ class Room {
   }
 
   stopCustomInterval() {
-
-    console.log("커스텀 인터벌 지우기 실행 되었음!!!!");
+    console.log('커스텀 인터벌 지우기 실행 되었음!!!!');
 
     if (this.intervalId) {
       clearTimeout(this.intervalId);

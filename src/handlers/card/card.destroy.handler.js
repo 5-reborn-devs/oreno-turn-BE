@@ -21,8 +21,7 @@ export const destroyCardsHandler = async (socket, payload) => {
     console.log("제거 전 손패 : ",character.cards.getHands());
 
     // 패에서 없애려는 카드를 삭제. 동일한 키를 삭제
-
-      character.cards.removeHands(...cardTypes);
+    character.cards.removeHands(...cardTypes);
 
     const handCards = character.cards.getHands();
 
