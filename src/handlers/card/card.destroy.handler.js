@@ -9,21 +9,28 @@ import { sendResponsePacket } from '../../utils/response/createResponse.js';
 export const destroyCardsHandler = async (socket, payload) => {
   const { destroyCards } = payload;
 
+  // 카드 타입만 추출 
+  const cardTypes = destroyCards.map(card => card.type); 
+  console.log("카드제거 들어왔나요? :", ...cardTypes);
+
+
   try {
     const user = users.get(socket.token);
     const character = user.character;
 
-    // 패에서 없애려는 카드를 삭제. 동일한 키를 삭제
-    destroyCards.forEach((card) => {
-      character.cards.removeHands(card);
-    });
+    console.log("제거 전 손패 : ",character.cards.getHands());
 
-    handCards = [...handCardsMap.values()];
+    // 패에서 없애려는 카드를 삭제. 동일한 키를 삭제
+    character.cards.removeHands(...cardTypes);
+
+    const handCards = character.cards.getHands();
 
     character.handCards = handCards; // user 데이터 업데이트
     const destroyCardResponse = {
       handCards: handCards,
     };
+
+    console.log("제거 후 손패 : ",character.cards.getHands());
 
     sendResponsePacket(socket, PACKET_TYPE.DESTROY_CARD_RESPONSE, {
       destroyCardResponse,

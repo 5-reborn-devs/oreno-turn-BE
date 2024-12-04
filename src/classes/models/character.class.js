@@ -19,6 +19,7 @@ class Character {
     this.cards = new CardManager(makeCardDeck(INIT_DECK));
     this.buffStack = new BuffManager();
     this.eveningList = [];
+    this.isEveningDraw = false;
   }
   activeData() {
     this.handCardsCount = this.cards.handCardsCount;

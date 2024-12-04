@@ -5,6 +5,8 @@ import { multiCast } from '../../utils/response/createResponse.js';
 import { RANDOM_POSITIONS } from '../../constants/randomPositions.js';
 import { eveningDrawHandler } from './evening.phase.handler.js';
 import { userUpdateMultiCast } from '../../utils/notification/notification.userUpdate.js';
+import { marketEnterHandler } from './market.handler.js';
+
 
 //페이즈가 넘어갈때, 호출 넘어갔는지 체크.
 export const phaseUpdateNotificationHandler = async (room, nextState) => {
@@ -71,9 +73,15 @@ export const phaseUpdateNotificationHandler = async (room, nextState) => {
 
       //여기서부터
       eveningDrawHandler(room);
+
     } else if (room.phaseType === 2) {
       console.log(`밤으로 전환합니다. 현재 PhaseType: ${room.phaseType}.`);
       room.phaseType = 3;
+
+      room.users.forEach((user) => {
+        user.character.isEveningDraw = false;
+      });
+
     } else if (room.phaseType === 3) {
       console.log(`낮으로 전환합니다. 현재 PhaseType: ${room.phaseType}.`);
       room.phaseType = 1;

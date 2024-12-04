@@ -25,7 +25,6 @@ class Room {
     this.isMarketOpen = false;
     this.isPushed = true;
     this.intervalId = null;
-    this.isEveningDraw = false;
     this.marketRestocked = [];
     this.cards = new CardManager(makeCardDeck(CARD_LIMIT));
   }
@@ -54,7 +53,7 @@ class Room {
   }
 
   startCustomInterval() {
-    const intervals = [36000, 6000, 18000];
+    const intervals = [18000, 12000, 18000];
     let currentIndex = 0;
     const room = this;
     function runInterval() {
