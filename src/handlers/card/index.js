@@ -9,6 +9,7 @@ import { maturedSavingsHandler } from './cardEffects/effect.maturedSavings.handl
 import { bbangEffectHandler } from './cardEffects/effect.bang.handler.js';
 import { shieldEffectHandler } from './cardEffects/effect.shield.handler.js';
 import { laserPointerHandler } from './cardEffects/effect.laserPointer.handler.js';
+import { winLotteryHandler } from './cardEffects/effect.winLottery.handler.js';
 
 const handlers = {
   [CARD_TYPES.NONE]: {
@@ -26,6 +27,10 @@ const handlers = {
   [CARD_TYPES.MATURED_SAVINGS]: {
     handler: maturedSavingsHandler,
     typeName: CARD_TYPES_INDEX[CARD_TYPES.MATURED_SAVINGS],
+  },
+  [CARD_TYPES.WIN_LOTTERY]: {
+    handler : winLotteryHandler,
+    typeName: CARD_TYPES_INDEX[CARD_TYPES.WIN_LOTTERY]
   },
   [CARD_TYPES.FLEA_MARKET]: {
     handler: fleamarketNotificationHanlder,

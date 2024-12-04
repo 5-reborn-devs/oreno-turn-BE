@@ -1,5 +1,4 @@
-import { getUserById } from '../../../session/user.session.js';
-
+import { userUpdateNotifyForEachUser } from '../../../utils/notification/notify.userUpdate.js';
 // 만기적금 - 은행 npc에게 사용시 핸드카드 두장을 획득한다
 export const maturedSavingsHandler = async (user, gameDeck, targetUserId) => {
   const character = user.character
@@ -11,4 +10,8 @@ export const maturedSavingsHandler = async (user, gameDeck, targetUserId) => {
   pickedCards.forEach((pickedCard) => {
     character.addCardByType(pickedCard)
   });
+
+  // 손패 증가했으므로 유저노티 필요
+  userUpdateNotifyForEachUser(user);
+  
 };
