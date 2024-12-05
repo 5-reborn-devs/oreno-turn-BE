@@ -35,6 +35,34 @@ class Character {
       console.error(error);
     }
   }
+
+  get HP() {
+    return this.hp;
+  }
+
+  set HP(value) {
+    if (value < 0) {
+      this.hp = 0;
+    } else if (value > 50) {
+      this.hp = 50;
+    } else {
+      this.hp = value;
+    }
+  }
+
+  get MP() {
+    return this.mp;
+  }
+
+  set MP(value) {
+    if (value < 0) {
+      this.mp = 0;
+    } else if (value > 10) {
+      this.mp = 10;
+    } else {
+      this.mp = value;
+    }
+  }
 }
 
 export default Character;
