@@ -7,7 +7,6 @@ import { eveningDrawHandler } from './evening.phase.handler.js';
 import { userUpdateMultiCast } from '../../utils/notification/notification.userUpdate.js';
 import { marketEnterHandler } from './market.handler.js';
 
-
 //페이즈가 넘어갈때, 호출 넘어갔는지 체크.
 export const phaseUpdateNotificationHandler = async (room, nextState) => {
   //페일 코드
@@ -46,14 +45,12 @@ export const phaseUpdateNotificationHandler = async (room, nextState) => {
 
     // characterPositions : 캐릭터 위치 랜덤
     const characterPositions = [];
-    //const positionKeys = Object.keys(RANDOM_POSITIONS);
-    const positionKeys = [21, 22, 23];
+    const positionKeys = Object.keys(RANDOM_POSITIONS);
+    //const positionKeys = [21, 22, 23];
     const usedPositions = new Set();
     room.users.forEach((user) => {
       let positionKey;
       do {
-        //const randomIndex = Math.floor(Math.random() * positionKeys.length);
-        //positionKey = positionKeys[randomIndex];
         positionKey =
           positionKeys[Math.floor(Math.random() * positionKeys.length)];
       } while (usedPositions.has(positionKey));
@@ -73,7 +70,6 @@ export const phaseUpdateNotificationHandler = async (room, nextState) => {
 
       //여기서부터
       eveningDrawHandler(room);
-
     } else if (room.phaseType === 2) {
       console.log(`밤으로 전환합니다. 현재 PhaseType: ${room.phaseType}.`);
       room.phaseType = 3;
@@ -81,7 +77,6 @@ export const phaseUpdateNotificationHandler = async (room, nextState) => {
       room.users.forEach((user) => {
         user.character.isEveningDraw = false;
       });
-
     } else if (room.phaseType === 3) {
       console.log(`낮으로 전환합니다. 현재 PhaseType: ${room.phaseType}.`);
       room.phaseType = 1;
