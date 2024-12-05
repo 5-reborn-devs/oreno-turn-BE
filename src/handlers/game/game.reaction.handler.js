@@ -29,10 +29,10 @@ export const reactionHandler = async (socket) => {
     character.stateInfo = new CharacterState(); // 만약 state = new CharacterState로 초기화하면 반영안됨.
     character.hp -= 10;
 
-    reactionResponse = {
-      success: true,
-      failCode: failCode.NONE_FAILCODE,
-    };
+    // reactionResponse = {
+    //   success: true,
+    //   failCode: failCode.NONE_FAILCODE,
+    // };
 
     // 리액션 종료 후 유저 상태 동기화
     const roomId = socket.roomId;
@@ -44,6 +44,11 @@ export const reactionHandler = async (socket) => {
 
     // 방에 피가 1이상 남은 생존자 찾기
     const survivers = room.users.filter((user) => user.character.hp > 0);
+
+    // 만약 상대의 hp가 0이 됐을 경우(죽으면)
+    // if ()  {
+
+    // }
 
     // 생존자가 1명이면 그 사람이 승리
     if (survivers.length === 1) {
@@ -58,6 +63,8 @@ export const reactionHandler = async (socket) => {
       multiCast(room.users, PACKET_TYPE.GAME_END_NOTIFICATION, {
         gameEndNotification,
       });
+      
+      room.stopCustomInterval();
     }
   } catch (error) {
     reactionResponse = {
@@ -69,6 +76,6 @@ export const reactionHandler = async (socket) => {
   }
 
   sendResponsePacket(socket, PACKET_TYPE.REACTION_RESPONSE, {
-    reactionResponse,
+    gameEndNotification,
   });
 };
