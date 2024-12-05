@@ -53,7 +53,7 @@ class Room {
   }
 
   startCustomInterval() {
-    const intervals = [18000, 12000, 18000];
+    const intervals = [18000, 12000, 18000]; // afternoon, evening, night
     let currentIndex = 0;
     const room = this;
     function runInterval() {
