@@ -40,6 +40,7 @@ export const onData = (socket) => async (data) => {
         if (packetType !== 23) {
           console.log('클라가 보낸 패킷타입 request', packetType);
         }
+        
         await handler(socket, decodedPacket);
       } catch (err) {
         console.error(err);

@@ -20,7 +20,7 @@ export const useCardHandler = async (socket, payload) => {
   const userCharacter = user.character;
   const roomId = socket.roomId;
   const failCode = getFailCode();
-  const gameDeck = getUserRoom(roomId).gameDeck
+  const gameDeck = getUserRoom(roomId).gameDeck;
 
   try {
     // 페이로드 값 검증
@@ -73,9 +73,6 @@ export const useCardHandler = async (socket, payload) => {
           targetUserId: targetUserIdNumber,
         },
       });
-      // 카드 사용자와 타겟유저의 상태만 업데이트 노티
-      const usersInRoom = getUsersInRoom(roomId);
-      userUpdateMultiCast(usersInRoom);
     }
   } catch (e) {
     console.error('카드 사용 중 에러 발생:', e);
@@ -86,4 +83,7 @@ export const useCardHandler = async (socket, payload) => {
       },
     });
   }
+  // 카드 사용자와 타겟유저의 상태만 업데이트 노티
+  const usersInRoom = getUsersInRoom(roomId);
+  userUpdateMultiCast(usersInRoom);
 };

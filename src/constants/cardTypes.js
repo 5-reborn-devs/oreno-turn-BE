@@ -158,7 +158,11 @@ export const CARD_CONFIG = {
     coin: 100,
     param: { buffType: BUFF_TYPES.WEAKENED, stack: 3 },
   },
-  [CARD_TYPES.MANA_RECOVERY]: { cost: 0, coin: 100, param: { manaRecovery: 2 } },
+  [CARD_TYPES.MANA_RECOVERY]: {
+    cost: 0,
+    coin: 100,
+    param: { manaRecovery: 2 },
+  },
 };
 
 export const EF = {
@@ -180,7 +184,7 @@ export const EF = {
     // 약화 계산 뒤 소비
     if (isVulnerable) {
       damage = Math.floor(damage * 0.75);
-      this.comsumeBuff(BUFF_TYPES.VULNERABLE);
+      userBuffs.comsumeBuff(BUFF_TYPES.VULNERABLE);
     }
 
     // 쇠약 계산 뒤 소비
@@ -200,45 +204,48 @@ export const EF = {
 
     // 전부 막지 못한 경우
     targetBuffs.deleteBuff(BUFF_TYPES.ARMOR);
-    targetUser.character.hp += finalDamage;
-    user.character.mp -= CARD_CONFIG[type].cost; // 사용한 유저의 마나를 그 카드의 cost만큼 감소
+
+    targetUser.character.HP += finalDamage;
+    user.character.MP -= CARD_CONFIG[type].cost;
     return true;
   },
   buff: (type, user, targetUser) => {
     const { buffType, stack } = CARD_CONFIG[type].param;
     targetUser.character.buffStack.addBuff(buffType, stack);
-    user.character.mp -= CARD_CONFIG[type].cost; // 사용한 유저의 마나를 그 카드의 cost만큼 감소
+    user.character.MP -= CARD_CONFIG[type].cost;
     return true;
   },
   heal: (type, user, targetUser) => {
     const { heal } = CARD_CONFIG[type].param;
-    user.character.hp += heal;
-    user.character.mp -= CARD_CONFIG[type].cost; // 사용한 유저의 마나를 그 카드의 cost만큼 감소
+    user.character.HP += heal;
+    user.character.MP -= CARD_CONFIG[type].cost;
     return true;
-  },
-  isMaxHp: (type, user, targetUser) => {
-    console.log('hp', user.character.hp);
-    return user.character.hp < 50;
   },
   manaRecovery: (type, user, targetUser) => {
     const { manaRecovery } = CARD_CONFIG[type].param;
-    user.character.mp += manaRecovery;
-    user.character.mp -= CARD_CONFIG[type].cost; // 사용한 유저의 마나를 그 카드의 cost만큼 감소
+    user.character.HP += manaRecovery;
+    user.character.MP -= CARD_CONFIG[type].cost;
     return true;
   },
   isMaxMp: (type, user, targetUser) => {
-    console.log('mp', user.character.mp);
-    return user.character.mp < 10;
+    return user.character.MP < 10;
+  },
+  isMinMp: (type, user, targetUser) => {
+    const cost = CARD_CONFIG[type].cost;
+    return user.character.MP > cost;
+  },
+  isMaxHp: (type, user, targetUser) => {
+    return user.character.HP < 50;
   },
 };
 
 export const CARD_EFFECTS = {
-  [CARD_TYPES.BBANG]: [EF.attack],
-  [CARD_TYPES.SHIELD]: [EF.buff],
-  [CARD_TYPES.VACCINE]: [EF.isMaxHp, EF.heal],
-  [CARD_TYPES.ARMOR]: [EF.buff],
-  [CARD_TYPES.STRENGTH]: [EF.buff],
-  [CARD_TYPES.VULNERABLE]: [EF.buff],
-  [CARD_TYPES.WEAKENED]: [EF.buff],
-  [CARD_TYPES.MANA_RECOVERY]: [EF.isMaxMp, EF.manaRecovery],
+  [CARD_TYPES.BBANG]: [EF.isMinMp, EF.attack],
+  [CARD_TYPES.SHIELD]: [EF.isMinMp, EF.buff],
+  [CARD_TYPES.VACCINE]: [EF.isMinMp, EF.isMaxHp, EF.heal],
+  [CARD_TYPES.ARMOR]: [EF.isMinMp, EF.buff],
+  [CARD_TYPES.STRENGTH]: [EF.isMinMp, EF.buff],
+  [CARD_TYPES.VULNERABLE]: [EF.isMinMp, EF.buff],
+  [CARD_TYPES.WEAKENED]: [EF.isMinMp, EF.buff],
+  [CARD_TYPES.MANA_RECOVERY]: [EF.isMinMp, EF.isMaxMp, EF.manaRecovery],
 };
