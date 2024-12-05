@@ -223,7 +223,7 @@ export const EF = {
   },
   manaRecovery: (type, user, targetUser) => {
     const { manaRecovery } = CARD_CONFIG[type].param;
-    user.character.HP += manaRecovery;
+    user.character.MP += manaRecovery;
     user.character.MP -= CARD_CONFIG[type].cost;
     return true;
   },
@@ -232,7 +232,7 @@ export const EF = {
   },
   isMinMp: (type, user, targetUser) => {
     const cost = CARD_CONFIG[type].cost;
-    return user.character.MP > cost;
+    return user.character.MP >= cost;
   },
   isMaxHp: (type, user, targetUser) => {
     return user.character.HP < 50;
