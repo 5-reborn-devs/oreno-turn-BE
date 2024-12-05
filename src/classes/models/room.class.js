@@ -25,6 +25,7 @@ class Room {
     this.isMarketOpen = false;
     this.isPushed = true;
     this.intervalId = null;
+    this.positionIntervalid = null;
     this.marketRestocked = [];
     this.cards = new CardManager(makeCardDeck(CARD_LIMIT));
   }
@@ -56,7 +57,7 @@ class Room {
       } } 
   positionUpdateInterval() { 
     const room = this; console.log("포지션 인터벌 시작"); 
-    this.intervalId = setInterval(function () { 
+    this.positionIntervalid = setInterval(function () { 
       room.positionUpdateOn(); }, 1000); 
       // 함수를 전달 
       } 
@@ -89,6 +90,7 @@ class Room {
 
     if (this.intervalId) {
       clearTimeout(this.intervalId);
+      clearTimeout(this.positionIntervalid);
       // 타이머 중지
       this.intervalId = null; // 타이머 ID 초기화
     }
