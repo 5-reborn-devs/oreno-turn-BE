@@ -28,6 +28,8 @@ export const positionUpdateHandler = async (socket, payload) => {
 
     */
 
+    if(room.positionUpdateSwitch == true){
+
     const usersInRoom = getUsersInRoom(socket.roomId, user.id);
     const positionUpdateNotification = {
       characterPositions: [
@@ -44,9 +46,12 @@ export const positionUpdateHandler = async (socket, payload) => {
    // room.positionUpdateSwitch = false; // 멀티 캐스트 후에 스위치를 끈다.
    //}스위치가 켜져있을때만 노티를 쏴준다.
 
+
     multiCast(usersInRoom, PACKET_TYPE.POSITION_UPDATE_NOTIFICATION, {
       positionUpdateNotification,
     });
+
+  }
 
   } catch (error) {
     //console.log('위치 동기화 알수없는 에러', error);
