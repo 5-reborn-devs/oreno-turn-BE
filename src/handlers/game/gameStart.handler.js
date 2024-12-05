@@ -25,8 +25,8 @@ export const gameStart = (socket) => {
     const usersInRoom = [...room.users]; // 방 안에 있는 모든 유저들의 정보를 가져옴
 
     const characterPositions = [];
-    //const positionKeys = Object.keys(RANDOM_POSITIONS);
-    const positionKeys = [21, 22, 23];
+    const positionKeys = Object.keys(RANDOM_POSITIONS);
+    //const positionKeys = [21, 22, 23];
     const usedPositions = new Set();
 
     room.users.forEach((user) => {
