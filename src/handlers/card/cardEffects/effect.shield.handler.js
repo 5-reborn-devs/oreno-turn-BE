@@ -1,7 +1,7 @@
 import { getUserById } from '../../../session/user.session.js';
 import CharacterState from '../../../classes/models/character.state.class.js';
 
-export const shieldEffectHandler = async (user, targetUserId) => {
+export const shieldEffectHandler = async (user, gameDeck, targetUserId) => {
   let errorMessage = '';
 
   try {

@@ -1,32 +1,26 @@
 import { PACKET_TYPE } from '../../constants/header.js';
 import { rooms, users } from '../../session/session.js';
-import { getUsersInRoom } from '../../session/room.session.js';
 import { getFailCode } from '../../utils/response/failCode.js';
-import {
-  sendResponsePacket,
-  multiCast,
-} from '../../utils/response/createResponse.js';
-import { RANDOM_POSITIONS } from '../../constants/randomPositions.js';
+import { sendResponsePacket } from '../../utils/response/createResponse.js';
 import Card from '../../classes/models/card.class.js';
-import { fyShuffle } from '../../utils/fisherYatesShuffle.js';
-import { getUserById, getUserBySocket } from '../../session/user.session.js';
-import { eveningDrawHandler } from './evening.phase.handler.js';
-import { userUpdateNotificationHandler } from './user.update.handler.js';
-import { fleamarketPickHandler } from '../fleamarket/fleamarketPick.handler.js';
+import { clients } from '../../session/session.js';
+
 
 //개인 마켓 입고 장수
 const RestockedPerUser = 3;
 
 //마켓 입장 핸들러
 export const marketEnterHandler = async (socket, payloadData) => {
+  
   // 소켓 유저&룸 검색
   const user = users.get(socket.token);
   const roomId = socket.roomId;
   const room = rooms.get(roomId);
 
+  console.log("마켓 입장 덱좀 보자: ",room.cards.deck); 
   //마켓 리스트 추가
   for (let i = 0; i < RestockedPerUser; i++) {
-    const cardType = room.cardManager.deck.pop();
+    const cardType = room.cards.deck.pop();
     if (cardType) {
       const card = new Card(cardType, 1);
       user.character.eveningList.push(card.type);
@@ -51,6 +45,7 @@ export const marketEnterHandler = async (socket, payloadData) => {
   });
 };
 
+
 // 마켓 선택 핸들러
 export const marketPickHandler = (socket, payloadData) => {
   //현재 배열 모습 : [ cardType, cardType, cardType, Heal, Erase, Exit ]
@@ -69,7 +64,7 @@ export const marketPickHandler = (socket, payloadData) => {
     console.log('플레이어 체력회복! 현재 체력: ', user.character.hp);
   }
   if (pickIndex === 4) {
-    marketCardDelete();
+    marketCardDelete(socket);
     //user.character.gold - 100;
     console.log('카드 제거 함수 호출');
   }
@@ -87,12 +82,14 @@ export const marketPickHandler = (socket, payloadData) => {
   for (let i = 0; i < RestockedPerUser; i++) {
     //일치하는 카드타입 패에 추가
     if (i === pickIndex) {
-      user.character.cardManager.addHands(user.character.eveningList[i]);
+      user.character.cards.addHands(user.character.eveningList[i]);
       continue;
     }
     //나머지 공용덱으로
-    room.cardManager.deck.push(user.character.eveningList[i]);
+    room.cards.deck.push(user.character.eveningList[i]);
   }
+  // console.log("추가후 핸드패 :",user.character.cards.getHands());
+  // console.log("추가후 덱 :",room.cards.deck);
 
   //리스폰스 슛
   sendResponsePacket(socket, PACKET_TYPE.FLEAMARKET_PICK_RESPONSE, {
@@ -104,46 +101,82 @@ export const marketPickHandler = (socket, payloadData) => {
 
   //유저의 드로우 목록 초기화.
   user.character.eveningList = [];
+
+  //드로우 여부 스위치
+  if(user.character.isEveningDraw == false){
+    marketEnterHandler(socket,payloadData);
+    user.character.isEveningDraw = true;
+  }
+
 };
+
+
+
+// message S2CReactionResponse {
+//   bool success = 1;
+//   GlobalFailCode failCode = 2;
+// }
 
 //마켓 카드 제거 선택지 오픈 핸들러
 export const marketCardDelete = (socket) => {
-  //리퀘 필요 없음. 4번으로 들어옴.
-  //노티를 쏴주고, 클라의 선택을 받아 처리하고 리스폰스 해주면 됨.
-  //유저의 현재 손패(덱) 리스트를 노티로 쏴주자.
+  const failCode = getFailCode();
 
   // 소켓 유저&룸 검색
   const user = users.get(socket.token);
 
-  //노티 만들기
-  const MarketCardDeleteNotification = {
-    cardTypes: user.character.cardManager.getHands(), //getHands로 바꾸자.
-  };
+  // 우선 노티 만들어.
+  const reactionResponse = {
+    success : true,
+    failCode: failCode.NONE_FAILCODE,
+  }
 
-  //리스폰스 슛
-  sendResponsePacket(socket, PACKET_TYPE.MARKET_CARD_DELETE_NOTIFICATION, {
-    MarketCardDeleteNotification,
-  });
+  sendResponsePacket(socket, PACKET_TYPE.REACTION_RESPONSE, { reactionResponse });
+
+  // //노티 만들기
+  // const MarketCardDeleteNotification = {
+  //   cardTypes: user.character.cards.getHands(), //getHands로 바꾸자.
+  // };
+
+  // //리스폰스 슛
+  // sendResponsePacket(socket, PACKET_TYPE.MARKET_CARD_DELETE_NOTIFICATION, {
+  //   MarketCardDeleteNotification,
+  // });
 };
 
 //마켓 카드 제거 선택 핸들러
-export const marketCardDeletePick = (socket, payloadData) => {
-  const { cardType } = payloadData;
+export const marketCardDeletePickHandler = (socket, payloadData) => {
+  const { destroyCards } = payloadData;
 
+  console.log("카드제거 들어왔나요? :",destroyCards);
   // 소켓 유저&룸 검색
   const user = users.get(socket.token);
 
   //패(덱)에 있는 카드중에 카드타입이 일치하는 카드 1장 제거
-  user.character.cardManager.removeHands(cardType);
+  //user.character.cards.removeHands(cardType);
+
+  handCards = user.character.cards.getHands();
+
+  //노티 만들기
+  const DestroyCardResponse = {
+    handCards: handCards,
+  }
 
   //리스폰스 슛
-  sendResponsePacket(socket, PACKET_TYPE.MARKET_CARD_DELETE_RESPONSE, {
-    maketCardDeleteResponse: {
-      success: true,
-      failCode: getFailCode(),
-    },
-  });
+  sendResponsePacket(socket, PACKET_TYPE.DESTROY_CARD_RESPONSE, { DestroyCardResponse });
 };
+/*
+
+message C2SDestroyCardRequest {
+    repeated CardData destroyCards = 1;
+}
+
+message S2CDestroyCardResponse {
+    repeated CardData handCards = 1;
+}
+
+*/
+
+
 
 /*
 message S2CFleaMarketNotification {

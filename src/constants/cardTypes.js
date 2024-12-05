@@ -1,4 +1,5 @@
 import { getCardSum } from '../utils/getCardSum.js';
+import { BUFF_TYPES } from './buffTypes.js';
 
 export const CARD_TYPES = {
   NONE: 0,
@@ -25,6 +26,11 @@ export const CARD_TYPES = {
   CONTAINMENT_UNIT: 21, // 3장
   SATELLITE_TARGET: 22, // 1장
   BOMB: 23, // 1장
+  ARMOR: 24, // 20장
+  STRENGTH: 25, // 3장
+  VULNERABLE: 26, // 5장
+  WEAKENED: 27, // 2장
+  MANA_RECOVERY: 28, // 10장
 };
 
 export const CARD_TYPES_INDEX = {
@@ -52,6 +58,11 @@ export const CARD_TYPES_INDEX = {
   [CARD_TYPES.CONTAINMENT_UNIT]: 'CONTAINMENT_UNIT',
   [CARD_TYPES.SATELLITE_TARGET]: 'SATELLITE_TARGET',
   [CARD_TYPES.BOMB]: 'BOMB',
+  [CARD_TYPES.ARMOR]: 'ARMOUR',
+  [CARD_TYPES.STRENGTH]: 'STRENGTH',
+  [CARD_TYPES.VULNERABLE]: 'VULNERABLE',
+  [CARD_TYPES.WEAKENED]: 'WEAKENED',
+  [CARD_TYPES.MANA_RECOVERY]: 'MANA_RECOVERY',
 };
 
 export const CARD_LIMIT = {
@@ -79,15 +90,155 @@ export const CARD_LIMIT = {
   [CARD_TYPES.CONTAINMENT_UNIT]: 3,
   [CARD_TYPES.SATELLITE_TARGET]: 1,
   [CARD_TYPES.BOMB]: 1,
+  [CARD_TYPES.ARMOR]: 20,
+  [CARD_TYPES.STRENGTH]: 3,
+  [CARD_TYPES.VULNERABLE]: 5,
+  [CARD_TYPES.WEAKENED]: 2,
+  [CARD_TYPES.MANA_RECOVERY]: 10,
 };
 
 export const CARD_SUM = getCardSum(CARD_LIMIT);
 
 export const INIT_DECK = {
-  [CARD_TYPES.BBANG]: 5,
-  [CARD_TYPES.VACCINE]: 5,
+  [CARD_TYPES.BBANG]: 3,
+  [CARD_TYPES.VACCINE]: 2,
+  [CARD_TYPES.ARMOR]: 1,
+  [CARD_TYPES.STRENGTH]: 1,
+  [CARD_TYPES.VULNERABLE]: 1,
+  [CARD_TYPES.WEAKENED]: 1,
+  [CARD_TYPES.MANA_RECOVERY]: 1,
 };
 
 export const CARD_CONFIG = {
-  [CARD_TYPES.BBANG]: { cost: 1, coin: 100 },
+  [CARD_TYPES.NONE]: { cost: 1, coin: 100 },
+  [CARD_TYPES.BBANG]: { cost: 3, coin: 100, param: { attack: 10 } },
+  [CARD_TYPES.BIG_BBANG]: { cost: 1, coin: 100 },
+  [CARD_TYPES.SHIELD]: {
+    cost: 1,
+    coin: 100,
+    param: { buffType: BUFF_TYPES.ARMOR, stack: 10 },
+  },
+  [CARD_TYPES.VACCINE]: { cost: 2, coin: 100, param: { heal: 10 } },
+  [CARD_TYPES.CALL_119]: { cost: 1, coin: 100 },
+  [CARD_TYPES.DEATH_MATCH]: { cost: 1, coin: 100 },
+  [CARD_TYPES.GUERRILLA]: { cost: 1, coin: 100 },
+  [CARD_TYPES.ABSORB]: { cost: 1, coin: 100 },
+  [CARD_TYPES.HALLUCINATION]: { cost: 1, coin: 100 },
+  [CARD_TYPES.FLEA_MARKET]: { cost: 1, coin: 100 },
+  [CARD_TYPES.MATURED_SAVINGS]: { cost: 1, coin: 100 },
+  [CARD_TYPES.WIN_LOTTERY]: { cost: 1, coin: 100 },
+  [CARD_TYPES.SNIPER_GUN]: { cost: 1, coin: 100 },
+  [CARD_TYPES.HAND_GUN]: { cost: 1, coin: 100 },
+  [CARD_TYPES.DESERT_EAGLE]: { cost: 1, coin: 100 },
+  [CARD_TYPES.AUTO_RIFLE]: { cost: 1, coin: 100 },
+  [CARD_TYPES.LASER_POINTER]: { cost: 1, coin: 100 },
+  [CARD_TYPES.RADAR]: { cost: 1, coin: 100 },
+  [CARD_TYPES.AUTO_SHIELD]: { cost: 1, coin: 100 },
+  [CARD_TYPES.STEALTH_SUIT]: { cost: 1, coin: 100 },
+  [CARD_TYPES.CONTAINMENT_UNIT]: { cost: 1, coin: 100 },
+  [CARD_TYPES.SATELLITE_TARGET]: { cost: 1, coin: 100 },
+  [CARD_TYPES.BOMB]: { cost: 1, coin: 100 },
+  [CARD_TYPES.ARMOR]: {
+    cost: 1,
+    coin: 100,
+    param: { buffType: BUFF_TYPES.ARMOR, stack: 10 },
+  },
+  [CARD_TYPES.STRENGTH]: {
+    cost: 4,
+    coin: 100,
+    param: { buffType: BUFF_TYPES.POWER, stack: 10 },
+  },
+  [CARD_TYPES.VULNERABLE]: {
+    cost: 2,
+    coin: 100,
+    param: { buffType: BUFF_TYPES.VULNERABLE, stack: 3 },
+  },
+  [CARD_TYPES.WEAKENED]: {
+    cost: 3,
+    coin: 100,
+    param: { buffType: BUFF_TYPES.WEAKENED, stack: 3 },
+  },
+  [CARD_TYPES.MANA_RECOVERY]: { cost: 0, coin: 100, param: { manaRecovery: 2 } },
+};
+
+export const EF = {
+  attack: (type, user, targetUser) => {
+    const { attack } = CARD_CONFIG[type].param;
+    const userBuffs = user.character.buffStack;
+    const targetBuffs = targetUser.character.buffStack;
+
+    // 데미지 영향 버프
+    const POWER = userBuffs.getBuff(BUFF_TYPES.POWER);
+    const ARMOR = targetBuffs.getBuff(BUFF_TYPES.ARMOR);
+    const isVulnerable = userBuffs.isBuff(BUFF_TYPES.VULNERABLE); // 내가 약화됨 - 손이 미끄러짐
+    const isWeakened = targetBuffs.isBuff(BUFF_TYPES.WEAKENED);
+
+    // 기초 데미지가 0이하라면 0 반환
+    let damage = attack + POWER;
+    if (damage <= 0) return true;
+
+    // 약화 계산 뒤 소비
+    if (isVulnerable) {
+      damage = Math.floor(damage * 0.75);
+      this.comsumeBuff(BUFF_TYPES.VULNERABLE);
+    }
+
+    // 쇠약 계산 뒤 소비
+    if (isWeakened) {
+      damage = Math.floor(damage * 1.5);
+      targetBuffs.comsumeBuff(BUFF_TYPES.VULNERABLE);
+    }
+
+    // 최종 데미지
+    const finalDamage = ARMOR - damage;
+
+    // 쉴드로 전부 방어한 경우
+    if (finalDamage > 0) {
+      targetBuffs.setBuff(new Buff(BUFF_TYPES.SHIELD, finalDamage));
+      return true;
+    }
+
+    // 전부 막지 못한 경우
+    targetBuffs.deleteBuff(BUFF_TYPES.ARMOR);
+    targetUser.character.hp += finalDamage;
+    user.character.mp -= CARD_CONFIG[type].cost; // 사용한 유저의 마나를 그 카드의 cost만큼 감소
+    return true;
+  },
+  buff: (type, user, targetUser) => {
+    const { buffType, stack } = CARD_CONFIG[type].param;
+    targetUser.character.buffStack.addBuff(buffType, stack);
+    user.character.mp -= CARD_CONFIG[type].cost; // 사용한 유저의 마나를 그 카드의 cost만큼 감소
+    return true;
+  },
+  heal: (type, user, targetUser) => {
+    const { heal } = CARD_CONFIG[type].param;
+    user.character.hp += heal;
+    user.character.mp -= CARD_CONFIG[type].cost; // 사용한 유저의 마나를 그 카드의 cost만큼 감소
+    return true;
+  },
+  isMaxHp: (type, user, targetUser) => {
+    console.log('hp', user.character.hp);
+    return user.character.hp < 50;
+  },
+  manaRecovery: (type, user, targetUser) => {
+    const { manaRecovery } = CARD_CONFIG[type].param;
+    user.character.mp += manaRecovery;
+    user.character.mp -= CARD_CONFIG[type].cost; // 사용한 유저의 마나를 그 카드의 cost만큼 감소
+    return true;
+  },
+  isMaxMp: (type, user, targetUser) => {
+    console.log('mp', user.character.mp);
+    return user.character.mp < 10;
+  },
+};
+
+export const CARD_EFFECTS = {
+  [CARD_TYPES.BBANG]: [EF.attack],
+  [CARD_TYPES.SHIELD]: [EF.buff],
+  [CARD_TYPES.VACCINE]: [EF.isMaxHp, EF.heal],
+  [CARD_TYPES.ARMOR]: [EF.buff],
+  [CARD_TYPES.STRENGTH]: [EF.buff],
+  [CARD_TYPES.VULNERABLE]: [EF.buff],
+  [CARD_TYPES.WEAKENED]: [EF.buff],
+  [CARD_TYPES.MANA_RECOVERY]: [EF.isMaxMp, EF.manaRecovery],
 };

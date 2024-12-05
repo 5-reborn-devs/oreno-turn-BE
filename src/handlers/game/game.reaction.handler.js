@@ -1,7 +1,7 @@
 import CharacterState from '../../classes/models/character.state.class.js';
 import { PACKET_TYPE } from '../../constants/header.js';
-import { getUserRoom, getUsersInRoom } from '../../session/room.session.js';
-import { rooms, users } from '../../session/session.js'
+import { users, rooms } from '../../session/session.js';
+import { getUserRoom } from '../../session/room.session.js';
 import { getUserById } from '../../session/user.session.js';
 import {
   multiCast,
@@ -27,7 +27,7 @@ export const reactionHandler = async (socket) => {
 
     // 공격당한 유저의 상태를 초기화
     character.stateInfo = new CharacterState(); // 만약 state = new CharacterState로 초기화하면 반영안됨.
-    character.hp -= 30;
+    character.hp -= 10;
 
     // reactionResponse = {
     //   success: true,
@@ -36,8 +36,10 @@ export const reactionHandler = async (socket) => {
 
     // 리액션 종료 후 유저 상태 동기화
     const roomId = socket.roomId;
-    const room = rooms.get(roomId);
     // const room = getUserRoom(roomId);
+    // const roomInUser = getUsersInRoom(roomId);
+    const room = rooms.get(roomId); // 클라이언트가 들어가 있는 방정보를 가져옴
+    console.log('룸정보 가져와', room);
     userUpdateMultiCast(room.users);
 
     // 방에 피가 1이상 남은 생존자 찾기
@@ -51,6 +53,7 @@ export const reactionHandler = async (socket) => {
     // 생존자가 1명이면 그 사람이 승리
     if (survivers.length === 1) {
       const winner = survivers[0];
+      room.stopCustomInterval();
 
       const gameEndNotification = {
         winners: [winner.id],

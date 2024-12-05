@@ -1,12 +1,7 @@
 import { PACKET_TYPE } from '../../constants/header.js';
 import { rooms, users } from '../../session/session.js';
-import { getUsersInRoom } from '../../session/room.session.js';
 import { getFailCode } from '../../utils/response/failCode.js';
-import { multiCast } from '../../utils/response/createResponse.js';
-import { RANDOM_POSITIONS } from '../../constants/randomPositions.js';
 import Card from '../../classes/models/card.class.js';
-import { fyShuffle } from '../../utils/fisherYatesShuffle.js';
-import { getUserById, getUserBySocket } from '../../session/user.session.js';
 import sendResponsePacket from '../../utils/response/createResponse.js';
 import { clients } from '../../session/session.js';
 
@@ -20,20 +15,24 @@ export const eveningDrawHandler = async (room) => {
     room.users.forEach((user) => {
       const client = clients.get(user.id);
 
-      user.character.cardManager.getDeckMap();
+    
+      user.character.cards.getDeckMap();
+
+
 
       for (let i = 0; i < cardsPerUser; i++) {
-        const cardType = room.cardManager.deck.pop();
+        const cardType = room.cards.deck.pop();
         if (cardType) {
           const card = new Card(cardType, 1);
           user.character.eveningList.push(card.type);
         }
       }
       console.log('이브닝 드로우 리스트 : ', user.character.eveningList);
+      console.log("플레이어의 손패:",user.character.cards.getHands());  
 
       //노티 만들기
       const eveningDistributionNotification = {
-        cardTypes: user.character.eveningList,
+        cardType: user.character.eveningList,
       };
 
       //페이즈 넘어갈때 리롤 고민 필요.
@@ -41,7 +40,7 @@ export const eveningDrawHandler = async (room) => {
       sendResponsePacket(client, PACKET_TYPE.EVENING_DRAW_NOTIFICATION, {
         eveningDistributionNotification,
       });
-      eveningPickHandler(client, { cardType: 1 });
+      // eveningPickHandler(client, { cardType: 1 });
     });
   } catch (error) {
     console.error('공용 카드 선택 검증 에러', error);
@@ -63,11 +62,11 @@ export const eveningPickHandler = async (socket, payloadData) => {
     for (let i = 0; i < user.character.eveningList.length; i++) {
       //일치하는 카드타입 패에 추가
       if (user.character.eveningList[i] === cardType) {
-        user.character.cardManager.addHands(cardType);
+        user.character.cards.addHands(cardType);
         continue;
       }
       //나머지 공용덱으로
-      room.cardManager.deck.push(user.character.eveningList[i]);
+      room.cards.deck.push(user.character.eveningList[i]);
     }
     //console.log("패에 카드 추가 cardType: ", cardType);
 
