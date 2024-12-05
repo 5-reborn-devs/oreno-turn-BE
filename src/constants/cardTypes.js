@@ -247,5 +247,5 @@ export const CARD_EFFECTS = {
   [CARD_TYPES.STRENGTH]: [EF.isMinMp, EF.buff],
   [CARD_TYPES.VULNERABLE]: [EF.isMinMp, EF.buff],
   [CARD_TYPES.WEAKENED]: [EF.isMinMp, EF.buff],
-  [CARD_TYPES.MANA_RECOVERY]: [EF.isMinMp, EF.isMaxMp, EF.manaRecovery],
+  [CARD_TYPES.MANA_RECOVERY]: [EF.isMaxMp, EF.manaRecovery],
 };
