@@ -1,12 +1,48 @@
-services:
-    db:
-        image: mysql:8.0
-        ports:
-            - 3333:3306
-        environment:
-            MYSQL_DATABASE: test_user
-            MYSQL_USER: test
-            MYSQL_PASSWORD: test1
-            MYSQL_ROOT_PASSWORD: test1
-        restart: unless-stopped
+# services:
+#     db:
+#         image: mysql:8.0
+#         ports:
+#             - 3333:3306
+#         environment:
+#             MYSQL_DATABASE: test_user
+#             MYSQL_USER: test
+#             MYSQL_PASSWORD: test1
+#             MYSQL_ROOT_PASSWORD: test1
+#         restart: unless-stopped
 
+services:
+  server:
+    build:
+      context: .
+    ports:
+      - "6666:3000" # Change port as needed
+    environment:
+      NODE_ENV: production
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_PASSWORD: rootdemo
+      MYSQL_DATABASE: USER_DB
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    ports:
+      - "8886:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootdemo
+      MYSQL_DATABASE: USER_DB
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - app-network
+
+volumes:
+  db-data:
+
+networks:
+  app-network:
+    driver: bridge
