@@ -25,6 +25,7 @@ class Room {
     this.isMarketOpen = false;
     this.isPushed = true;
     this.intervalId = null;
+    this.positionIntervalid = null;
     this.marketRestocked = [];
     this.cards = new CardManager(makeCardDeck(CARD_LIMIT));
   }
@@ -41,13 +42,31 @@ class Room {
     }
   }
 
-  positionUpdateOn() {
-    this.positionUpdateOn = true;
-  } //포지션 업데이트 노티 받기 위한 스위치 온
+  // positionUpdateOn() {
+  //   this.positionUpdateOn = true;
+  // } //포지션 업데이트 노티 받기 위한 스위치 온
 
+
+  positionUpdateOn() { 
+    if (this.positionUpdateSwitch === false){ 
+      this.positionUpdateSwitch = true; 
+      console.log("똑"); } 
+    else if (this.positionUpdateSwitch === true) 
+      { this.positionUpdateSwitch = false; console.log("딱"); 
+
+      } } 
+  positionUpdateInterval() { 
+    const room = this; console.log("포지션 인터벌 시작"); 
+    this.positionIntervalid = setInterval(function () { 
+      room.positionUpdateOn(); }, 1000); 
+      // 함수를 전달 
+      } 
+  
+  
   button() {
     if (this.isPushed) {
       this.startCustomInterval();
+      this.positionUpdateInterval();
       this.isPushed = false;
     }
   }
@@ -71,6 +90,7 @@ class Room {
 
     if (this.intervalId) {
       clearTimeout(this.intervalId);
+      clearTimeout(this.positionIntervalid);
       // 타이머 중지
       this.intervalId = null; // 타이머 ID 초기화
     }
