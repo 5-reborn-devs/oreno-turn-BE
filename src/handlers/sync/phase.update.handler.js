@@ -34,7 +34,10 @@ export const phaseUpdateNotificationHandler = async (room, nextState) => {
       multiCast(room.users, PACKET_TYPE.GAME_END_NOTIFICATION, {
         gameEndNotification,
       });
+      
+      
     }
+
 
     //패 초기화
     room.users.forEach((user) => {
@@ -80,6 +83,8 @@ export const phaseUpdateNotificationHandler = async (room, nextState) => {
 
       room.users.forEach((user) => {
         user.character.isEveningDraw = false;
+        //드로우 선택하지 않았을때 초기화
+        user.character.eveningList = [];
       });
 
     } else if (room.phaseType === 3) {
