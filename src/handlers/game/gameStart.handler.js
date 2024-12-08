@@ -36,6 +36,11 @@ export const gameStart = (socket) => {
           positionKeys[Math.floor(Math.random() * positionKeys.length)];
       } while (usedPositions.has(positionKey));
       usedPositions.add(positionKey);
+
+      // 여기부터 테스트 입니다. 12.8 진수
+      user.character.x = RANDOM_POSITIONS[positionKey].x;
+      user.character.y = RANDOM_POSITIONS[positionKey].y; 
+
       characterPositions.push({
         id: user.id,
         x: RANDOM_POSITIONS[positionKey].x,

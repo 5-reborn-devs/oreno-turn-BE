@@ -50,15 +50,13 @@ class Room {
   positionUpdateOn() { 
     if (this.positionUpdateSwitch === false){ 
       this.positionUpdateSwitch = true; 
-      console.log("똑"); } 
-    else if (this.positionUpdateSwitch === true) 
-      { this.positionUpdateSwitch = false; console.log("딱"); 
+      console.log("포지션 업데이트 킴!"); }  
+    }
 
-      } } 
   positionUpdateInterval() { 
     const room = this; console.log("포지션 인터벌 시작"); 
     this.positionIntervalid = setInterval(function () { 
-      room.positionUpdateOn(); }, 1000); 
+      room.positionUpdateOn(); }, 5000); 
       // 함수를 전달 
       } 
   

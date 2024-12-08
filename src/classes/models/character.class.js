@@ -20,6 +20,8 @@ class Character {
     this.buffStack = new BuffManager();
     this.eveningList = [];
     this.isEveningDraw = false;
+    this.x =0;
+    this.y =0;
   }
   activeData() {
     this.handCardsCount = this.cards.handCardsCount;
