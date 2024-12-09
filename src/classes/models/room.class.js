@@ -28,8 +28,6 @@ class Room {
     this.positionIntervalid = null;
     this.marketRestocked = [];
     this.cards = new CardManager(makeCardDeck(CARD_LIMIT));
-    this.currentTime = 0;
-    this.nextPhaseAt =0;
   }
   addUser(userData) {
     this.users.push(userData);
@@ -58,7 +56,7 @@ class Room {
   positionUpdateInterval() { 
     const room = this; console.log("포지션 인터벌 시작"); 
     this.positionIntervalid = setInterval(function () { 
-      room.positionUpdateOn(); }, 5000); 
+      room.positionUpdateOn(); }, 100); 
       // 함수를 전달 
       } 
   
@@ -76,24 +74,26 @@ class Room {
     let currentIndex = 0;
     const room = this;
     function runInterval() {
+
       // 다음 인터벌 설정
       currentIndex = (currentIndex + 1) % intervals.length;
 
       let drifted = nextPhaseAt - Date.now();
+      console.log("시간값 두개 먼저 보여줘! :",nextPhaseAt,Date.now());
       console.log("드리프트 값!: ",drifted); // 초기값+페이즈 원론적인 시간에서 실제 시간과 비교해서 차이 구하기
 
       nextPhaseAt += intervals[currentIndex]; // 원론적인 다음 페이즈 시간 업데이트
 
       const nextState = intervals[currentIndex] + drifted; // 넥스트 페이즈에 시간차이 게산 더해주기
 
-      phaseUpdateNotificationHandler(room, nextState);
-
-      room.intervalId = setTimeout(runInterval, nextState);
-
+      phaseUpdateNotificationHandler(room, nextState);  //페이즈 업데이트 핸들러 호출 
+      
+      room.intervalId = setTimeout(runInterval, nextState); //다음 인터벌 설정(next state 보정 처리)
     }
 
-    const firstDelay = nextPhaseAt - Date.now();
-    this.intervalId = setTimeout(runInterval, firstDelay);
+    const firstDelay = nextPhaseAt - Date.now();     //첫 인터벌 지연시간 계산
+
+    this.intervalId = setTimeout(runInterval, firstDelay);     //첫 인터벌 시작(보정값) 
   }
 
   stopCustomInterval() {

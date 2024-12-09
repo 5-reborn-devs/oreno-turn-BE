@@ -15,12 +15,12 @@ export const gameStart = (socket) => {
 
     const roomId = socket.roomId;
     const room = rooms.get(roomId);
-     room.currentTime = Date.now();
-    room.nextPhaseAt = room.currentTime + 18000; // 3분후에 넥스트 페이즈 타입으로 이동 // 테스트용 10초
+    const currentTime = Date.now();
+    const nextPhaseAt = currentTime + 18000; // 3분후에 넥스트 페이즈 타입으로 이동 // 테스트용 10초
 
     const gameState = {
       phaseType: room.phaseType,
-      nextPhaseAt: room.nextPhaseAt,
+      nextPhaseAt: nextPhaseAt,
     };
 
     room.state = protoMessages.enum.RoomStateType.values['INGAME'];
@@ -67,7 +67,7 @@ export const gameStart = (socket) => {
     gameStartMultiCast(gameStartNotification);
 
     // 페이즈 업데이트 인터벌 기동
-    room.button(room.nextPhaseAt);
+    room.button(nextPhaseAt);
 
   } catch (err) {
     gameStartResponse = {
