@@ -34,7 +34,6 @@ export const positionUpdateHandler = async (socket, payload) => {
 
 
     // 스위치가 이제 켜질때만 한번에 모아서 싹 보내버리자.
-    //
 
     if(room.positionUpdateSwitch === true){
 
@@ -68,7 +67,7 @@ export const positionUpdateHandler = async (socket, payload) => {
       positionUpdateNotification,
     });
     
-    room.positionUpdateSwitch == false;
+    room.positionUpdateSwitch = false;
 
   }
 
