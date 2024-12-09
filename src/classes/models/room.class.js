@@ -28,6 +28,8 @@ class Room {
     this.positionIntervalid = null;
     this.marketRestocked = [];
     this.cards = new CardManager(makeCardDeck(CARD_LIMIT));
+    this.currentTime = 0;
+    this.nextPhaseAt =0;
   }
   addUser(userData) {
     this.users.push(userData);
@@ -61,26 +63,37 @@ class Room {
       } 
   
   
-  button() {
+  button(nextPhaseAt) {
     if (this.isPushed) {
-      this.startCustomInterval();
+      this.startCustomInterval(nextPhaseAt);
       this.positionUpdateInterval();
       this.isPushed = false;
     }
   }
 
-  startCustomInterval() {
+  startCustomInterval(nextPhaseAt) {
     const intervals = [18000, 12000, 18000]; // afternoon, evening, night
     let currentIndex = 0;
     const room = this;
     function runInterval() {
       // 다음 인터벌 설정
       currentIndex = (currentIndex + 1) % intervals.length;
-      const nextState = intervals[currentIndex];
+
+      let drifted = nextPhaseAt - Date.now();
+      console.log("드리프트 값!: ",drifted); // 초기값+페이즈 원론적인 시간에서 실제 시간과 비교해서 차이 구하기
+
+      nextPhaseAt += intervals[currentIndex]; // 원론적인 다음 페이즈 시간 업데이트
+
+      const nextState = intervals[currentIndex] + drifted; // 넥스트 페이즈에 시간차이 게산 더해주기
+
       phaseUpdateNotificationHandler(room, nextState);
+
       room.intervalId = setTimeout(runInterval, nextState);
+
     }
-    this.intervalId = setTimeout(runInterval, intervals[currentIndex]);
+
+    const firstDelay = nextPhaseAt - Date.now();
+    this.intervalId = setTimeout(runInterval, firstDelay);
   }
 
   stopCustomInterval() {
