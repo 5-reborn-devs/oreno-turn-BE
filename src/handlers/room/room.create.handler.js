@@ -1,8 +1,7 @@
-import Room from '../../classes/models/room.class.js';
+import { redisManager } from '../../classes/managers/redis.manager.js';
 import { PACKET_TYPE } from '../../constants/header.js';
 import { getProtoMessages } from '../../init/loadProto.js';
 import { getNextRoomId } from '../../session/room.session.js';
-import { rooms, users } from '../../session/session.js';
 import { sendResponsePacket } from '../../utils/response/createResponse.js';
 import { getFailCode } from '../../utils/response/failCode.js';
 
@@ -16,24 +15,22 @@ export const createRoomHandler = async (socket, payloadData) => {
 
   let createRoomResponse;
   try {
-    const user = users.get(socket.token);
-    const usersInRoom = [user];
+    const user = await redisManager.users.get(socket.token);
 
     // 여기서 방 번호 가ㅣ져와서 방 번호 할당
     const roomId = getNextRoomId();
 
-    const room = new Room(
-      roomId,
-      user.id,
-      name,
-      maxUserNum,
-      roomStateType.WAIT,
-      usersInRoom,
-    );
+    const room = {
+      id: roomId,
+      ownerId: user.id,
+      name: name,
+      maxUserNum: maxUserNum,
+      state: roomStateType.WAIT,
+    };
 
-    rooms.set(roomId, room); // 방 세션에 생성
+    redisManager.rooms.addRoom(roomId, room); // 방 생성
+    redisManager.rooms.addUser(roomId, user); // 방에 유저 추가
     socket.roomId = roomId;
-    //count++; // roomId 증가
 
     createRoomResponse = {
       success: true,

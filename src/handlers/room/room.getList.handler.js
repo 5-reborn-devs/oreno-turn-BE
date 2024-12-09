@@ -1,3 +1,4 @@
+import { redisManager } from '../../classes/managers/redis.manager.js';
 import { PACKET_TYPE } from '../../constants/header.js';
 import { getProtoMessages } from '../../init/loadProto.js';
 import { rooms } from '../../session/session.js';
@@ -8,8 +9,9 @@ export const getRoomListHandler = async (socket, payloadData) => {
   const inGameState = protoMessages.enum.RoomStateType.values['INGAME'];
 
   try {
+    const rooms = await redisManager.rooms.getRooms();
     const getRoomListResponse = {
-      rooms: [...rooms.values()].filter((room) => room.state != inGameState),
+      rooms: rooms.filter((room) => room.state != inGameState),
     };
 
     sendResponsePacket(socket, PACKET_TYPE.GET_ROOM_LIST_RESPONSE, {
