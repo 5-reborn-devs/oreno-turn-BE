@@ -10,16 +10,17 @@ import { redisManager } from '../../classes/managers/redis.manager.js';
 export const leaveRoomHandler = async (socket, payloadData) => {
   const failCode = getFailCode();
   const roomId = socket.roomId;
+  const rooms = redisManager.rooms;
   let leaveRoomResponse;
 
   try {
-    const room = await redisManager.rooms.getRoom(roomId);
+    const room = await rooms.getRoom(roomId);
     if (!room) {
       throw new Error('해당 방이 존재하지 않습니다');
     }
 
     const user = await redisManager.users.get(socket.token);
-    if (!(await redisManager.rooms.getUser(roomId, user))) {
+    if (!(await rooms.getUser(roomId, user))) {
       throw new Error('해당 방에 유저가 존재하지 않습니다');
     }
 
@@ -28,16 +29,16 @@ export const leaveRoomHandler = async (socket, payloadData) => {
       failCode: failCode.NONE_FAILCODE,
     };
 
-    redisManager.rooms.removeUser(roomId, user);
+    rooms.removeUser(roomId, user);
     socket.roomId = null;
-    const usersInRoom = await redisManager.rooms.getUsers(roomId);
+    const usersInRoom = await rooms.getUsers(roomId);
     const leaveRoomNotification = {
       userId: user.id,
     };
 
     // 남은 유저가 없다면 방 삭제
     if (!usersInRoom.length) {
-      redisManager.rooms.delete(roomId);
+      rooms.delete(roomId);
       releaseRoomId(roomId);
     } else {
       // 나간 유저가 방장일 경우 방이 폭파됨.
@@ -45,7 +46,7 @@ export const leaveRoomHandler = async (socket, payloadData) => {
         multiCast(usersInRoom, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
           leaveRoomResponse,
         });
-        redisManager.rooms.delete(roomId);
+        rooms.delete(roomId);
         releaseRoomId(roomId);
       }
 

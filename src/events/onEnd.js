@@ -79,6 +79,7 @@ export const onEnd = (socket) => async () => {
       });
     }
 
+    users.delete(token);
     redisManager.users.delete(token);
     console.log(message);
   } catch (err) {

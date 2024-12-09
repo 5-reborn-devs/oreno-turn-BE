@@ -31,7 +31,6 @@ export const multiCast = (users, packetType, message) => {
       sendResponsePacket(client, packetType, message);
     });
   } else {
-    console.log(users);
     users.forEach((id) => {
       const client = clients.get(Number(id));
       sendResponsePacket(client, packetType, message);

@@ -5,19 +5,17 @@ import { sendResponsePacket } from '../../utils/response/createResponse.js';
 import Card from '../../classes/models/card.class.js';
 import { clients } from '../../session/session.js';
 
-
 //개인 마켓 입고 장수
 const RestockedPerUser = 3;
 
 //마켓 입장 핸들러
 export const marketEnterHandler = async (socket, payloadData) => {
-  
   // 소켓 유저&룸 검색
   const user = users.get(socket.token);
   const roomId = socket.roomId;
   const room = rooms.get(roomId);
 
-  console.log("마켓 입장 덱좀 보자: ",room.cards.deck); 
+  console.log('마켓 입장 덱좀 보자: ', room.cards.deck);
   //마켓 리스트 추가
   for (let i = 0; i < RestockedPerUser; i++) {
     const cardType = room.cards.deck.pop();
@@ -44,7 +42,6 @@ export const marketEnterHandler = async (socket, payloadData) => {
     fleaMarketNotification,
   });
 };
-
 
 // 마켓 선택 핸들러
 export const marketPickHandler = (socket, payloadData) => {
@@ -103,14 +100,11 @@ export const marketPickHandler = (socket, payloadData) => {
   user.character.eveningList = [];
 
   //드로우 여부 스위치
-  if(user.character.isEveningDraw == false){
-    marketEnterHandler(socket,payloadData);
+  if (user.character.isEveningDraw == false) {
+    marketEnterHandler(socket, payloadData);
     user.character.isEveningDraw = true;
   }
-
 };
-
-
 
 // message S2CReactionResponse {
 //   bool success = 1;
@@ -126,11 +120,13 @@ export const marketCardDelete = (socket) => {
 
   // 우선 노티 만들어.
   const reactionResponse = {
-    success : true,
+    success: true,
     failCode: failCode.NONE_FAILCODE,
-  }
+  };
 
-  sendResponsePacket(socket, PACKET_TYPE.REACTION_RESPONSE, { reactionResponse });
+  sendResponsePacket(socket, PACKET_TYPE.REACTION_RESPONSE, {
+    reactionResponse,
+  });
 
   // //노티 만들기
   // const MarketCardDeleteNotification = {
@@ -147,7 +143,7 @@ export const marketCardDelete = (socket) => {
 export const marketCardDeletePickHandler = (socket, payloadData) => {
   const { destroyCards } = payloadData;
 
-  console.log("카드제거 들어왔나요? :",destroyCards);
+  console.log('카드제거 들어왔나요? :', destroyCards);
   // 소켓 유저&룸 검색
   const user = users.get(socket.token);
 
@@ -159,10 +155,12 @@ export const marketCardDeletePickHandler = (socket, payloadData) => {
   //노티 만들기
   const DestroyCardResponse = {
     handCards: handCards,
-  }
+  };
 
   //리스폰스 슛
-  sendResponsePacket(socket, PACKET_TYPE.DESTROY_CARD_RESPONSE, { DestroyCardResponse });
+  sendResponsePacket(socket, PACKET_TYPE.DESTROY_CARD_RESPONSE, {
+    DestroyCardResponse,
+  });
 };
 /*
 
@@ -175,8 +173,6 @@ message S2CDestroyCardResponse {
 }
 
 */
-
-
 
 /*
 message S2CFleaMarketNotification {

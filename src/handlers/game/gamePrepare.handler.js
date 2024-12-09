@@ -1,6 +1,9 @@
+import { redisManager } from '../../classes/managers/redis.manager.js';
+import Room from '../../classes/models/room.class.js';
+import User from '../../classes/models/user.class.js';
 import { PACKET_TYPE } from '../../constants/header.js';
 import { getProtoMessages } from '../../init/loadProto.js';
-import { games, rooms } from '../../session/session.js';
+import { clients, games, rooms, users } from '../../session/session.js';
 import { fyShuffle } from '../../utils/fisherYatesShuffle.js';
 import { multiCast } from '../../utils/response/createResponse.js';
 import { sendResponsePacket } from '../../utils/response/createResponse.js';
@@ -10,11 +13,30 @@ export const gamePrepare = async (socket) => {
   const protoMessages = getProtoMessages();
   let gamePrepareResponse;
   const failCode = getFailCode();
-  const roomId = socket.roomId; // socket.roomId로 통일
-  const room = rooms.get(roomId); // 클라이언트가 들어가 있는 방정보를 가져옴
+  const roomId = socket.roomId;
+
   try {
+    const redisUsers = await redisManager.rooms.getUsersData(roomId); // 방 안에 있는 모든 유저들의 정보를 가져옴
+    const usersInRoom = redisUsers.map((user) => {
+      const newUser = new User(Number(user.id), user.nickname);
+      users.set(clients.get(newUser.id).token, newUser);
+      return newUser;
+    });
+    console.log('prepare Users:', users);
+
+    const redisRoom = await redisManager.rooms.getRoom(roomId); // 클라이언트가 들어가 있는 방정보를 가져옴
+    const room = new Room(
+      Number(redisRoom.id),
+      Number(redisRoom.ownerId),
+      redisRoom.name,
+      Number(redisRoom.maxUserNum),
+      redisRoom.state,
+      usersInRoom,
+    );
+    rooms.set(roomId, room);
+    console.log('prepare Rooms', rooms);
+
     room.state = protoMessages.enum.RoomStateType.values['PREPARE'];
-    const usersInRoom = [...room.users]; // 방 안에 있는 모든 유저들의 정보를 가져옴
     const userCount = usersInRoom.length;
     if (userCount < 2 || userCount > 7) {
       throw new Error(`지원하지 않는 인원 수: ${userCount}`);

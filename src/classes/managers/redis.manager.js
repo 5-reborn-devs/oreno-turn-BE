@@ -93,10 +93,12 @@ export const redisManager = {
 
     getUsersData: async (roomId) => {
       const userIds = await redisClient.smembers(`${roomId}:users`);
-      return userIds.map(async (id) => {
-        const token = clients.get(Number(id)).token;
-        return await redisClient.hgetall(token);
-      });
+      return await Promise.all(
+        userIds.map(async (id) => {
+          const token = clients.get(Number(id)).token;
+          return await redisClient.hgetall(token);
+        }),
+      );
     },
 
     getRoomData: async (roomId) => {
