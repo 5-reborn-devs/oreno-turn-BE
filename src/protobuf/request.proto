@@ -72,7 +72,20 @@ message C2SCardSelectRequest {
     CardType selectCardType = 2; // selectType이  0일 경우 0, / 1, 2, 3일 경우 원하는 장비의 cardType
 }
 
-message C2SPassDebuffRequest {
+message C2SPassDebuffRequest { 
     int64 targetUserId = 1;
     CardType debuffCardType = 2;
 }
+
+
+// 여기부터 추가
+
+message C2SEveningPickRequest  {
+    CardType cardType = 1;
+}
+
+message C2SMarketCardDeleteRequest {
+    CardType cardType = 1;
+}
+
+message C2SRerollRequest {}
