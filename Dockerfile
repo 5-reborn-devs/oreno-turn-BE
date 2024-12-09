@@ -1,9 +1,9 @@
 FROM node:20
 
-WORKDIR /
+WORKDIR /src
 
 # Copy package files
-COPY ../package.json ../yarn.lock ./
+COPY package.json yarn.lock ./
 
 # Install dependencies with yarn
 RUN yarn
@@ -13,5 +13,5 @@ COPY . .
 EXPOSE 6666
 
 # Run the server
-CMD ["node", "server.js"]
+CMD ["node", "src/server.js"]
 
