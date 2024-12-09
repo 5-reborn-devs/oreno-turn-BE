@@ -3,7 +3,7 @@ FROM node:20
 WORKDIR /src
 
 # Copy package files
-COPY package.json yarn.lock ./
+COPY ../package.json ../yarn.lock ./
 
 # Install dependencies with yarn
 RUN yarn
