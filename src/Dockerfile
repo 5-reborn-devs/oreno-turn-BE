@@ -1,6 +1,6 @@
 FROM node:20
 
-WORKDIR /src
+WORKDIR /
 
 # Copy package files
 COPY ../package.json ../yarn.lock ./
