@@ -88,5 +88,6 @@ export const packetNames = {
     S2CEveningPickResponse: 'response.S2CEveningPickResponse',
     S2CMarketCardDeleteResponse: 'response.S2CMarketCardDeleteResponse',
     S2CRerollResponse: 'reponse.S2CRerollResponse',
+    S2CGameServerSwitchNotification: 'response.gameServerSwitchNotification',
   },
 };
