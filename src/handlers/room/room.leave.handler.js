@@ -5,31 +5,33 @@ import sendResponsePacket, {
   multiCast,
 } from '../../utils/response/createResponse.js';
 import { releaseRoomId } from '../../session/room.session.js';
+import { redisManager } from '../../classes/managers/redis.manager.js';
 
 export const leaveRoomHandler = async (socket, payloadData) => {
   const failCode = getFailCode();
   const roomId = socket.roomId;
+  const rooms = redisManager.rooms;
   let leaveRoomResponse;
 
   try {
-    const room = rooms.get(roomId);
+    const room = await rooms.getRoom(roomId);
     if (!room) {
       throw new Error('해당 방이 존재하지 않습니다');
     }
 
-    const user = users.get(socket.token);
-    if (room.removeUserById(user.id)) {
-      leaveRoomResponse = {
-        success: true,
-        failCode: failCode.NONE_FAILCODE,
-      };
-    } else {
+    const user = await redisManager.users.get(socket.token);
+    if (!(await rooms.getUser(roomId, user))) {
       throw new Error('해당 방에 유저가 존재하지 않습니다');
     }
 
-    room.removeUserById(user.id); // room에서 user 제거
+    leaveRoomResponse = {
+      success: true,
+      failCode: failCode.NONE_FAILCODE,
+    };
+
+    rooms.removeUser(roomId, user);
     socket.roomId = null;
-    const usersInRoom = [...room.users];
+    const usersInRoom = await rooms.getUsers(roomId);
     const leaveRoomNotification = {
       userId: user.id,
     };

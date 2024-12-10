@@ -8,6 +8,7 @@ import sendResponsePacket from '../../utils/response/createResponse.js';
 import { addClient } from '../../session/client.session.js';
 import { addUser, userLoggedIn } from '../../session/user.session.js';
 import { getFailCode } from '../../utils/response/failCode.js';
+import { redisManager } from '../../classes/managers/redis.manager.js';
 
 function sendErrorMessage(response, message) {
   console.error(message);
@@ -48,18 +49,20 @@ export const loginHandler = async (socket, payload) => {
     //토큰 발급
     const token = jwt.sign(dbUser, config.auth.key, { expiresIn: '12h' });
     socket.token = token;
+
+    const user = new User(dbUser.userId, dbUser.nickname);
     //클라이언트 세션 추가
     addClient(socket, dbUser.userId);
     loginResponse = {
       success: true,
       message: `로그인 성공 ! ${email}`,
       token: token,
-      myInfo: new User(dbUser.userId, dbUser.nickname),
+      myInfo: user,
       failCode: failCode.NONE_FAILCODE,
     };
 
     // 유저 세션에 사용자 추가
-    addUser(token, loginResponse.myInfo);
+    redisManager.users.add(token, user);
   } catch (err) {
     console.log(err);
   }
