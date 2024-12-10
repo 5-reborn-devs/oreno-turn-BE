@@ -10,7 +10,7 @@ RUN yarn
 
 COPY . .
 
-EXPOSE 3000
+EXPOSE 6666
 
 # Run the server
-CMD ["node", "server.js"]
+CMD ["node", "src/server.js"]
