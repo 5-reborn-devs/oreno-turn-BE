@@ -22,7 +22,6 @@ export const gamePrepare = async (socket) => {
       users.set(clients.get(newUser.id).token, newUser);
       return newUser;
     });
-    console.log('prepare Users:', users);
 
     const redisRoom = await redisManager.rooms.getRoom(roomId); // 클라이언트가 들어가 있는 방정보를 가져옴
     const room = new Room(
@@ -34,7 +33,6 @@ export const gamePrepare = async (socket) => {
       usersInRoom,
     );
     rooms.set(roomId, room);
-    console.log('prepare Rooms', rooms);
 
     room.state = protoMessages.enum.RoomStateType.values['PREPARE'];
     const userCount = usersInRoom.length;

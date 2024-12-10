@@ -10,10 +10,10 @@ import { redisClient } from '../init/redisConnect.js';
 
 export const onEnd = (socket) => async () => {
   const roomId = socket.roomId;
-  const room = rooms.get(roomId);
-  const user = users.get(socket.token);
-  const userIds = await redisManager.rooms.getUsers(roomId);
+  const room = rooms.get(Number(roomId));
   const token = socket.token;
+  let user = await redisManager.users.get(token);
+  const userIds = await redisManager.rooms.getUsers(roomId);
   const failCode = getFailCode();
   const leaveRoomResponse = {
     success: true,
@@ -37,6 +37,7 @@ export const onEnd = (socket) => async () => {
 
     // 게임 안에 있는 경우 (탈주)
     else if (room.state == 2) {
+      user = users.get(token);
       user.character.hp = 0;
       multiCast(room.users, PACKET_TYPE.USER_UPDATE_NOTIFICATION, {
         userUpdateNotification: { user: room.users },
@@ -61,7 +62,7 @@ export const onEnd = (socket) => async () => {
 
         room.stopCustomInterval();
         room.removeUserById(user.id); //방에서 유저 제거
-        redisManager.rooms.removeUser(room.id, user);
+        redisManager.rooms.delete(room.id);
       }
     }
 
