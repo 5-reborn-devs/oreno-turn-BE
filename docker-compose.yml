@@ -1,0 +1,36 @@
+services:
+  server:
+    build:
+      context: .
+    ports:
+      - "6666:3000" # Change port as needed
+    environment:
+      NODE_ENV: production
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_PASSWORD: rootdemo
+      MYSQL_DATABASE: USER_DB
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootdemo
+      MYSQL_DATABASE: USER_DB
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - app-network
+
+volumes:
+  db-data:
+
+networks:
+  app-network:
+    driver: bridge
