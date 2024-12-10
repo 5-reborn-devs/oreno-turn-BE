@@ -110,5 +110,8 @@ message GamePacket {
         
         // 황혼 카드 분배
         S2CEveningDistributionNotification eveningDistributionNotification = 52;
+
+        // 게임 서버 연결
+        S2CGameServerSwitchNotification gameServerSwitchNotification = 53;
     }
 }
