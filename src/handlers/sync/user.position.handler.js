@@ -1,5 +1,7 @@
+import Redis from 'ioredis';
 import User from '../../classes/models/user.class.js';
 import { PACKET_TYPE } from '../../constants/header.js';
+import { redisClient } from '../../init/redisConnect.js';
 import { getUsersInRoom } from '../../session/room.session.js';
 import { rooms, users } from '../../session/session.js';
 import {
@@ -8,9 +10,13 @@ import {
 } from '../../utils/response/createResponse.js';
 import { getFailCode } from '../../utils/response/failCode.js';
 
+const redisPublisher = new Redis({
+  host: 'localhost',
+  port: 6379,
+});
+
 //유저의 위치 통기화
 export const positionUpdateHandler = async (socket, payload) => {
-
   const { x, y } = payload;
   const failCode = getFailCode();
   const PositionUpdateResponse = {
@@ -22,37 +28,64 @@ export const positionUpdateHandler = async (socket, payload) => {
     const user = users.get(socket.token);
     const roomId = socket.roomId;
     const room = rooms.get(roomId);
-    
+    const characterPositions = [];
 
-    /*검증 구간 
+    // 각각 들어온 x,y값 저장 확인 완료. 이제 리퀘가 올떄마다 갱신될거임.
+    user.character.isMoved = true;
+    user.character.x = x;
+    user.character.y = y;
 
-    */
+    // 스위치가 켜질때만 한번에 모아서 싹 보내버리자.
+    if (room.positionUpdateSwitch === true) {
+      //캐릭터 포지션 배열에 각 아이디의 현재 위치 담기
+      room.users.forEach((user) => {
+        //유저의 캐릭터가 움직였을때, 배열에 넣어준다.
+        if (user.character.isMoved == true) {
+          characterPositions.push({
+            id: user.id,
+            x: user.character.x,
+            y: user.character.y,
+          });
+          //처리후 바로 캐릭터 이동체크 false로 변경.
+          user.character.isMoved = false;
+        }
+      });
 
-    if(room.positionUpdateSwitch == true){
+      // console.log('들어오는지, 일치하는지 확인해볼까? :', characterPositions);
 
-    const usersInRoom = getUsersInRoom(socket.roomId, user.id);
-    const positionUpdateNotification = {
-      characterPositions: [
-        {
-          id: user.id,
-          x,
-          y,
+      const usersInRoom = getUsersInRoom(socket.roomId, user.id);
+      const positionUpdateMessage = {
+        roomId: roomId,
+        characterPositions,
+      };
+      const redisChannel = `room:${roomId}:위치업데이트`; // 메세지를 보내줄 채널 만들어줌
+      redisPublisher.publish(
+        redisChannel,
+        JSON.stringify(positionUpdateMessage),
+        (err, reply) => {
+          if (err) {
+            console.error(
+              'Redis 채널에 메시지를 게시하는데 오류가 발생했습니다:',
+              err,
+            );
+          } else {
+            console.log('메시지가 Redis 채널에 게시되었습니다. 응답:', reply);
+          }
         },
-      ],
-    };// 노티 만들기
+      );
+      // 노티 만들기
+      // const positionUpdateNotification = {
+      //   characterPositions,
+      // };
 
-   // if(room.positionUpdateSwitch === true){
-   // :: 여기에 멀티 캐스트 노티.
-   // room.positionUpdateSwitch = false; // 멀티 캐스트 후에 스위치를 끈다.
-   //}스위치가 켜져있을때만 노티를 쏴준다.
+      // //전체에게 슛
+      // multiCast(usersInRoom, PACKET_TYPE.POSITION_UPDATE_NOTIFICATION, {
+      //   positionUpdateNotification,
+      // });
 
-
-    multiCast(usersInRoom, PACKET_TYPE.POSITION_UPDATE_NOTIFICATION, {
-      positionUpdateNotification,
-    });
-
-  }
-
+      //보내고 나서 바로 스위치 끄기
+      room.positionUpdateSwitch = false;
+    }
   } catch (error) {
     //console.log('위치 동기화 알수없는 에러', error);
   }
