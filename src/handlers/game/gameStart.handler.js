@@ -12,13 +12,15 @@ export const gameStart = (socket) => {
   const failCode = getFailCode();
   try {
     // 낮에만 캐릭터가 이동 가능
-    let nextPhaseAt = Date.now() + 18000; // 3분후에 넥스트 페이즈 타입으로 이동 // 테스트용 10초
+
     const roomId = socket.roomId;
     const room = rooms.get(roomId);
+    const currentTime = Date.now();
+    const nextPhaseAt = currentTime + 18000; // 3분후에 넥스트 페이즈 타입으로 이동 // 테스트용 10초
 
     const gameState = {
       phaseType: room.phaseType,
-      nextPhaseAt,
+      nextPhaseAt: nextPhaseAt,
     };
 
     room.state = protoMessages.enum.RoomStateType.values['INGAME'];
@@ -30,18 +32,18 @@ export const gameStart = (socket) => {
     const usedPositions = new Set();
 
     room.users.forEach((user) => {
-      let positionKey;
-      do {
-        positionKey =
-          positionKeys[Math.floor(Math.random() * positionKeys.length)];
-      } while (usedPositions.has(positionKey));
-      usedPositions.add(positionKey);
-      characterPositions.push({
-        id: user.id,
-        x: RANDOM_POSITIONS[positionKey].x,
-        y: RANDOM_POSITIONS[positionKey].y,
+        let positionKey;
+        do {
+          positionKey =
+            positionKeys[Math.floor(Math.random() * positionKeys.length)];
+        } while (usedPositions.has(positionKey));
+        usedPositions.add(positionKey);
+        characterPositions.push({
+          id: user.id,
+          x: RANDOM_POSITIONS[positionKey].x,
+          y: RANDOM_POSITIONS[positionKey].y,
+        });
       });
-    });
 
     const gameStartNotification = {
       gameState,
@@ -54,11 +56,14 @@ export const gameStart = (socket) => {
       failCode: failCode.NONE_FAILCODE,
     };
 
-    // 페이즈 업데이트 인터벌 기동
-    room.button();
+
 
     // 게임 유저 정보 동기화
     gameStartMultiCast(gameStartNotification);
+
+    // 페이즈 업데이트 인터벌 기동
+    room.button(nextPhaseAt);
+
   } catch (err) {
     gameStartResponse = {
       success: false,
@@ -66,7 +71,7 @@ export const gameStart = (socket) => {
     };
     console.log(err);
   }
-  sendResponsePacket(socket, PACKET_TYPE.GAME_START_RESPONSE, {
-    gameStartResponse,
-  });
+  // sendResponsePacket(socket, PACKET_TYPE.GAME_START_RESPONSE, {
+  //   gameStartResponse,
+  // });
 };

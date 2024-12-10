@@ -7,6 +7,7 @@ import { eveningDrawHandler } from './evening.phase.handler.js';
 import { userUpdateMultiCast } from '../../utils/notification/notification.userUpdate.js';
 import { marketEnterHandler } from './market.handler.js';
 
+
 //페이즈가 넘어갈때, 호출 넘어갔는지 체크.
 export const phaseUpdateNotificationHandler = async (room, nextState) => {
   //페일 코드
@@ -33,7 +34,10 @@ export const phaseUpdateNotificationHandler = async (room, nextState) => {
       multiCast(room.users, PACKET_TYPE.GAME_END_NOTIFICATION, {
         gameEndNotification,
       });
+      
+      
     }
+
 
     //패 초기화
     room.users.forEach((user) => {
@@ -46,7 +50,7 @@ export const phaseUpdateNotificationHandler = async (room, nextState) => {
     // characterPositions : 캐릭터 위치 랜덤
     const characterPositions = [];
     const positionKeys = Object.keys(RANDOM_POSITIONS);
-    //const positionKeys = [21, 22, 23];
+    // const positionKeys = [21, 22, 23];
     const usedPositions = new Set();
     room.users.forEach((user) => {
       let positionKey;
@@ -55,7 +59,6 @@ export const phaseUpdateNotificationHandler = async (room, nextState) => {
           positionKeys[Math.floor(Math.random() * positionKeys.length)];
       } while (usedPositions.has(positionKey));
       usedPositions.add(positionKey);
-      // console.log('x,y값', RANDOM_POSITIONS[positionKey]);
       characterPositions.push({
         id: user.id,
         x: RANDOM_POSITIONS[positionKey].x,
@@ -70,13 +73,17 @@ export const phaseUpdateNotificationHandler = async (room, nextState) => {
 
       //여기서부터
       eveningDrawHandler(room);
+
     } else if (room.phaseType === 2) {
       console.log(`밤으로 전환합니다. 현재 PhaseType: ${room.phaseType}.`);
       room.phaseType = 3;
 
       room.users.forEach((user) => {
         user.character.isEveningDraw = false;
+        //드로우 선택하지 않았을때 초기화
+        user.character.eveningList = [];
       });
+
     } else if (room.phaseType === 3) {
       console.log(`낮으로 전환합니다. 현재 PhaseType: ${room.phaseType}.`);
       room.phaseType = 1;
