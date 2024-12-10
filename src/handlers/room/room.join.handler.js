@@ -5,20 +5,22 @@ import sendResponsePacket, {
 } from '../../utils/response/createResponse.js';
 import { getFailCode } from '../../utils/response/failCode.js';
 import { getUsersWithoutMe } from '../../session/room.session.js';
-
-// {ㅉ
-//     int32 roomId = 1;
-//  }
+import { redisManager } from '../../classes/managers/redis.manager.js';
 
 export const joinRoomHandler = async (socket, payload) => {
   const { roomId } = payload;
   const failCode = getFailCode();
+  const rooms = redisManager.rooms;
   let joinRoomResponse;
   let notification;
+
   try {
-    const room = rooms.get(roomId);
-    const user = users.get(socket.token);
-    room.addUser(user);
+    const user = await redisManager.users.get(socket.token);
+    const usersInRoomWithoutMe = await rooms.getUsers(roomId);
+    rooms.addUser(roomId, user);
+
+    const room = await rooms.getRoomData(roomId);
+    console.log('room', room);
 
     socket.roomId = roomId;
     joinRoomResponse = {
@@ -28,7 +30,6 @@ export const joinRoomHandler = async (socket, payload) => {
     };
     const joinRoomNotification = { joinUser: user };
 
-    const usersInRoomWithoutMe = getUsersWithoutMe(roomId, user.id);
     notification = [
       usersInRoomWithoutMe,
       PACKET_TYPE.JOIN_ROOM_NOTIFICATION,
@@ -50,8 +51,3 @@ export const joinRoomHandler = async (socket, payload) => {
   });
   if (notification) multiCast(...notification);
 };
-// {
-//     bool success = 1,
-//     RoomData room = 2,
-//     GlobalFailCode failCode = 3
-// }

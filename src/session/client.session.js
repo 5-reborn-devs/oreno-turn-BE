@@ -1,7 +1,7 @@
 import { clients, users } from './session.js';
 
 export const addClient = (socket, userId) => {
-  clients.set(userId, socket);
+  clients.set(userId, socket); // 정수형이긴한데 object
 };
 
 export const addUser = (token, userData) => {
@@ -15,5 +15,4 @@ export const removeClient = (email) => {
 export const clearClients = () => {
   clients.clear();
   users.clear();
-  console.log('All clients cleared');
 };

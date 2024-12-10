@@ -159,3 +159,24 @@ message S2CAnimationNotification {
     int64 userId = 1;
     AnimationType animationType = 2;
 }
+
+// 여기부터 추가
+
+message S2CEveningDistributionNotification {
+    repeated CardType cardType = 1;
+}
+
+message S2CEveningPickResponse  {
+    bool success = 1;
+    GlobalFailCode failCode = 2;
+}
+
+message S2CMarketCardDeleteResponse {
+    bool success = 1;
+    GlobalFailCode failCode = 2;
+}
+
+message S2CRerollResponse {
+    bool success = 1;
+    GlobalFailCode failCode = 2;
+}

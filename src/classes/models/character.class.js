@@ -1,59 +1,67 @@
-import { getProtoMessages } from '../../init/loadProto.js';
-import CharacterState from './character.state.class.js.js';
+import { INIT_DECK } from '../../constants/cardTypes.js';
+import { makeCardDeck } from '../../handlers/card/index.js';
+import BuffManager from '../managers/buff.manage.js';
+import CardManager from '../managers/card.manager.js';
+import CharacterState from './character.state.class.js';
 
 class Character {
   constructor() {
-    const protoMessages = getProtoMessages();
-    this.characterType =
-      protoMessages.enum.CharacterType.values['NONE_CHARACTER'];
-    this.roleType = protoMessages.enum.RoleType.values['NONE_ROLE'];
+    this.characterType = 0;
+    this.roleType = 0;
     this.hp = 50;
-    this.weapon = null;
+    this.mp = 10;
     this.stateInfo = new CharacterState();
-    this.equips = [];
-    this.debuffs = [];
-    this.handCards = new Map();
+    this._weapon = null;
+    this._equips = [];
+    this._debuffs = [];
     this.bbangCount = 0;
     this.handCardsCount = 0;
+    this.cards = new CardManager(makeCardDeck(INIT_DECK));
+    this.buffStack = new BuffManager();
+    this.eveningList = [];
+    this.isEveningDraw = false;
+  }
+  activeData() {
+    this.handCardsCount = this.cards.handCardsCount;
+    this.handCards = this.cards.getHands();
+    this.buffs = this.buffStack.getBuffList();
   }
 
-  addEquip(itemId) {
-    if (!this.equips.includes(itemId)) {
-      this.equips.push(itemId);
-    } else {
-      console.log(`이미 ${itemId}을 장착하고 있습니다.`);
+  hideData() {
+    try {
+      delete this.handCards;
+      delete this.buffs;
+    } catch (error) {
+      console.error(error);
     }
   }
 
-  removeEquip(itemId) {
-    const index = this.equips.indexOf(itemId);
-    if (index !== -1) {
-      this.equips.splice(index, 1);
+  get HP() {
+    return this.hp;
+  }
+
+  set HP(value) {
+    if (value < 0) {
+      this.hp = 0;
+    } else if (value > 50) {
+      this.hp = 50;
     } else {
-      console.log(`장착중인 ${itemId}이 아닙니다`);
+      this.hp = value;
     }
   }
 
-  addDebuff(debuffId) {
-    if (!this.debuffs.includes(debuffId)) {
-      this.debuffs.push(debuffId);
-    } else {
-      console.log(`${debuffId}디버프 추가 실패`);
-    }
+  get MP() {
+    return this.mp;
   }
 
-  removeDebuff(debuffId) {
-    const index = this.debuffs.indexOf(debuffId);
-    if (index !== -1) {
-      this.debuffs.splice(index, 1);
+  set MP(value) {
+    if (value < 0) {
+      this.mp = 0;
+    } else if (value > 10) {
+      this.mp = 10;
     } else {
-      console.log(`${debuffId}디버프 제거 실패`);
+      this.mp = value;
     }
-  }
-
-  updateHp(amount) {
-    this.hp += amount;
-    if (this.hp < 0) this.hp = 0;
   }
 }
 
