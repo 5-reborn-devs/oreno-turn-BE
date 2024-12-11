@@ -10,7 +10,9 @@
   "scripts": {
     "dev": "node ./src/server.js",
     "migrate": "node ./src/db/migrations/createSchema.js",
-    "test": "node ./src/tests/test.function.js"
+    "test": "node ./src/tests/test.function.js",
+    "game": "node ./GAME_SERVER/src/server.js",
+    "lobby": "node ./LOBBY_SERVER/src/server.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
