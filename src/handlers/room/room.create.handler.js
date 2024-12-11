@@ -1,7 +1,9 @@
 import { redisManager } from '../../classes/managers/redis.manager.js';
+import { config } from '../../config/config.js';
 import { PACKET_TYPE } from '../../constants/header.js';
 import { getProtoMessages } from '../../init/loadProto.js';
 import { getNextRoomId } from '../../session/room.session.js';
+import { serverSwitch } from '../../utils/notification/notification.serverSwitch.js';
 import { sendResponsePacket } from '../../utils/response/createResponse.js';
 import { getFailCode } from '../../utils/response/failCode.js';
 
@@ -30,6 +32,8 @@ export const createRoomHandler = async (socket, payloadData) => {
 
     redisManager.rooms.addRoom(roomId, room); // 방 생성
     redisManager.rooms.addUser(roomId, user); // 방에 유저 추가
+    // 레디스 유저 정보에 방정보 저장
+    redisManager.users.setRoomId(socket.token, roomId);
     socket.roomId = roomId;
 
     createRoomResponse = {
@@ -50,4 +54,9 @@ export const createRoomHandler = async (socket, payloadData) => {
   sendResponsePacket(socket, PACKET_TYPE.CREATE_ROOM_RESPONSE, {
     createRoomResponse,
   });
+
+  // 게임 서버 리스트를 받음.
+  // 라운드로빈으로선정
+  // 레디스에 해당 방의 IP를 저장.
+  serverSwitch(socket, config.server.host, 6666);
 };

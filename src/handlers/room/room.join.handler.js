@@ -6,6 +6,8 @@ import sendResponsePacket, {
 import { getFailCode } from '../../utils/response/failCode.js';
 import { getUsersWithoutMe } from '../../session/room.session.js';
 import { redisManager } from '../../classes/managers/redis.manager.js';
+import { serverSwitch } from '../../utils/notification/notification.serverSwitch.js';
+import { config } from '../../config/config.js';
 
 export const joinRoomHandler = async (socket, payload) => {
   const { roomId } = payload;
@@ -18,9 +20,9 @@ export const joinRoomHandler = async (socket, payload) => {
     const user = await redisManager.users.get(socket.token);
     const usersInRoomWithoutMe = await rooms.getUsers(roomId);
     rooms.addUser(roomId, user);
+    redisManager.users.setRoomId(socket.token, roomId);
 
     const room = await rooms.getRoomData(roomId);
-    console.log('room', room);
 
     socket.roomId = roomId;
     joinRoomResponse = {
@@ -49,5 +51,9 @@ export const joinRoomHandler = async (socket, payload) => {
   sendResponsePacket(socket, PACKET_TYPE.JOIN_ROOM_RESPONSE, {
     joinRoomResponse,
   });
-  if (notification) multiCast(...notification);
+  // 서버를 옮김
+  serverSwitch(socket, config.server.host, 6666);
+
+  // 옮긴곳에서 multi를 쏨
+  // if (notification) multiCast(...notification);
 };

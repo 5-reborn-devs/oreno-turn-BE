@@ -6,6 +6,8 @@ import sendResponsePacket, {
 } from '../../utils/response/createResponse.js';
 import { releaseRoomId } from '../../session/room.session.js';
 import { redisManager } from '../../classes/managers/redis.manager.js';
+import { serverSwitch } from '../../utils/notification/notification.serverSwitch.js';
+import { config } from '../../config/config.js';
 
 export const leaveRoomHandler = async (socket, payloadData) => {
   const failCode = getFailCode();
@@ -30,6 +32,7 @@ export const leaveRoomHandler = async (socket, payloadData) => {
     };
 
     rooms.removeUser(roomId, user);
+    redisManager.users.delRoomId(socket.token, roomId);
     socket.roomId = null;
     const usersInRoom = await rooms.getUsers(roomId);
     const leaveRoomNotification = {
@@ -67,4 +70,9 @@ export const leaveRoomHandler = async (socket, payloadData) => {
   sendResponsePacket(socket, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
     leaveRoomResponse,
   });
+
+  // 현재 위치가 로비서버가 아니라면 로비로 돌아감. ? 필요한가?
+  if (true) {
+    serverSwitch(socket, config.server.host, 6666);
+  }
 };
