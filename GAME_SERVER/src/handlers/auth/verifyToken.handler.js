@@ -32,6 +32,8 @@ export const verifyTokenHandler = async (socket, payload) => {
     const joinRoomNotification = {
       joinUser: new User(Number(user.id), user.nickname),
     };
+
+    console.log('verifyToken users:', usersInRoom);
     multiCast(usersInRoom, PACKET_TYPE.JOIN_ROOM_NOTIFICATION, {
       joinRoomNotification,
     });

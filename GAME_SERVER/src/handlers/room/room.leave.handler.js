@@ -66,11 +66,11 @@ export const leaveRoomHandler = async (socket, payloadData) => {
 
     console.error('방을 떠나는데 실패했습니다.', error);
   }
-
+  // console.log('[leaveHandler]socket:\n', socket);
   sendResponsePacket(socket, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
     leaveRoomResponse,
   });
-
+  socket.isEndIgnore = true;
   // 현재 위치가 로비서버가 아니라면 로비로 돌아감. ? 필요한가?
   if (true) {
     serverSwitch(socket, config.server.host, 6666);

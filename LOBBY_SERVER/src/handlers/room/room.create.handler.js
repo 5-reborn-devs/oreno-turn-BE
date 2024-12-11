@@ -54,7 +54,7 @@ export const createRoomHandler = async (socket, payloadData) => {
   sendResponsePacket(socket, PACKET_TYPE.CREATE_ROOM_RESPONSE, {
     createRoomResponse,
   });
-  // socket.isEndIgnore = true;
+  socket.isEndIgnore = true;
 
   // 게임 서버 리스트를 받음.
   // 라운드로빈으로선정

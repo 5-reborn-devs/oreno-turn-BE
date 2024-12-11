@@ -11,6 +11,11 @@ import { serverSwitch } from '../utils/notification/notification.serverSwitch.js
 import { config } from '../config/config.js';
 
 export const onEnd = (socket) => async () => {
+  if (socket.isEndIgnore) {
+    console.log('onEnd 무시됨.');
+    return;
+  }
+
   const roomId = socket.roomId;
   const room = rooms.get(roomId);
   const token = socket.token;
