@@ -30,6 +30,14 @@ export const redisManager = {
     delete: async (key) => {
       await redisClient.del(key);
     },
+
+    setRoomId: async (token, roomId) => {
+      await redisClient.hset(token, 'roomId', roomId);
+    },
+
+    delRoomId: async (token) => {
+      await redisClient.hdel(token, 'roomId');
+    },
   },
 
   rooms: {

@@ -14,8 +14,12 @@ import { useCardHandler } from './card/card.use.handler.js';
 import { reactionHandler } from './game/game.reaction.handler.js';
 import { destroyCardsHandler } from './card/card.destroy.handler.js';
 import { eveningPickHandler } from './sync/evening.phase.handler.js';
-import { marketCardDeletePickHandler, marketPickHandler } from './sync/market.handler.js';
+import {
+  marketCardDeletePickHandler,
+  marketPickHandler,
+} from './sync/market.handler.js';
 import { rerollHandler } from './card/card.reroll.handler.js';
+import { verifyTokenHandler } from './auth/verifyToken.handler.js';
 
 const handlers = {
   [PACKET_TYPE.REGISTER_REQUEST]: {
@@ -85,7 +89,10 @@ const handlers = {
   [PACKET_TYPE.REROLL_REQUEST]: {
     handler: rerollHandler,
     protoType: 'request.C2SRerollReqeset',
-
+  },
+  [PACKET_TYPE.VERIFY_TOKEN_REQUEST]: {
+    handler: verifyTokenHandler,
+    protoType: 'request.C2SVerifyTokenReqeset',
   },
 };
 
