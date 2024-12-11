@@ -31,8 +31,8 @@ export const onEnd = (socket) => async () => {
     if (!roomId) {
       message = `유저 ${user.nickname}이 로비에서 연결이 종료되었습니다.`;
     }
-    // 방에 아무도 없을 경우
-    else if (!userIds.length) {
+    // 방에 자신 이외에 아무도 없을 경우
+    else if (userIds.length <= 1) {
       redisManager.rooms.delete(roomId);
       releaseRoomId(roomId);
     }
@@ -64,16 +64,21 @@ export const onEnd = (socket) => async () => {
 
         room.stopCustomInterval();
         room.removeUserById(user.id); //방에서 유저 제거
-        redisManager.rooms.delete(room.id);
+        const usersInRoom = [...room.users];
+
+        // 레디스에 유저의 방 정보 삭제
+        await redisManager.users.delUsersRoomId(usersInRoom);
+
+        // 방 정보 제거
+        rooms.delete(room.id);
+        await redisManager.rooms.delete(room.id);
 
         const gameServerSwitchNotification = {
           ip: config.server.host,
           port: 6666,
         };
 
-        const usersWithoutMe = getUsersWithoutMe(roomId, user.id);
-        console.log('winner noti:', usersWithoutMe);
-        multiCast(usersWithoutMe, PACKET_TYPE.GAME_SERVER_SWITCH_NOTIFICATION, {
+        multiCast(usersInRoom, PACKET_TYPE.GAME_SERVER_SWITCH_NOTIFICATION, {
           gameServerSwitchNotification, // 승리자 클라에게 전송해줌 로비 서버로 변경하라고 요청 -> 클라에서 변경 ->
         });
       }

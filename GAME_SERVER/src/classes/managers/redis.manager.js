@@ -38,6 +38,17 @@ export const redisManager = {
     delRoomId: async (token) => {
       await redisClient.hdel(token, 'roomId');
     },
+
+    delUsersRoomId: async (users) => {
+      const pipeline = redisClient.pipeline();
+
+      users.forEach((user) => {
+        const token = clients.get(user.id).token;
+        pipeline.hdel(token, 'roomId');
+      });
+
+      await pipeline.exec();
+    },
   },
 
   rooms: {
