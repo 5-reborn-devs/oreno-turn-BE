@@ -89,3 +89,8 @@ message C2SMarketCardDeleteRequest {
 }
 
 message C2SRerollRequest {}
+
+message C2SVerifyTokenRequest
+{
+  string token = 1;
+}

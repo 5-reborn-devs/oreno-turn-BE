@@ -185,3 +185,9 @@ message S2CGameServerSwitchNotification {
     string ip = 1;
     int64 port = 2;
 }
+
+message S2CVerifyTokenResponse
+{
+  bool success = 1;
+  GlobalFailCode failCode = 2;
+}
