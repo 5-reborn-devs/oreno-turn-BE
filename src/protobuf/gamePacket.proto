@@ -113,5 +113,9 @@ message GamePacket {
 
         // 게임 서버 연결
         S2CGameServerSwitchNotification gameServerSwitchNotification = 53;
+
+        // 게임 서버 연결 뒤 토큰 확인
+        C2SVerifyTokenRequest verifyTokenRequest = 54;
+        S2CVerifyTokenResponse verifyTokenResponse = 55;
     }
 }
