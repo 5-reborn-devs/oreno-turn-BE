@@ -24,11 +24,11 @@ export const verifyTokenHandler = async (socket, payload) => {
 
     socket.token = token;
     socket.roomId = roomId;
-    clients.set(user.id, socket);
+    clients.set(Number(user.id), socket);
 
     // const room = await redisManager.rooms.getRoom(roomId);
     // 방장이 아니라면 참가를 알림
-    const usersInRoom = await redisManager.rooms.getUsers();
+    const usersInRoom = await redisManager.rooms.getUsers(roomId);
     const joinRoomNotification = {
       joinUser: new User(Number(user.id), user.nickname),
     };
