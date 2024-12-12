@@ -1,6 +1,8 @@
 import {
   HOST,
   PORT,
+  REDIS_HOST,
+  REDIS_PORT,
   CLIENT_VERSION,
   JWT_SECRET,
   DB1_NAME,
@@ -30,6 +32,10 @@ export const config = {
   },
   client: {
     version: CLIENT_VERSION,
+  },
+  redis: {
+    host: REDIS_HOST,
+    port: REDIS_PORT,
   },
   packet: {
     totalLength: TOTAL_LENGTH,
