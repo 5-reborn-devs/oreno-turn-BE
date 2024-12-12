@@ -10,7 +10,7 @@ import { redisClient } from '../init/redisConnect.js';
 
 export const onEnd = (socket) => async () => {
   const roomId = socket.roomId;
-  const room = rooms.get(Number(roomId));
+  const room = rooms.get(roomId);
   const token = socket.token;
   let user = await redisManager.users.get(token);
   const userIds = await redisManager.rooms.getUsers(roomId);
@@ -19,7 +19,7 @@ export const onEnd = (socket) => async () => {
     success: true,
     failCode: failCode.NONE_FAILCODE,
   };
-  let message = `유저 ${user.id}가 방에서 연결이 종료되었습니다.`;
+  let message = `유저 ${user.nickname}가 방에서 연결이 종료되었습니다.`;
   const leaveRoomNotification = {
     userId: user.id,
   };
