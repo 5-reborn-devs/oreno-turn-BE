@@ -8,10 +8,12 @@ COPY package.json yarn.lock ./
 # Install dependencies with yarn
 RUN yarn
 
+RUN yarn migrate
+
 COPY . .
 
 EXPOSE 6666
 
 # Run the server
-CMD ["node", "src/server.js"]
+CMD ["yarn", "start"]
 

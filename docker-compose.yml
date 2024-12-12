@@ -1,36 +1,50 @@
 services:
-  server:
+  game-server:
     build:
-      context: .
+      context: ./gameserver
+      dockerfile: Dockerfile
     ports:
-      - "6666:3000" # Change port as needed
+      - "16666:3000" # TCP 게임 서버 포트
     environment:
-      NODE_ENV: production
-      MYSQL_HOST: mysql
-      MYSQL_USER: root
-      MYSQL_PASSWORD: rootdemo
-      MYSQL_DATABASE: USER_DB
+      - NODE_ENV=production
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=example
+      - REDIS_HOST=redis
     depends_on:
       - mysql
-    networks:
-      - app-network
+      - redis
+
+  lobi-server:
+    build:
+      context: ./lobiserver
+      dockerfile: Dockerfile
+    ports:
+      - "6666:3000" # TCP 로비 서버 포트
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=example
+      - REDIS_HOST=redis
+    depends_on:
+      - mysql
+      - redis
 
   mysql:
-    image: mysql:8.0
-    container_name: mysql
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: game
+    volumes:
+      - mysql_data:/var/lib/mysql
     ports:
       - "3306:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: rootdemo
-      MYSQL_DATABASE: USER_DB
-    volumes:
-      - db-data:/var/lib/mysql
-    networks:
-      - app-network
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379" # 레디스 포트가 따로 있나?
 
 volumes:
-  db-data:
-
-networks:
-  app-network:
-    driver: bridge
+  mysql_data:
