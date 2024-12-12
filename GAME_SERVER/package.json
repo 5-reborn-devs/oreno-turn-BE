@@ -1,0 +1,36 @@
+{
+  "name": "oreno-turn",
+  "version": "1.0.0",
+  "description": "덱빌딩 기반 실시간 배틀로얄 게임",
+  "main": "index.js",
+  "repository": "https://github.com/reborn5devs/oreno-turn-BE.git",
+  "author": "skybanana <112135946+skybanana@users.noreply.github.com>",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "node ./src/server.js",
+    "migrate": "node ./src/db/migrations/createSchema.js",
+    "test": "node ./src/tests/test.function.js",
+    "game": "node ./src/server.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.5",
+    "ioredis": "^5.4.1",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "loadtest": "^8.0.9",
+    "lodash": "^4.17.21",
+    "mysql2": "^3.11.4",
+    "protobufjs": "^7.4.0",
+    "protobufs": "^0.1.0",
+    "uuid": "^11.0.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.14.0",
+    "eslint": "^9.14.0",
+    "globals": "^15.12.0",
+    "nodemon": "^3.1.7",
+    "prettier": "^3.3.3"
+  }
+}

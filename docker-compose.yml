@@ -4,7 +4,7 @@ services:
       context: ./GAME_SERVER
       dockerfile: Dockerfile
     ports:
-      - "16666:3000" # TCP 게임 서버 포트
+      - '16666:3000' # TCP 게임 서버 포트
     environment:
       - DB_HOST=mysql
       - DB_PORT=8886
@@ -20,7 +20,7 @@ services:
       context: ./LOBBY_SERVER
       dockerfile: Dockerfile
     ports:
-      - "6666:3000" # TCP 로비 서버 포트
+      - '6666:3000' # TCP 로비 서버 포트
     environment:
       - DB_HOST=mysql
       - DB_PORT=8886
@@ -39,12 +39,12 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     ports:
-      - "8886:3306"
+      - '8886:3306'
 
   redis:
     image: redis:latest
     ports:
-      - "6379:6379"
+      - '16379:6379'
 
 volumes:
   mysql_data:
