@@ -1,5 +1,6 @@
 import Redis from 'ioredis';
 import dotenv from 'dotenv';
+import { config } from '../config/config.js';
 
 dotenv.config();
 

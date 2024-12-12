@@ -1,36 +1,4 @@
 services:
-  game-server:
-    build:
-      context: ./GAME_SERVER
-      dockerfile: Dockerfile
-    ports:
-      - '16666:3000' # TCP 게임 서버 포트
-    environment:
-      - DB_HOST=mysql
-      - DB_PORT=8886
-      - DB_USER=root
-      - DB_PASSWORD=orenodb
-      - REDIS_HOST=16379
-    depends_on:
-      - mysql
-      - redis
-
-  lobi-server:
-    build:
-      context: ./LOBBY_SERVER
-      dockerfile: Dockerfile
-    ports:
-      - '6666:3000' # TCP 로비 서버 포트
-    environment:
-      - DB_HOST=mysql
-      - DB_PORT=8886
-      - DB_USER=root
-      - DB_PASSWORD=orenodb
-      - REDIS_HOST=16379
-    depends_on:
-      - mysql
-      - redis
-
   mysql:
     image: mysql:latest
     environment:
@@ -46,5 +14,44 @@ services:
     ports:
       - '16379:6379'
 
+  game-server:
+    build:
+      context: ./GAME_SERVER
+      dockerfile: Dockerfile
+    ports:
+      - '16666:3000' # TCP 게임 서버 포트
+    environment:
+      - DB1_HOST=mysql
+      - DB1_PORT=3306
+      - DB1_USER=root
+      - DB1_PASSWORD=orenodb
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - mysql
+      - redis
+
+  lobi-server:
+    build:
+      context: ./LOBBY_SERVER
+      dockerfile: Dockerfile
+    ports:
+      - '6666:3000' # TCP 로비 서버 포트
+    environment:
+      - DB1_NAME=USER_DB
+      - DB1_HOST=mysql
+      - DB1_PORT=3306
+      - DB1_USER=root
+      - DB1_PASSWORD=orenodb
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - mysql
+      - redis
+
 volumes:
   mysql_data:
+
+networks:
+  app-network:
+    driver: bridge

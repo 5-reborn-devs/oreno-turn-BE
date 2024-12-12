@@ -8,10 +8,6 @@ COPY package.json yarn.lock ./src ./
 # Install dependencies with yarn
 RUN ["yarn"]
 
-# RUN ["node", "./src/db/migrations/createSchema.js"]
-
-# RUN ["yarn", "migrate"]
-
 COPY . .
 
 EXPOSE 16666
