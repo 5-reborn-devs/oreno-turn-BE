@@ -1,6 +1,7 @@
 import {
   HOST,
   PORT,
+  GAME_HOST,
   REDIS_HOST,
   REDIS_PORT,
   CLIENT_VERSION,
@@ -29,6 +30,7 @@ export const config = {
   server: {
     port: PORT,
     host: HOST,
+    gameHost: GAME_HOST,
   },
   client: {
     version: CLIENT_VERSION,

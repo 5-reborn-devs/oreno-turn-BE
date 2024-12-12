@@ -8,12 +8,11 @@ COPY package.json yarn.lock ./
 # Install dependencies with yarn
 RUN ["yarn"]
 
-# RUN ["yarn", "migrate"]
-
 COPY . .
 
 EXPOSE 6666
 
+RUN ["yarn", "migrate"]
 # Run the server
 CMD ["yarn", "lobby"]
 

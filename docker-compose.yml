@@ -21,6 +21,9 @@ services:
     ports:
       - '16666:3000' # TCP 게임 서버 포트
     environment:
+      - PORT=3000
+      - HOST=0.0.0.0
+      - CLIENT_VERSION=1.0.0
       - DB1_HOST=mysql
       - DB1_PORT=3306
       - DB1_USER=root
@@ -36,8 +39,12 @@ services:
       context: ./LOBBY_SERVER
       dockerfile: Dockerfile
     ports:
-      - '6666:3000' # TCP 로비 서버 포트
+      - '6666:6666' # TCP 로비 서버 포트
     environment:
+      - PORT=6666
+      - HOST=0.0.0.0
+      - GAME_HOST=game-server
+      - CLIENT_VERSION=1.0.0
       - DB1_NAME=USER_DB
       - DB1_HOST=mysql
       - DB1_PORT=3306
@@ -48,6 +55,7 @@ services:
     depends_on:
       - mysql
       - redis
+      - game-server
 
 volumes:
   mysql_data:
