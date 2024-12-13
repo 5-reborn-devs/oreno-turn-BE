@@ -20,6 +20,9 @@ services:
       - '9000:9000'
     volumes:
       - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+    depends_on:
+      - game-server
+      - lobi-server
 
   game-server:
     build:
@@ -61,7 +64,6 @@ services:
     depends_on:
       - mysql
       - redis
-      - haproxy
 
 volumes:
   mysql_data:
