@@ -54,7 +54,7 @@ export const joinRoomHandler = async (socket, payload) => {
   socket.isEndIgnore = true;
 
   // 서버를 옮김
-  serverSwitch(socket, config.server.host, 6667);
+  serverSwitch(socket, config.server.host, 16666);
 
   // 옮긴곳에서 multi를 쏨
   // if (notification) multiCast(...notification);

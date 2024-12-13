@@ -1,11 +1,12 @@
 import Redis from 'ioredis';
 import dotenv from 'dotenv';
+import { config } from '../config/config.js';
 
 dotenv.config();
 
 // redis 초기화
 export const redisClient = new Redis(
-  process.env.REDIS_URL || 'redis://localhost:6379',
+  `redis://${config.redis.host}:${config.redis.port}`,
 );
 
 // redis 연결 오류가 발생한 경우 서버를 종료함.
