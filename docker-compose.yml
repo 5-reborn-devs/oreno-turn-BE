@@ -18,20 +18,25 @@ services:
     image: haproxy:2.3
     ports:
       - '9000:9000'
+      - '1666:1666'
     volumes:
       - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
     depends_on:
-      - game-server
-      - lobi-server
+      - lobi-server-1
+      - lobi-server-2
+      - game-server-1
+      - game-server-2
+      - game-server-3
 
-  game-server:
+  game-server-1:
     build:
       context: ./GAME_SERVER
       dockerfile: Dockerfile
+    container_name: game-server-1
     ports:
       - '16666:3000' # TCP 게임 서버 포트
     environment:
-      - PORT=3000
+      - PORT=16666
       - HOST=0.0.0.0
       - CLIENT_VERSION=1.0.0
       - DB1_HOST=mysql
@@ -44,14 +49,79 @@ services:
       - mysql
       - redis
 
-  lobi-server:
+  game-server-2:
+    build:
+      context: ./GAME_SERVER
+      dockerfile: Dockerfile
+    container_name: game-server-2
+    ports:
+      - '16667:3000' # TCP 게임 서버 포트
+    environment:
+      - PORT=16667
+      - HOST=0.0.0.0
+      - CLIENT_VERSION=1.0.0
+      - DB1_HOST=mysql
+      - DB1_PORT=3306
+      - DB1_USER=root
+      - DB1_PASSWORD=orenodb
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - mysql
+      - redis
+
+  game-server-3:
+    build:
+      context: ./GAME_SERVER
+      dockerfile: Dockerfile
+    container_name: game-server-3
+    ports:
+      - '16668:3000' # TCP 게임 서버 포트
+    environment:
+      - PORT=16668
+      - HOST=0.0.0.0
+      - CLIENT_VERSION=1.0.0
+      - DB1_HOST=mysql
+      - DB1_PORT=3306
+      - DB1_USER=root
+      - DB1_PASSWORD=orenodb
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - mysql
+      - redis
+
+  lobi-server-1:
     build:
       context: ./LOBBY_SERVER
       dockerfile: Dockerfile
+    container_name: lobi-server-1
     ports:
       - '6666:6666' # TCP 로비 서버 포트
     environment:
       - PORT=6666
+      - HOST=0.0.0.0
+      - CLIENT_VERSION=1.0.0
+      - DB1_NAME=USER_DB
+      - DB1_HOST=mysql
+      - DB1_PORT=3306
+      - DB1_USER=root
+      - DB1_PASSWORD=orenodb
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - mysql
+      - redis
+
+  lobi-server-2:
+    build:
+      context: ./LOBBY_SERVER
+      dockerfile: Dockerfile
+    container_name: lobi-server-2
+    ports:
+      - '6667:6666' # TCP 로비 서버 포트
+    environment:
+      - PORT=6667
       - HOST=0.0.0.0
       - CLIENT_VERSION=1.0.0
       - DB1_NAME=USER_DB

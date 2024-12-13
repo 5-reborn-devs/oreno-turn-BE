@@ -1,6 +1,7 @@
 import { redisManager } from '../../classes/managers/redis.manager.js';
 import User from '../../classes/models/user.class.js';
 import { PACKET_TYPE } from '../../constants/header.js';
+import { redisClient } from '../../init/redisConnect.js';
 import { clients } from '../../session/session.js';
 import sendResponsePacket, {
   multiCast,
@@ -12,12 +13,17 @@ export const verifyTokenHandler = async (socket, payload) => {
   const { token } = payload;
   let verifyTokenResponse;
   try {
+    const userRoomPort = socket._server._connectionKey; // 소켓에서 유저 host port 뽑아 옴
+    const roomPort = userRoomPort.split(':').pop(); // 포트만 가져옴
+
+    console.log('룸포트', roomPort);
     const user = await redisManager.users.get(token);
     if (!user) {
       throw new Error('유효하지 않은 토큰');
     }
     console.log('verifyToken user:', user);
     const roomId = user.roomId;
+    await redisClient.hset(roomId, 'roomPort', roomPort); // redis roomId에 roomPort넣어줌
     if (!roomId) {
       throw new Error('방에 속하지 않은 유저');
     }
@@ -37,7 +43,6 @@ export const verifyTokenHandler = async (socket, payload) => {
     multiCast(usersInRoom, PACKET_TYPE.JOIN_ROOM_NOTIFICATION, {
       joinRoomNotification,
     });
-
     verifyTokenResponse = {
       success: true,
       failCode: failCode.NONE_FAILCODE,
@@ -48,10 +53,8 @@ export const verifyTokenHandler = async (socket, payload) => {
       success: false,
       failCode: failCode.INVALID_REQUEST,
     };
-
     console.error(error);
   }
-
   sendResponsePacket(socket, PACKET_TYPE.VERIFY_TOKEN_RESPONSE, {
     verifyTokenResponse,
   });

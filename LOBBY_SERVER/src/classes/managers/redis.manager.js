@@ -9,7 +9,6 @@ export const redisManager = {
           id: user.id,
           nickname: user.nickname,
         };
-
         // Redis에 Hash 형식으로 저장
         await redisClient.hmset(token, userData);
       } catch (error) {
@@ -112,13 +111,15 @@ export const redisManager = {
     getRoomData: async (roomId) => {
       const room = await redisClient.hgetall(roomId);
       const userIds = await redisClient.smembers(`${roomId}:users`);
+      const userIdsInt = userIds.map(Number);
+      console.log('클라이언트', clients);
       room.users = await Promise.all(
-        userIds.map(async (id) => {
+        userIdsInt.map(async (id) => {
           const token = clients.get(Number(id)).token;
+          console.log('토큰', token);
           return await redisClient.hgetall(token);
         }),
       );
-
       return room;
     },
   },
