@@ -1,6 +1,7 @@
 import {
   HOST,
   PORT,
+  HOST2,
   CLIENT_VERSION,
   JWT_SECRET,
   DB1_NAME,
@@ -27,6 +28,7 @@ export const config = {
   server: {
     port: PORT,
     host: HOST,
+    host2: HOST2,
   },
   client: {
     version: CLIENT_VERSION,
