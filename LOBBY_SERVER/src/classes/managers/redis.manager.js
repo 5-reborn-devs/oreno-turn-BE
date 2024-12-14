@@ -68,7 +68,7 @@ export const redisManager = {
       return await Promise.all(
         roomIds.filter(async (roomId) => {
           const maxUserNum = await redisClient.hget(roomId, 'maxUserNum');
-          const users = await redisClient.smembers(`${roomId}:users`);
+          const users = await redisClient.hkeys(`${roomId}:users`);
           return users.length < maxUserNum;
         }),
       );
