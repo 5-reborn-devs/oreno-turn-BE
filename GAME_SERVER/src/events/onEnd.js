@@ -10,6 +10,7 @@ import { redisClient } from '../init/redisConnect.js';
 import { serverSwitch } from '../utils/notification/notification.serverSwitch.js';
 import { config } from '../config/config.js';
 import { setUsersServerMove } from '../session/user.session.js';
+import { winMultiCast } from '../utils/notification/notification.win.js';
 
 export const onEnd = (socket) => async () => {
   const token = socket.token;
@@ -55,42 +56,8 @@ export const onEnd = (socket) => async () => {
 
       message = `유저 ${user.nickname}가 게임을 나갔습니다.`;
 
-      const survivers = room.users.filter((user) => user.character.hp > 0);
-
-      // 만약 남은 유저의 탈주로 인해 생존자가 한 명일 경우
-      if (survivers.length === 1) {
-        const winner = survivers[0];
-
-        const gameEndNotification = {
-          winners: [winner.id],
-          winType: 2, // 배틀로얄이라 사이코 밖에 없음.
-        };
-
-        multiCast(room.users, PACKET_TYPE.GAME_END_NOTIFICATION, {
-          gameEndNotification,
-        });
-
-        room.stopCustomInterval();
-        room.removeUserById(user.id); //방에서 유저 제거
-        const usersInRoom = [...room.users];
-
-        // 레디스에 유저의 방 정보 삭제
-        await redisManager.users.delRoomId(token);
-        // 방 정보 제거
-        rooms.delete(room.id); // 내부
-        await redisManager.rooms.delete(room.id); // Redis
-
-        const gameServerSwitchNotification = {
-          ip: '127.0.0.1',
-          port: 9000,
-        };
-
-        // 다른 유저들을 로비서버로 이동시킴.
-        setUsersServerMove(room.users);
-        multiCast(usersInRoom, PACKET_TYPE.GAME_SERVER_SWITCH_NOTIFICATION, {
-          gameServerSwitchNotification, // 승리자 클라에게 전송해줌 로비 서버로 변경하라고 요청 -> 클라에서 변경 ->
-        });
-      }
+      // 승리 확인
+      winMultiCast(room);
     }
 
     // 방에 유저가 남아있는데 방장이 종료할 경우

@@ -8,6 +8,8 @@ import sendResponsePacket, {
 } from '../../utils/response/createResponse.js';
 import { getFailCode } from '../../utils/response/failCode.js';
 import { userUpdateMultiCast } from '../../utils/notification/notification.userUpdate.js';
+import { winMultiCast } from '../../utils/notification/notification.win.js';
+import { rooms } from '../../session/session.js';
 
 export const useCardHandler = async (socket, payload) => {
   const { cardType, targetUserId } = payload;
@@ -75,6 +77,10 @@ export const useCardHandler = async (socket, payload) => {
           targetUserId: targetUserIdNumber,
         },
       });
+
+      // 승리 확인
+      const room = rooms.get(roomId);
+      winMultiCast(room);
     }
   } catch (e) {
     console.error('카드 사용 중 에러 발생:', e);

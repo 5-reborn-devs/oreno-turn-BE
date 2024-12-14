@@ -78,6 +78,8 @@ export const redisManager = {
 
     delete: async (roomId) => {
       const pipeline = redisClient.pipeline();
+      const tokens = await redisClient.hvals(`${roomId}:users`);
+      tokens.forEach((token) => pipeline.hdel(token, 'roomId'));
       pipeline.del(roomId);
       pipeline.del(`${roomId}:users`);
       pipeline.srem('rooms', roomId);

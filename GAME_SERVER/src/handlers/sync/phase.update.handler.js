@@ -5,7 +5,7 @@ import { multiCast } from '../../utils/response/createResponse.js';
 import { RANDOM_POSITIONS } from '../../constants/randomPositions.js';
 import { eveningDrawHandler } from './evening.phase.handler.js';
 import { userUpdateMultiCast } from '../../utils/notification/notification.userUpdate.js';
-import { marketEnterHandler } from './market.handler.js';
+import { winMultiCast } from '../../utils/notification/notification.win.js';
 
 //페이즈가 넘어갈때, 호출 넘어갔는지 체크.
 export const phaseUpdateNotificationHandler = async (room, nextState) => {
@@ -17,24 +17,6 @@ export const phaseUpdateNotificationHandler = async (room, nextState) => {
   };
 
   try {
-    // 방에 피가 1이상 남은 생존자 찾기
-    const survivers = room.users.filter((user) => user.character.hp > 0);
-
-    // 생존자가 1명이면 그 사람이 승리
-    if (survivers.length === 1) {
-      const winner = survivers[0];
-      room.stopCustomInterval();
-
-      const gameEndNotification = {
-        winners: [winner.id],
-        winType: 2, // 배틀로얄이라 사이코 밖에 없음.
-      };
-
-      multiCast(room.users, PACKET_TYPE.GAME_END_NOTIFICATION, {
-        gameEndNotification,
-      });
-    }
-
     //패 초기화
     room.users.forEach((user) => {
       user.character.cards.reroll();
