@@ -9,6 +9,7 @@ import { addClient } from '../../session/client.session.js';
 import { addUser, userLoggedIn } from '../../session/user.session.js';
 import { getFailCode } from '../../utils/response/failCode.js';
 import { redisManager } from '../../classes/managers/redis.manager.js';
+import { redisClient } from '../../init/redisConnect.js';
 
 function sendErrorMessage(response, message) {
   console.error(message);
@@ -40,7 +41,7 @@ export const loginHandler = async (socket, payload) => {
       sendErrorMessage(loginResponse, `비밀번호가 틀렸습니다. ${email}`);
 
     // 중복 로그인 확인
-    if (userLoggedIn(dbUser.userId))
+    if (await redisClient.sismember('users', dbUser.userId))
       sendErrorMessage(
         loginResponse,
         `이미 로그인된 사용자 입니다. : ${email}`,
