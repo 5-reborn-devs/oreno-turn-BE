@@ -8,6 +8,8 @@ import sendResponsePacket, {
 } from '../../utils/response/createResponse.js';
 import { getFailCode } from '../../utils/response/failCode.js';
 import { userUpdateMultiCast } from '../../utils/notification/notification.userUpdate.js';
+import { winMultiCast } from '../../utils/notification/notification.win.js';
+import { rooms } from '../../session/session.js';
 
 export const useCardHandler = async (socket, payload) => {
   const { cardType, targetUserId } = payload;
@@ -49,7 +51,9 @@ export const useCardHandler = async (socket, payload) => {
     while (effectExe(effectList.shift(), cardType, user, targetUser)) {}
 
     if (effectList.length) {
-      throw new Error('사용 조건 실패');
+      console.log(
+        `[카드 사용 실패] Type: ${cardType}, Process: ${effectList.length}`,
+      );
     } else {
       // 사용한 카드를 버림. (소멸카드가 생길 경우 분기 필요)
       userCharacter.cards.discardHands(cardType);
@@ -73,6 +77,10 @@ export const useCardHandler = async (socket, payload) => {
           targetUserId: targetUserIdNumber,
         },
       });
+
+      // 승리 확인
+      const room = rooms.get(roomId);
+      winMultiCast(room);
     }
   } catch (e) {
     console.error('카드 사용 중 에러 발생:', e);

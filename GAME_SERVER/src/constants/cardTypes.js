@@ -212,6 +212,11 @@ export const EF = {
   },
   buff: (type, user, targetUser) => {
     const { buffType, stack } = CARD_CONFIG[type].param;
+    // 타겟 지정이 없으면 자신에게 사용
+    if (!targetUser) {
+      console.log('타겟이 지정되지 않음.', targetUser);
+      targetUser = user;
+    }
     targetUser.character.buffStack.addBuff(buffType, stack);
     user.character.MP -= CARD_CONFIG[type].cost;
     return true;
@@ -238,15 +243,20 @@ export const EF = {
   isMaxHp: (type, user, targetUser) => {
     return user.character.HP < 50;
   },
+  isEnemy: (type, user, targetUser) => {
+    const isEnemy = user !== targetUser;
+    // 대상이 없거나 자신이 대상이면 false
+    return targetUser && isEnemy;
+  },
 };
 
 export const CARD_EFFECTS = {
-  [CARD_TYPES.BBANG]: [EF.isMinMp, EF.attack],
+  [CARD_TYPES.BBANG]: [EF.isMinMp, EF.isEnemy, EF.attack],
   [CARD_TYPES.SHIELD]: [EF.isMinMp, EF.buff],
   [CARD_TYPES.VACCINE]: [EF.isMinMp, EF.isMaxHp, EF.heal],
   [CARD_TYPES.ARMOR]: [EF.isMinMp, EF.buff],
   [CARD_TYPES.STRENGTH]: [EF.isMinMp, EF.buff],
-  [CARD_TYPES.VULNERABLE]: [EF.isMinMp, EF.buff],
-  [CARD_TYPES.WEAKENED]: [EF.isMinMp, EF.buff],
+  [CARD_TYPES.VULNERABLE]: [EF.isMinMp, EF.isEnemy, EF.buff],
+  [CARD_TYPES.WEAKENED]: [EF.isMinMp, EF.isEnemy, EF.buff],
   [CARD_TYPES.MANA_RECOVERY]: [EF.isMaxMp, EF.manaRecovery],
 };

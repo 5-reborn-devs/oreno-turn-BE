@@ -1,19 +1,17 @@
 import { redisClient } from '../../init/redisConnect.js';
-import { clients } from '../../session/session.js';
 
 export const redisManager = {
   users: {
     add: async (token, user) => {
-      try {
-        const userData = {
-          id: user.id,
-          nickname: user.nickname,
-        };
-        // Redis에 Hash 형식으로 저장
-        await redisClient.hmset(token, userData);
-      } catch (error) {
-        console.error('Redis에 유저 정보 저장 중 오류 발생:', error);
-      }
+      const pipeline = redisClient.pipeline();
+      const userData = {
+        id: user.id,
+        nickname: user.nickname,
+      };
+      // Redis에 Hash 형식으로 저장
+      pipeline.hmset(token, userData);
+      pipeline.sadd('users', userData.id);
+      await pipeline.exec();
     },
 
     get: async (token) => {
@@ -26,8 +24,12 @@ export const redisManager = {
       return user;
     },
 
-    delete: async (key) => {
-      await redisClient.del(key);
+    delete: async (token) => {
+      const userId = await redisClient.hget(token, 'id');
+      const pipeline = redisClient.pipeline();
+      pipeline.del(token);
+      pipeline.srem('users', userId);
+      await pipeline.exec();
     },
 
     setRoomId: async (token, roomId) => {
@@ -76,6 +78,8 @@ export const redisManager = {
 
     delete: async (roomId) => {
       const pipeline = redisClient.pipeline();
+      const tokens = await redisClient.hvals(`${roomId}:users`);
+      tokens.forEach((token) => pipeline.hdel(token, 'roomId'));
       pipeline.del(roomId);
       pipeline.del(`${roomId}:users`);
       pipeline.srem('rooms', roomId);
