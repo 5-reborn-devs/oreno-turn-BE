@@ -49,7 +49,9 @@ export const useCardHandler = async (socket, payload) => {
     while (effectExe(effectList.shift(), cardType, user, targetUser)) {}
 
     if (effectList.length) {
-      throw new Error('사용 조건 실패');
+      console.log(
+        `[카드 사용 실패] Type: ${cardType}, Process: ${effectList.length}`,
+      );
     } else {
       // 사용한 카드를 버림. (소멸카드가 생길 경우 분기 필요)
       userCharacter.cards.discardHands(cardType);
