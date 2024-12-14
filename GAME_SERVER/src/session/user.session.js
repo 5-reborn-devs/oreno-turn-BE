@@ -54,4 +54,9 @@ export const removeUser = (socket) => {
   } else {
     throw new Error(`${socket.token}가 유저 세션에 존재하지 않습니다.`);
   }
-}
+};
+
+// 유저들의 서버 이동 플래그 설정
+export const setUsersServerMove = (users) => {
+  users.forEach((user) => (user.isEndIgnore = true));
+};

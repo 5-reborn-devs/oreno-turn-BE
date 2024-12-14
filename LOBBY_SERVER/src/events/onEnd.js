@@ -10,7 +10,7 @@ import { redisClient } from '../init/redisConnect.js';
 
 export const onEnd = (socket) => async () => {
   if (socket.isEndIgnore) {
-    console.log('onEnd 무시됨.');
+    console.log('[서버 이동] Lobby -> Game'); // onEnd 무시됨.
     return;
   }
 

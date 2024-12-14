@@ -5,6 +5,7 @@ class User {
     this.id = id;
     this.nickname = nickname;
     this.character = new Character();
+    this.isEndIgnore = false;
   }
 }
 

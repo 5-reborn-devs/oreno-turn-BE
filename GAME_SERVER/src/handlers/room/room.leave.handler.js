@@ -70,7 +70,7 @@ export const leaveRoomHandler = async (socket, payloadData) => {
   sendResponsePacket(socket, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
     leaveRoomResponse,
   });
-  socket.isEndIgnore = true;
+  users.get(socket.token).isEndIgnore = true;
   // 현재 위치가 로비서버가 아니라면 로비로 돌아감. ? 필요한가?
   if (true) {
     serverSwitch(socket, '127.0.0.1', 9000);

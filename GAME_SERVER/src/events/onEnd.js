@@ -9,17 +9,20 @@ import { redisManager } from '../classes/managers/redis.manager.js';
 import { redisClient } from '../init/redisConnect.js';
 import { serverSwitch } from '../utils/notification/notification.serverSwitch.js';
 import { config } from '../config/config.js';
+import { setUsersServerMove } from '../session/user.session.js';
 
 export const onEnd = (socket) => async () => {
-  if (socket.isEndIgnore) {
-    console.log('onEnd 무시됨.');
+  const token = socket.token;
+  let user = users.get(token);
+  if (user && user.isEndIgnore) {
+    await redisManager.users.delRoomId(token);
+    console.log(`[서버 이동] (${user.nickname}) Game -> Lobby`); // onEnd 무시됨.
     return;
   }
 
   const roomId = socket.roomId;
   const room = rooms.get(roomId);
-  const token = socket.token;
-  let user = await redisManager.users.get(token);
+  user = await redisManager.users.get(token);
   const userIds = await redisManager.rooms.getUsers(roomId);
   const failCode = getFailCode();
   const leaveRoomResponse = {
@@ -72,16 +75,18 @@ export const onEnd = (socket) => async () => {
         const usersInRoom = [...room.users];
 
         // 레디스에 유저의 방 정보 삭제
-        await redisManager.users.delRoomId(usersInRoom);
+        await redisManager.users.delRoomId(token);
         // 방 정보 제거
-        rooms.delete(room.id);
-        await redisManager.rooms.delete(room.id);
+        rooms.delete(room.id); // 내부
+        await redisManager.rooms.delete(room.id); // Redis
 
         const gameServerSwitchNotification = {
           ip: '127.0.0.1',
           port: 9000,
         };
 
+        // 다른 유저들을 로비서버로 이동시킴.
+        setUsersServerMove(room.users);
         multiCast(usersInRoom, PACKET_TYPE.GAME_SERVER_SWITCH_NOTIFICATION, {
           gameServerSwitchNotification, // 승리자 클라에게 전송해줌 로비 서버로 변경하라고 요청 -> 클라에서 변경 ->
         });
