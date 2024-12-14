@@ -100,23 +100,17 @@ export const redisManager = {
     },
 
     getUsersData: async (roomId) => {
-      const userIds = await redisClient.smembers(`${roomId}:users`);
+      const userTokens = await redisClient.hvals(`${roomId}:users`);
       return await Promise.all(
-        userIds.map(async (id) => {
-          const token = clients.get(Number(id)).token;
-          return await redisClient.hgetall(token);
-        }),
+        userTokens.map(async (token) => await redisClient.hgetall(token)),
       );
     },
 
     getRoomData: async (roomId) => {
       const room = await redisClient.hgetall(roomId);
-      const userIds = await redisClient.smembers(`${roomId}:users`);
+      const userTokens = await redisClient.hvals(`${roomId}:users`);
       room.users = await Promise.all(
-        userIds.map(async (id) => {
-          const token = clients.get(Number(id)).token;
-          return await redisClient.hgetall(token);
-        }),
+        userTokens.map(async (token) => await redisClient.hgetall(token)),
       );
 
       return room;

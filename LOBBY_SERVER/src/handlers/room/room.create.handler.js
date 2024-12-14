@@ -30,7 +30,7 @@ export const createRoomHandler = async (socket, payloadData) => {
     };
 
     redisManager.rooms.addRoom(roomId, room); // 방 생성
-    redisManager.rooms.addUser(roomId, user); // 방에 유저 추가
+    redisManager.rooms.addUser(roomId, user, socket.token); // 방에 유저 추가
     // 레디스 유저 정보에 방정보 저장
     redisManager.users.setRoomId(socket.token, roomId);
     socket.roomId = roomId;

@@ -20,7 +20,7 @@ export const joinRoomHandler = async (socket, payload) => {
   try {
     const user = await redisManager.users.get(socket.token);
     const usersInRoomWithoutMe = await rooms.getUsers(roomId);
-    rooms.addUser(roomId, user);
+    rooms.addUser(roomId, user, socket.token);
     redisManager.users.setRoomId(socket.token, roomId);
     const room = await rooms.getRoomData(roomId);
 
@@ -58,7 +58,5 @@ export const joinRoomHandler = async (socket, payload) => {
   socket.isEndIgnore = true;
 
   // 서버를 옮김
-  serverSwitch(socket, '127.0.0.1', roomPort);
-  // 옮긴곳에서 multi를 쏨
-  if (notification) multiCast(...notification);
+  serverSwitch(socket, '127.0.0.1', Number(roomPort));
 };

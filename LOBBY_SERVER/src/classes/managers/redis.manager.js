@@ -56,7 +56,7 @@ export const redisManager = {
       return await Promise.all(
         roomIds.map(async (roomId) => {
           const room = await redisClient.hgetall(roomId);
-          room.users = await redisClient.smembers(`${roomId}:users`);
+          room.users = await redisClient.hkeys(`${roomId}:users`);
           return room;
         }),
       );
@@ -82,44 +82,36 @@ export const redisManager = {
       await pipeline.exec();
     },
 
-    addUser: async (roomId, user) => {
-      await redisClient.sadd(`${roomId}:users`, user.id);
+    addUser: async (roomId, user, token) => {
+      await redisClient.hset(`${roomId}:users`, user.id, token);
     },
 
     removeUser: async (roomId, user) => {
-      await redisClient.srem(`${roomId}:users`, user.id);
+      await redisClient.hdel(`${roomId}:users`, user.id);
     },
 
     getUsers: async (roomId) => {
-      return await redisClient.smembers(`${roomId}:users`);
+      return await redisClient.hkeys(`${roomId}:users`);
     },
 
     getUser: async (roomId, user) => {
-      return await redisClient.sismember(`${roomId}:users`, user.id);
+      return await redisClient.hget(`${roomId}:users`, user.id);
     },
 
     getUsersData: async (roomId) => {
-      const userIds = await redisClient.smembers(`${roomId}:users`);
+      const userTokens = await redisClient.hvals(`${roomId}:users`);
       return await Promise.all(
-        userIds.map(async (id) => {
-          const token = clients.get(Number(id)).token;
-          return await redisClient.hgetall(token);
-        }),
+        userTokens.map(async (token) => await redisClient.hgetall(token)),
       );
     },
 
     getRoomData: async (roomId) => {
       const room = await redisClient.hgetall(roomId);
-      const userIds = await redisClient.smembers(`${roomId}:users`);
-      const userIdsInt = userIds.map(Number);
-      console.log('클라이언트', clients);
+      const userTokens = await redisClient.hvals(`${roomId}:users`);
       room.users = await Promise.all(
-        userIdsInt.map(async (id) => {
-          const token = clients.get(Number(id)).token;
-          console.log('토큰', token);
-          return await redisClient.hgetall(token);
-        }),
+        userTokens.map(async (token) => await redisClient.hgetall(token)),
       );
+
       return room;
     },
   },
