@@ -1,3 +1,4 @@
+import Buff from '../classes/models/buff.class.js';
 import { getCardSum } from '../utils/getCardSum.js';
 import { BUFF_TYPES } from './buffTypes.js';
 

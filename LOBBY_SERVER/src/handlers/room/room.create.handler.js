@@ -20,8 +20,7 @@ export const createRoomHandler = async (socket, payloadData) => {
     const user = await redisManager.users.get(socket.token);
 
     // 여기서 방 번호 가ㅣ져와서 방 번호 할당
-    const roomId = getNextRoomId();
-
+    const roomId = await getNextRoomId();
     const room = {
       id: roomId,
       ownerId: user.id,
@@ -31,7 +30,7 @@ export const createRoomHandler = async (socket, payloadData) => {
     };
 
     redisManager.rooms.addRoom(roomId, room); // 방 생성
-    redisManager.rooms.addUser(roomId, user); // 방에 유저 추가
+    redisManager.rooms.addUser(roomId, user, socket.token); // 방에 유저 추가
     // 레디스 유저 정보에 방정보 저장
     redisManager.users.setRoomId(socket.token, roomId);
     socket.roomId = roomId;
@@ -59,5 +58,5 @@ export const createRoomHandler = async (socket, payloadData) => {
   // 게임 서버 리스트를 받음.
   // 라운드로빈으로선정
   // 레디스에 해당 방의 IP를 저장.
-  serverSwitch(socket, '127.0.0.1', 16666);
+  serverSwitch(socket, '127.0.0.1', 1666);
 };

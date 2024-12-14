@@ -72,15 +72,14 @@ export const onEnd = (socket) => async () => {
         const usersInRoom = [...room.users];
 
         // 레디스에 유저의 방 정보 삭제
-        await redisManager.users.delUsersRoomId(usersInRoom);
-
+        await redisManager.users.delRoomId(usersInRoom);
         // 방 정보 제거
         rooms.delete(room.id);
         await redisManager.rooms.delete(room.id);
 
         const gameServerSwitchNotification = {
-          ip: config.server.host,
-          port: 6666,
+          ip: '127.0.0.1',
+          port: 9000,
         };
 
         multiCast(usersInRoom, PACKET_TYPE.GAME_SERVER_SWITCH_NOTIFICATION, {

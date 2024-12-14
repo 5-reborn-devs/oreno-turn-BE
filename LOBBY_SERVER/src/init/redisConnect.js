@@ -28,6 +28,7 @@ redisClient.on('error', (err) => {
 // redis를 연결
 export const connectRedis = async () => {
   try {
+    console.log(`redis://${config.redis.host}:${config.redis.port}`);
     if (redisClient.status === 'ready') {
       console.log('Redis에 연결 준비 중.');
     }
