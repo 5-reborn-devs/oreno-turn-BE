@@ -2,7 +2,8 @@ import { redisManager } from '../../classes/managers/redis.manager.js';
 import User from '../../classes/models/user.class.js';
 import { PACKET_TYPE } from '../../constants/header.js';
 import { redisClient } from '../../init/redisConnect.js';
-import { clients } from '../../session/session.js';
+import { clients, users } from '../../session/session.js';
+import { addUser } from '../../session/user.session.js';
 import sendResponsePacket, {
   multiCast,
 } from '../../utils/response/createResponse.js';
@@ -15,8 +16,6 @@ export const verifyTokenHandler = async (socket, payload) => {
   try {
     const userRoomPort = socket._server._connectionKey; // 소켓에서 유저 host port 뽑아 옴
     const roomPort = userRoomPort.split(':').pop(); // 포트만 가져옴
-
-    console.log('룸포트', roomPort);
     const user = await redisManager.users.get(token);
     if (!user) {
       throw new Error('유효하지 않은 토큰');
@@ -38,7 +37,7 @@ export const verifyTokenHandler = async (socket, payload) => {
     const joinRoomNotification = {
       joinUser: new User(Number(user.id), user.nickname),
     };
-
+    addUser(socket.token, joinRoomNotification.joinUser);
     console.log('verifyToken users:', usersInRoom);
     multiCast(usersInRoom, PACKET_TYPE.JOIN_ROOM_NOTIFICATION, {
       joinRoomNotification,
