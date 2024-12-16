@@ -14,12 +14,9 @@ export const eveningDrawHandler = async (room) => {
     //반복 돌면서 드로우 리스트에 추가
     room.users.forEach((user) => {
       const client = clients.get(user.id);
-
-    
       user.character.cards.getDeckMap();
 
       for (let i = 0; i < cardsPerUser; i++) {
-
         const cardType = room.cards.deck.pop();
         console.log(cardType);
 
@@ -29,7 +26,7 @@ export const eveningDrawHandler = async (room) => {
         }
       }
       // console.log('이브닝 드로우 리스트 : ', user.character.eveningList);
-      // console.log("플레이어의 손패:",user.character.cards.getHands());  
+      // console.log("플레이어의 손패:",user.character.cards.getHands());
 
       //노티 만들기
       const eveningDistributionNotification = {

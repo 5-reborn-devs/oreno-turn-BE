@@ -43,6 +43,8 @@ export const joinRoomHandler = async (socket, payload) => {
         joinRoomNotification,
       },
     ];
+    // 서버를 옮김
+    serverSwitch(socket, '127.0.0.1', Number(roomPort));
   } catch (error) {
     joinRoomResponse = {
       success: false,
@@ -56,7 +58,4 @@ export const joinRoomHandler = async (socket, payload) => {
     joinRoomResponse,
   });
   socket.isEndIgnore = true;
-
-  // 서버를 옮김
-  serverSwitch(socket, '127.0.0.1', Number(roomPort));
 };
