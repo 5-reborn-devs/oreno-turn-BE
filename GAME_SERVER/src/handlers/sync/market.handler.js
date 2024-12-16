@@ -3,19 +3,18 @@ import { rooms, users } from '../../session/session.js';
 import { getFailCode } from '../../utils/response/failCode.js';
 import { sendResponsePacket } from '../../utils/response/createResponse.js';
 import Card from '../../classes/models/card.class.js';
-import { clients } from '../../session/session.js';
-
-//개인 마켓 입고 장수
-const RestockedPerUser = 3;
 
 //마켓 입장 핸들러
 export const marketEnterHandler = async (socket, payloadData) => {
+  
+  let RestockedPerUser = 3;
+
   // 소켓 유저&룸 검색
   const user = users.get(socket.token);
   const roomId = socket.roomId;
   const room = rooms.get(roomId);
 
-  console.log('마켓 입장 덱좀 보자: ', room.cards.deck);
+  console.log("마켓 입장 덱좀 보자: ",room.cards.deck); 
   //마켓 리스트 추가
   for (let i = 0; i < RestockedPerUser; i++) {
     const cardType = room.cards.deck.pop();
@@ -34,7 +33,6 @@ export const marketEnterHandler = async (socket, payloadData) => {
   //노티 만들기
   const fleaMarketNotification = {
     cardTypes: user.character.eveningList,
-    pickIndex: [],
   };
 
   //리스폰스 슛
@@ -42,6 +40,7 @@ export const marketEnterHandler = async (socket, payloadData) => {
     fleaMarketNotification,
   });
 };
+
 
 // 마켓 선택 핸들러
 export const marketPickHandler = (socket, payloadData) => {
@@ -74,19 +73,40 @@ export const marketPickHandler = (socket, payloadData) => {
   // for (let i = 0; i < 3; i++) {
   //   user.character.eveningList.pop();
   // }
-
+  console.log("추가전 캐릭터 덱 :",user.character.cards.deck);
   //나머지 카드 정리
+
+  //임시 변경 - 페이즈 오브 이벤트 이슈
+  let RestockedPerUser = 3;
+  if(room.phaseType !== 2){
+    RestockedPerUser = 2;
+  }
+
   for (let i = 0; i < RestockedPerUser; i++) {
     //일치하는 카드타입 패에 추가
     if (i === pickIndex) {
+
+      if(room.phaseType !== 2){
+        console.log("오브 카드 획득!");
+        user.character.cards.deck.push(user.character.eventList[i]);
+      }
+      else{
       user.character.cards.addHands(user.character.eveningList[i]);
+      }
       continue;
     }
     //나머지 공용덱으로
+    if(room.phaseType !== 2){
+      console.log("오브 카드 반환!");
+      room.cards.deck.push(user.character.eventList[i]);
+    }
+    else{
     room.cards.deck.push(user.character.eveningList[i]);
+    }
   }
-  // console.log("추가후 핸드패 :",user.character.cards.getHands());
-  // console.log("추가후 덱 :",room.cards.deck);
+  console.log("추가후 핸드패 :",user.character.cards.getHands());
+  console.log("추가후 캐릭터 덱 :",user.character.cards.deck);
+  console.log("추가후 덱 :",room.cards.deck);
 
   //리스폰스 슛
   sendResponsePacket(socket, PACKET_TYPE.FLEAMARKET_PICK_RESPONSE, {
@@ -98,13 +118,17 @@ export const marketPickHandler = (socket, payloadData) => {
 
   //유저의 드로우 목록 초기화.
   user.character.eveningList = [];
+  console.log("초기화 했냐?: ",user.character.eveningList);
 
   //드로우 여부 스위치
-  if (user.character.isEveningDraw == false) {
-    marketEnterHandler(socket, payloadData);
+  if(user.character.isEveningDraw == false && room.phaseType == 2){
+    marketEnterHandler(socket,payloadData);
     user.character.isEveningDraw = true;
   }
+
 };
+
+
 
 // message S2CReactionResponse {
 //   bool success = 1;
@@ -120,13 +144,11 @@ export const marketCardDelete = (socket) => {
 
   // 우선 노티 만들어.
   const reactionResponse = {
-    success: true,
+    success : true,
     failCode: failCode.NONE_FAILCODE,
-  };
+  }
 
-  sendResponsePacket(socket, PACKET_TYPE.REACTION_RESPONSE, {
-    reactionResponse,
-  });
+  sendResponsePacket(socket, PACKET_TYPE.REACTION_RESPONSE, { reactionResponse });
 
   // //노티 만들기
   // const MarketCardDeleteNotification = {
@@ -143,7 +165,7 @@ export const marketCardDelete = (socket) => {
 export const marketCardDeletePickHandler = (socket, payloadData) => {
   const { destroyCards } = payloadData;
 
-  console.log('카드제거 들어왔나요? :', destroyCards);
+  console.log("카드제거 들어왔나요? :",destroyCards);
   // 소켓 유저&룸 검색
   const user = users.get(socket.token);
 
@@ -155,12 +177,10 @@ export const marketCardDeletePickHandler = (socket, payloadData) => {
   //노티 만들기
   const DestroyCardResponse = {
     handCards: handCards,
-  };
+  }
 
   //리스폰스 슛
-  sendResponsePacket(socket, PACKET_TYPE.DESTROY_CARD_RESPONSE, {
-    DestroyCardResponse,
-  });
+  sendResponsePacket(socket, PACKET_TYPE.DESTROY_CARD_RESPONSE, { DestroyCardResponse });
 };
 /*
 
@@ -173,6 +193,8 @@ message S2CDestroyCardResponse {
 }
 
 */
+
+
 
 /*
 message S2CFleaMarketNotification {
