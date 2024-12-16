@@ -4,6 +4,7 @@ import { getFailCode } from '../../utils/response/failCode.js';
 import Card from '../../classes/models/card.class.js';
 import sendResponsePacket from '../../utils/response/createResponse.js';
 import { clients } from '../../session/session.js';
+import { fyShuffle } from '../../utils/fisherYatesShuffle.js';
 
 //황혼 공통 드로우
 export const eveningDrawHandler = async (room) => {
@@ -19,13 +20,19 @@ export const eveningDrawHandler = async (room) => {
       user.character.cards.getDeckMap();
 
 
+      console.log("일일히 찍어보자. cardPerUser : ",cardsPerUser);
 
+      //fyShuffle(room.cards.deck);
       for (let i = 0; i < cardsPerUser; i++) {
+        console.log("일일히 찍어보자. i : ",i);
         const cardType = room.cards.deck.pop();
+        console.log(cardType);
+        console.log("일일히 찍어보자. 공용덱 : ",room.cards.deck.length);
         if (cardType) {
           const card = new Card(cardType, 1);
           user.character.eveningList.push(card.type);
-        }
+          console.log("일일히 찍어보자. 리스트 : ",user.character.eveningList);
+        }else { console.error("카드 타입이 유효하지 않습니다."); }
       }
       console.log('이브닝 드로우 리스트 : ', user.character.eveningList);
       console.log("플레이어의 손패:",user.character.cards.getHands());  

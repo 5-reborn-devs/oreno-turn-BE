@@ -19,6 +19,7 @@ class Character {
     this.cards = new CardManager(makeCardDeck(INIT_DECK));
     this.buffStack = new BuffManager();
     this.eveningList = [];
+    this.eventList = [];
     this.isEveningDraw = false;
     this.x =0;
     this.y =0;

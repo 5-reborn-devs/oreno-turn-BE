@@ -4,14 +4,17 @@ import { getFailCode } from '../../utils/response/failCode.js';
 import { sendResponsePacket } from '../../utils/response/createResponse.js';
 import Card from '../../classes/models/card.class.js';
 import { clients } from '../../session/session.js';
+import { fyShuffle } from '../../utils/fisherYatesShuffle.js';
 
 
 //개인 마켓 입고 장수
-const RestockedPerUser = 3;
+let RestockedPerUser = 3;
 
 //마켓 입장 핸들러
 export const marketEnterHandler = async (socket, payloadData) => {
   
+  let RestockedPerUser = 3;
+
   // 소켓 유저&룸 검색
   const user = users.get(socket.token);
   const roomId = socket.roomId;
@@ -36,7 +39,7 @@ export const marketEnterHandler = async (socket, payloadData) => {
   //노티 만들기
   const fleaMarketNotification = {
     cardTypes: user.character.eveningList,
-    pickIndex: [],
+    // pickIndex: [],
   };
 
   //리스폰스 슛
@@ -77,19 +80,38 @@ export const marketPickHandler = (socket, payloadData) => {
   // for (let i = 0; i < 3; i++) {
   //   user.character.eveningList.pop();
   // }
-
+  console.log("추가전 캐릭터 덱 :",user.character.cards.deck);
   //나머지 카드 정리
+  let RestockedPerUser = 3;
+  if(room.phaseType !== 2){
+    RestockedPerUser = 2;
+  }
+
   for (let i = 0; i < RestockedPerUser; i++) {
     //일치하는 카드타입 패에 추가
     if (i === pickIndex) {
+
+      if(room.phaseType !== 2){
+        console.log("오브 카드 획득!");
+        user.character.cards.deck.push(user.character.eventList[i]);
+      }
+      else{
       user.character.cards.addHands(user.character.eveningList[i]);
+      }
       continue;
     }
     //나머지 공용덱으로
+    if(room.phaseType !== 2){
+      console.log("오브 카드 반환!");
+      room.cards.deck.push(user.character.eventList[i]);
+    }
+    else{
     room.cards.deck.push(user.character.eveningList[i]);
+    }
   }
-  // console.log("추가후 핸드패 :",user.character.cards.getHands());
-  // console.log("추가후 덱 :",room.cards.deck);
+  console.log("추가후 핸드패 :",user.character.cards.getHands());
+  console.log("추가후 캐릭터 덱 :",user.character.cards.deck);
+  console.log("추가후 덱 :",room.cards.deck);
 
   //리스폰스 슛
   sendResponsePacket(socket, PACKET_TYPE.FLEAMARKET_PICK_RESPONSE, {
@@ -101,12 +123,14 @@ export const marketPickHandler = (socket, payloadData) => {
 
   //유저의 드로우 목록 초기화.
   user.character.eveningList = [];
+  console.log("초기화 했냐?: ",user.character.eveningList);
 
   //드로우 여부 스위치
-  if(user.character.isEveningDraw == false){
+  if(user.character.isEveningDraw == false && room.phaseType == 2){
     marketEnterHandler(socket,payloadData);
     user.character.isEveningDraw = true;
   }
+  //console.log(isEveningDraw);
 
 };
 
