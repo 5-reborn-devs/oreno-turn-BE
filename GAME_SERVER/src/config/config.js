@@ -64,4 +64,10 @@ export const config = {
   auth: {
     key: JWT_SECRET,
   },
+
+  page: {
+    afternoon: 120000,
+    evening: 12000,
+    night: 180000,
+  },
 };
