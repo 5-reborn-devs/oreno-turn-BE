@@ -1,7 +1,6 @@
 import { redisManager } from '../../classes/managers/redis.manager.js';
 import { PACKET_TYPE } from '../../constants/header.js';
 import { getProtoMessages } from '../../init/loadProto.js';
-import { rooms } from '../../session/session.js';
 import { sendResponsePacket } from '../../utils/response/createResponse.js';
 
 export const getRoomListHandler = async (socket, payloadData) => {
