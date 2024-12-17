@@ -12,7 +12,6 @@ COPY . .
 
 EXPOSE 6666
 
-RUN ["yarn", "migrate"]
 # Run the server
 CMD ["yarn", "lobby"]
 

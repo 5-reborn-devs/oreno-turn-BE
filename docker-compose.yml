@@ -33,7 +33,7 @@ services:
     build:
       context: ./LOBBY_SERVER
       dockerfile: Dockerfile
-    container_name: lobi-server-1
+    container_name: lobby-server-1
     ports:
       - '6666:6666' # TCP 로비 서버 포트
     environment:
