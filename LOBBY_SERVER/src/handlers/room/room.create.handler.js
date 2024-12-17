@@ -58,5 +58,5 @@ export const createRoomHandler = async (socket, payloadData) => {
   // 게임 서버 리스트를 받음.
   // 라운드로빈으로선정
   // 레디스에 해당 방의 IP를 저장.
-  serverSwitch(socket, '127.0.0.1', 1666);
+  serverSwitch(socket, config.server.host, 1666);
 };

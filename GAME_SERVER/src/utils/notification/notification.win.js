@@ -3,6 +3,7 @@ import { rooms } from '../../session/session.js';
 import { setUsersServerMove } from '../../session/user.session.js';
 import { multiCast } from '../response/createResponse.js';
 import { PACKET_TYPE } from '../../constants/header.js';
+import { config } from '../../config/config.js';
 
 export const winMultiCast = async (room) => {
   const survivers = room.users.filter((user) => user.character.hp > 0);
@@ -28,7 +29,7 @@ export const winMultiCast = async (room) => {
     await redisManager.rooms.delete(room.id); // Redis
 
     const gameServerSwitchNotification = {
-      ip: '127.0.0.1',
+      ip: config.server.host,
       port: 9000,
     };
 
