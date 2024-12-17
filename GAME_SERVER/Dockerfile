@@ -14,4 +14,3 @@ EXPOSE 16666
 
 # Run the server
 CMD ["yarn", "game"]
-

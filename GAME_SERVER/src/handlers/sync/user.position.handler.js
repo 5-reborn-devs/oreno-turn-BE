@@ -12,10 +12,6 @@ import { getFailCode } from '../../utils/response/failCode.js';
 export const positionUpdateHandler = async (socket, payload) => {
   const { x, y } = payload;
   const failCode = getFailCode();
-  const PositionUpdateResponse = {
-    success: false,
-    failCode: failCode.UNKNOWN_ERROR,
-  };
 
   try {
     // const user = users.get(socket.token);
@@ -30,7 +26,6 @@ export const positionUpdateHandler = async (socket, payload) => {
     user.character.x = x;
     user.character.y = y;
 
-    console.log('스위치:', room.positionUpdateSwitch);
     // 스위치가 켜질때만 한번에 모아서 싹 보내버리자.
     if (room.positionUpdateSwitch === true) {
       //캐릭터 포지션 배열에 각 아이디의 현재 위치 담기
@@ -47,8 +42,6 @@ export const positionUpdateHandler = async (socket, payload) => {
         }
       });
 
-      console.log('들어오는지, 일치하는지 확인해볼까? :', characterPositions);
-
       // const usersInRoom = getUsersInRoom(socket.roomId, user.id);
       const usersInRoom = getUsersInRoom(roomId);
 
@@ -56,10 +49,6 @@ export const positionUpdateHandler = async (socket, payload) => {
       const positionUpdateNotification = {
         characterPositions,
       };
-
-      sendResponsePacket(socket, PACKET_TYPE.POSITION_UPDATE_NOTIFICATION, {
-        positionUpdateNotification,
-      });
 
       //전체에게 슛
       multiCast(usersInRoom, PACKET_TYPE.POSITION_UPDATE_NOTIFICATION, {
@@ -73,6 +62,9 @@ export const positionUpdateHandler = async (socket, payload) => {
     console.log('위치 동기화 알수없는 에러', error);
   }
   //리스폰스 보내기
+  // sendResponsePacket(socket, PACKET_TYPE.POSITION_UPDATE_NOTIFICATION, {
+  //   positionUpdateNotification,
+  // });
 };
 
 // message CharacterPositionData {
