@@ -20,8 +20,8 @@ export const joinRoomHandler = async (socket, payload) => {
   try {
     const user = await redisManager.users.get(socket.token);
     const usersInRoomWithoutMe = await rooms.getUsers(roomId);
-    rooms.addUser(roomId, user, socket.token);
-    redisManager.users.setRoomId(socket.token, roomId);
+    await rooms.addUser(roomId, user, socket.token);
+    await redisManager.users.setRoomId(socket.token, roomId);
     const room = await rooms.getRoomData(roomId);
 
     if (!roomPort) {

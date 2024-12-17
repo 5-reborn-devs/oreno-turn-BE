@@ -16,9 +16,6 @@ export const eveningDrawHandler = async (room) => {
     room.users.forEach((user) => {
       const client = clients.get(user.id);
 
-      //마켓에 올라온 카드 전부 버리기
-      cards.allDiscardHands();
-
       // 남은 덱이 지급 카드 수 보다 적으면 덱에 버린카드 합치기
       if (cards.deck.length < cardsPerUser) {
         cards.discard2Deck(); // 버린 카드 합치기.
