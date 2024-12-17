@@ -25,7 +25,7 @@ export const joinRoomHandler = async (socket, payload) => {
     const room = await rooms.getRoomData(roomId);
 
     if (!roomPort) {
-      throw new Error(`룸아이디에 포트값이없어요!!${roomId}`);
+      throw new Error(`룸아이디에 포트값이없어요!! 방번호:${roomId}`);
     }
 
     socket.roomId = roomId;
@@ -58,5 +58,5 @@ export const joinRoomHandler = async (socket, payload) => {
   socket.isEndIgnore = true;
 
   // 서버를 옮김
-  serverSwitch(socket, '127.0.0.1', Number(roomPort));
+  serverSwitch(socket, config.server.host, Number(roomPort));
 };
