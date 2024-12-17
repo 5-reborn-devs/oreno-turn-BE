@@ -47,7 +47,7 @@ export const useCardHandler = async (socket, payload) => {
     };
 
     const effectList = [...CARD_EFFECTS[cardType]];
-    console.log(effectList);
+    // console.log(effectList);
     while (effectExe(effectList.shift(), cardType, user, targetUser)) {}
 
     if (effectList.length) {
