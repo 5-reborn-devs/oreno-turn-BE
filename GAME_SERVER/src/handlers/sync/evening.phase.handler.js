@@ -10,26 +10,28 @@ export const eveningDrawHandler = async (room) => {
   try {
     //개인에게 전달할 카드 장수
     const cardsPerUser = 3;
+    const cards = room.cards;
 
     //반복 돌면서 드로우 리스트에 추가
     room.users.forEach((user) => {
       const client = clients.get(user.id);
 
-    
-      user.character.cards.getDeckMap();
+      //마켓에 올라온 카드 전부 버리기
+      cards.allDiscardHands();
+
+      // 남은 덱이 지급 카드 수 보다 적으면 덱에 버린카드 합치기
+      if (cards.deck.length < cardsPerUser) {
+        cards.discard2Deck(); // 버린 카드 합치기.
+        cards.deck = fyShuffle(cards.deck);
+      }
 
       for (let i = 0; i < cardsPerUser; i++) {
-
-        const cardType = room.cards.deck.pop();
-        console.log(cardType);
-
-        if (cardType) {
-          const card = new Card(cardType, 1);
-          user.character.eveningList.push(card.type);
-        }
+        const cardType = cards.deck.pop();
+        cards.discard.push(cardType);
+        user.character.eveningList.push(cardType);
       }
       // console.log('이브닝 드로우 리스트 : ', user.character.eveningList);
-      // console.log("플레이어의 손패:",user.character.cards.getHands());  
+      // console.log("플레이어의 손패:",user.character.cards.getHands());
 
       //노티 만들기
       const eveningDistributionNotification = {

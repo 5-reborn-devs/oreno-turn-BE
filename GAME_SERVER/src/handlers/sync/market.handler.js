@@ -2,7 +2,6 @@ import { PACKET_TYPE } from '../../constants/header.js';
 import { rooms, users } from '../../session/session.js';
 import { getFailCode } from '../../utils/response/failCode.js';
 import { sendResponsePacket } from '../../utils/response/createResponse.js';
-import Card from '../../classes/models/card.class.js';
 
 //마켓 입장 핸들러
 export const marketEnterHandler = async (socket, payloadData) => {
@@ -12,22 +11,24 @@ export const marketEnterHandler = async (socket, payloadData) => {
   const user = users.get(socket.token);
   const roomId = socket.roomId;
   const room = rooms.get(roomId);
+  const cards = room.cards;
 
-  // console.log("마켓 입장 덱좀 보자: ",room.cards.deck);
+  // 남은 덱이 패 한도보다 적으면 덱에 버린카드 합치기
+  if (cards.deck.length < RestockedPerUser) {
+    cards.discard2Deck(); // 버린 카드 합치기.
+    cards.deck = fyShuffle(cards.deck);
+  }
+
   //마켓 리스트 추가
   for (let i = 0; i < RestockedPerUser; i++) {
-    const cardType = room.cards.deck.pop();
-    if (cardType) {
-      const card = new Card(cardType, 1);
-      user.character.eveningList.push(card.type);
-    }
+    const cardType = cards.deck.pop();
+    cards.discard.push(cardType);
+    user.character.eveningList.push(cardType);
   }
   user.character.eveningList.push(4); //힐 버튼 대용 카드
   user.character.eveningList.push(5); //제거 버튼 대용 카드
   user.character.eveningList.push(0); //나가기 버튼 대용 카드
   // user.character.eveningList.push(...[4,5,0]);
-
-  // console.log('마켓 리스트 : ', user.character.eveningList);
 
   //노티 만들기
   const fleaMarketNotification = {
@@ -65,14 +66,6 @@ export const marketPickHandler = (socket, payloadData) => {
   if (pickIndex === 5) {
     console.log('나가기.');
   }
-
-  //뒤부터 특수 선택지 3개 빼버리기
-  //현재 배열 모습 : [ cardType, cardType, cardType, ]
-  // for (let i = 0; i < 3; i++) {
-  //   user.character.eveningList.pop();
-  // }
-  // console.log('추가전 캐릭터 덱 :', user.character.cards.deck);
-  //나머지 카드 정리
 
   //임시 변경 - 페이즈 오브 이벤트 이슈
   let RestockedPerUser = 3;
