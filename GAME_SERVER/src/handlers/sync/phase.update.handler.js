@@ -20,8 +20,10 @@ export const phaseUpdateNotificationHandler = async (room, nextState) => {
     //패 초기화
     room.users.forEach((user) => {
       user.character.cards.reroll();
+      user.character.buffStack.clearBuff();
       //console.log("리롤 후 플레이어의 손패:",user.character.cards.getHands());
       //console.log("리롤 후  개인 덱 :",user.character.cards.deck);
+      // console.log('유저 버프 스택', user.character.buffStack.getBuffList());
     });
     userUpdateMultiCast(room.users);
 
