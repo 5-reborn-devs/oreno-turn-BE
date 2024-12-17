@@ -1,5 +1,4 @@
 import { makeCardDeck } from '../../handlers/card/index.js';
-import Card from './card.class.js';
 import { phaseUpdateNotificationHandler } from '../../handlers/sync/phase.update.handler.js';
 import CardManager from '../managers/card.manager.js';
 import { CARD_LIMIT } from '../../constants/cardTypes.js';
@@ -42,25 +41,21 @@ class Room {
     }
   }
 
-  // positionUpdateOn() {
-  //   this.positionUpdateOn = true;
-  // } //포지션 업데이트 노티 받기 위한 스위치 온
-
+  //포지션 업데이트 노티 받기 위한 스위치 온
   positionUpdateOn() {
     if (this.positionUpdateSwitch === false) {
       this.positionUpdateSwitch = true;
-      console.log('똑');
     } else if (this.positionUpdateSwitch === true) {
       this.positionUpdateSwitch = false;
-      console.log('딱');
     }
   }
+
+  //포지션 인터벌 시작
   positionUpdateInterval() {
     const room = this;
-    console.log('포지션 인터벌 시작');
     this.positionIntervalid = setInterval(function () {
       room.positionUpdateOn();
-    }, 1000);
+    }, 33);
     // 함수를 전달
   }
 
