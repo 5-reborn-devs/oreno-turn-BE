@@ -34,13 +34,14 @@ export const onData = (socket) => async (data) => {
       try {
         // 모든 패킷을 게임패킷으로 처리 가능하다고 한다
         const decodedPacket = decoder(payload);
+        console.log(`쌓인 버퍼: ${socket.Buffer.byteLength}byte`);
 
         // 인자로 받을 패킷 타입 전송
         const handler = getHandlerByPacketType(packetType);
         if (packetType !== 23) {
           console.log('클라가 보낸 패킷타입 request', packetType);
         }
-        
+
         await handler(socket, decodedPacket);
       } catch (err) {
         console.error(err);
