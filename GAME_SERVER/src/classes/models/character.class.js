@@ -13,7 +13,7 @@ class Character {
     this.stateInfo = new CharacterState();
     this._weapon = null;
     this._equips = [];
-    this._debuffs = [];
+    this.debuffs = [];
     this.bbangCount = 0;
     this.handCardsCount = 0;
     this.cards = new CardManager(makeCardDeck(INIT_DECK));
@@ -21,8 +21,8 @@ class Character {
     this.eveningList = [];
     this.eventList = [];
     this.isEveningDraw = false;
-    this.x =0;
-    this.y =0;
+    this.x = 0;
+    this.y = 0;
     this.isMoved = false;
   }
   activeData() {

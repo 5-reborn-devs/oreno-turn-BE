@@ -42,6 +42,10 @@ class BuffManager {
     return [...this.buff.values()];
   }
 
+  getBuffTypeList() {
+    return [...this.buff.values()].map((buff) => buff.type);
+  }
+
   deleteBuff(buffType) {
     this.buff.delete(buffType);
   }

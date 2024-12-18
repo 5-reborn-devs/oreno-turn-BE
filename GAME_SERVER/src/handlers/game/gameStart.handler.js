@@ -1,3 +1,4 @@
+import { config } from '../../config/config.js';
 import { PACKET_TYPE } from '../../constants/header.js';
 import { RANDOM_POSITIONS } from '../../constants/randomPositions.js';
 import { getProtoMessages } from '../../init/loadProto.js';
@@ -16,7 +17,7 @@ export const gameStart = (socket) => {
     const roomId = socket.roomId;
     const room = rooms.get(roomId);
     const currentTime = Date.now();
-    const nextPhaseAt = currentTime + 18000; // 3분후에 넥스트 페이즈 타입으로 이동 // 테스트용 10초
+    const nextPhaseAt = currentTime + config.page.afternoon; // 3분후에 넥스트 페이즈 타입으로 이동 // 테스트용 10초
 
     const gameState = {
       phaseType: room.phaseType,
@@ -32,18 +33,18 @@ export const gameStart = (socket) => {
     const usedPositions = new Set();
 
     room.users.forEach((user) => {
-        let positionKey;
-        do {
-          positionKey =
-            positionKeys[Math.floor(Math.random() * positionKeys.length)];
-        } while (usedPositions.has(positionKey));
-        usedPositions.add(positionKey);
-        characterPositions.push({
-          id: user.id,
-          x: RANDOM_POSITIONS[positionKey].x,
-          y: RANDOM_POSITIONS[positionKey].y,
-        });
+      let positionKey;
+      do {
+        positionKey =
+          positionKeys[Math.floor(Math.random() * positionKeys.length)];
+      } while (usedPositions.has(positionKey));
+      usedPositions.add(positionKey);
+      characterPositions.push({
+        id: user.id,
+        x: RANDOM_POSITIONS[positionKey].x,
+        y: RANDOM_POSITIONS[positionKey].y,
       });
+    });
 
     const gameStartNotification = {
       gameState,
@@ -56,14 +57,11 @@ export const gameStart = (socket) => {
       failCode: failCode.NONE_FAILCODE,
     };
 
-
-
     // 게임 유저 정보 동기화
     gameStartMultiCast(gameStartNotification);
 
     // 페이즈 업데이트 인터벌 기동
     room.button(nextPhaseAt);
-
   } catch (err) {
     gameStartResponse = {
       success: false,

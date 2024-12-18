@@ -22,7 +22,6 @@ export const useCardHandler = async (socket, payload) => {
   const userCharacter = user.character;
   const roomId = socket.roomId;
   const failCode = getFailCode();
-  const gameDeck = getUserRoom(roomId).gameDeck;
 
   try {
     // 페이로드 값 검증
@@ -47,13 +46,14 @@ export const useCardHandler = async (socket, payload) => {
     };
 
     const effectList = [...CARD_EFFECTS[cardType]];
-    // console.log(effectList);
     while (effectExe(effectList.shift(), cardType, user, targetUser)) {}
 
+    // 카드 사용 조건 미달성
     if (effectList.length) {
-      console.log(
-        `[카드 사용 실패] Type: ${cardType}, Process: ${effectList.length}`,
-      );
+      // console.log(
+      //   `[카드 사용 실패] Type: ${cardType}, Process: ${effectList.length}`,
+      // );
+      throw new Error('cardFail');
     } else {
       // 사용한 카드를 버림. (소멸카드가 생길 경우 분기 필요)
       userCharacter.cards.discardHands(cardType);
@@ -83,7 +83,7 @@ export const useCardHandler = async (socket, payload) => {
       winMultiCast(room);
     }
   } catch (e) {
-    console.error('카드 사용 중 에러 발생:', e);
+    if (e.message !== 'cardFail') console.error('카드 사용 중 에러 발생:', e);
     sendResponsePacket(socket, PACKET_TYPE.USE_CARD_RESPONSE, {
       useCardResponse: {
         success: false,

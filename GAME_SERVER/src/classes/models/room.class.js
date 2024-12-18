@@ -2,6 +2,7 @@ import { makeCardDeck } from '../../handlers/card/index.js';
 import { phaseUpdateNotificationHandler } from '../../handlers/sync/phase.update.handler.js';
 import CardManager from '../managers/card.manager.js';
 import { CARD_LIMIT } from '../../constants/cardTypes.js';
+import { config } from '../../config/config.js';
 
 class Room {
   constructor(
@@ -68,7 +69,11 @@ class Room {
   }
 
   startCustomInterval() {
-    const intervals = [18000, 12000, 18000]; // afternoon, evening, night
+    const intervals = [
+      config.page.afternoon,
+      config.page.evening,
+      config.page.night,
+    ];
     let currentIndex = 0;
     const room = this;
     function runInterval() {
