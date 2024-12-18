@@ -59,7 +59,9 @@ class CardManager {
   //남은 패 전부 버리기
   allDiscardHands() {
     for (const [cardType, cardObj] of this.hands.entries()) {
-      this.discard.push(...new Array(cardObj.count).fill(cardType));
+      try {
+        this.discard.push(...new Array(cardObj.count).fill(cardType));
+      } catch {}
       this.hands.delete(cardType); // 전부 옮긴 카드 종류는 삭제
     }
 
