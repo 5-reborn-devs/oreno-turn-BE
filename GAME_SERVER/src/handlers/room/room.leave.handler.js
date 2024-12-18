@@ -1,5 +1,5 @@
 import { PACKET_TYPE } from '../../constants/header.js';
-import { rooms, users } from '../../session/session.js';
+import { rooms, users, clients } from '../../session/session.js';
 import { getFailCode } from '../../utils/response/failCode.js';
 import sendResponsePacket, {
   multiCast,
@@ -12,11 +12,10 @@ import { config } from '../../config/config.js';
 export const leaveRoomHandler = async (socket, payloadData) => {
   const failCode = getFailCode();
   const roomId = socket.roomId;
-  const rooms = redisManager.rooms;
   let leaveRoomResponse;
 
   try {
-    const room = await rooms.getRoom(roomId);
+    const room = await redisManager.rooms.getRoom(roomId);
     if (!room) {
       throw new Error('해당 방이 존재하지 않습니다');
     }
@@ -31,16 +30,23 @@ export const leaveRoomHandler = async (socket, payloadData) => {
       failCode: failCode.NONE_FAILCODE,
     };
 
-    rooms.removeUser(roomId, user);
-    redisManager.users.delRoomId(socket.token, roomId);
+    // 레디스 방 데이터 삭제제
+    await redisManager.rooms.removeUser(roomId, user);
+    await redisManager.users.delRoomId(socket.token, roomId);
+
+    // 내부 데이터 삭제제
+    users.delete(socket.token);
+    clients.delete(Number(user.id));
     socket.roomId = null;
-    const usersInRoom = await rooms.getUsers(roomId);
+
+    const usersInRoom = await redisManager.rooms.getUsers(roomId);
     const leaveRoomNotification = {
       userId: user.id,
     };
 
     // 남은 유저가 없다면 방 삭제
     if (!usersInRoom.length) {
+      await redisManager.rooms.delete(roomId);
       rooms.delete(roomId);
       releaseRoomId(roomId);
     } else {
@@ -49,6 +55,7 @@ export const leaveRoomHandler = async (socket, payloadData) => {
         multiCast(usersInRoom, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
           leaveRoomResponse,
         });
+        await redisManager.rooms.delete(roomId);
         rooms.delete(roomId);
         releaseRoomId(roomId);
       }
