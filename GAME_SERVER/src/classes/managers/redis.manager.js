@@ -33,7 +33,11 @@ export const redisManager = {
     },
 
     setRoomId: async (token, roomId) => {
-      await redisClient.hset(token, 'roomId', roomId);
+      await redisClient
+        .multi()
+        .hset(token, 'roomId', roomId)
+        .hget(token, 'roomId')
+        .exec();
     },
 
     delRoomId: async (token) => {
