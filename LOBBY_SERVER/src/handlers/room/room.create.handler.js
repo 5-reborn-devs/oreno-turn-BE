@@ -31,13 +31,13 @@ export const createRoomHandler = async (socket, payloadData) => {
       state: roomStateType.WAIT,
     };
 
-    // await redisManager.rooms.addRoom(roomId, room); // 방 생성
-    // await redisManager.rooms.addUser(roomId, user, socket.token); // 방에 유저 추가
-    // // 레디스 유저 정보에 방정보 저장
-    // await redisManager.users.setRoomId(socket.token, roomId);
-    // socket.roomId = roomId;
+    await redisManager.rooms.addRoom(roomId, room); // 방 생성
+    await redisManager.rooms.addUser(roomId, user, socket.token); // 방에 유저 추가
+    // 레디스 유저 정보에 방정보 저장
+    await redisManager.users.setRoomId(socket.token, roomId);
+    socket.roomId = roomId;
 
-    await redisManager.rooms.createRoom(roomId, room, socket.token);
+    // await redisManager.rooms.createRoom(roomId, room, socket.token);
 
     success = true;
     createRoomResponse = {

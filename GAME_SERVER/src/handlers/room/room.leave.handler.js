@@ -35,6 +35,12 @@ export const leaveRoomHandler = async (socket, payloadData) => {
       userId: user.id,
     };
 
+    success = true;
+    leaveRoomResponse = {
+      success,
+      failCode: failCode.NONE_FAILCODE,
+    };
+
     // 남은 유저가 없다면 방 삭제
     if (!usersInRoom.length) {
       await redisManager.rooms.delete(roomId);
@@ -48,12 +54,6 @@ export const leaveRoomHandler = async (socket, payloadData) => {
         await redisManager.rooms.delete(roomId);
         releaseRoomId(roomId);
       }
-
-      success = true;
-      leaveRoomResponse = {
-        success,
-        failCode: failCode.NONE_FAILCODE,
-      };
 
       // 남은 유저가 있다면 유저들에게 떠남을 알림.
       multiCast(usersInRoom, PACKET_TYPE.LEAVE_ROOM_NOTIFICATION, {
