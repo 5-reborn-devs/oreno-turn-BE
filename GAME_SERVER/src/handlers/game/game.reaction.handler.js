@@ -77,14 +77,16 @@ import Card from '../../classes/models/card.class.js';
 
 export const reactionHandler = async (socket) => {
 
+   
+    const user = users.get(socket.token);
+    const roomId = socket.roomId;
+    const room = rooms.get(roomId);
 
-  const user = users.get(socket.token);
-  const roomId = socket.roomId;
-  const room = rooms.get(roomId);
+    if(room.isEventDraw == false){
 
-  user.character.eventList = []; // 초기화
+    user.character.eventList = []; // 초기화
 
-  console.log("유저 검색 했나요?",user);
+    console.log("유저 검색 했나요?",user);
 
   for(let i =0;i<2;i++){
     const cardType = room.cards.deck.pop();
@@ -99,10 +101,14 @@ export const reactionHandler = async (socket) => {
     //노티 만들기
     const fleaMarketNotification = {
       cardTypes: user.character.eventList,
+      // pickIndex: [0,1],
     };
 
     sendResponsePacket(socket, PACKET_TYPE.FLEAMARKET_NOTIFICATION, {
       fleaMarketNotification,
     });
+  }
+
+  room.isEventDraw = true;
 
 }

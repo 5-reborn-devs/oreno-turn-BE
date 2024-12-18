@@ -27,6 +27,7 @@ class Room {
     this.intervalId = null;
     this.positionIntervalid = null;
     this.marketRestocked = [];
+    this.isEventDraw = false;
     this.cards = new CardManager(makeCardDeck(CARD_LIMIT));
   }
   addUser(userData) {
