@@ -21,7 +21,7 @@ export const leaveRoomHandler = async (socket, payloadData) => {
     }
 
     const user = await redisManager.users.get(socket.token);
-    if (!(await rooms.getUser(roomId, user))) {
+    if (!(await redisManager.rooms.getUser(roomId, user))) {
       throw new Error('해당 방에 유저가 존재하지 않습니다');
     }
 
@@ -47,7 +47,6 @@ export const leaveRoomHandler = async (socket, payloadData) => {
     // 남은 유저가 없다면 방 삭제
     if (!usersInRoom.length) {
       await redisManager.rooms.delete(roomId);
-      rooms.delete(roomId);
       releaseRoomId(roomId);
     } else {
       // 나간 유저가 방장일 경우 방이 폭파됨.
@@ -56,7 +55,6 @@ export const leaveRoomHandler = async (socket, payloadData) => {
           leaveRoomResponse,
         });
         await redisManager.rooms.delete(roomId);
-        rooms.delete(roomId);
         releaseRoomId(roomId);
       }
 
