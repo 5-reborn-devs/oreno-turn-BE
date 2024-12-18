@@ -40,6 +40,7 @@ export const createRoomHandler = async (socket, payloadData) => {
     redisManager.rooms
       .createRoom(roomId, room, socket.token)
       .then((result) => console.log('방생성 로그', result));
+    console.log('Manager실행');
 
     success = true;
     createRoomResponse = {

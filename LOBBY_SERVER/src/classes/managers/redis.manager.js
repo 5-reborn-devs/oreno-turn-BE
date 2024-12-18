@@ -60,6 +60,7 @@ export const redisManager = {
         .sadd('rooms', roomId)
         .hset(`${roomId}:users`, data.ownerId, token)
         .hset(token, 'roomId', roomId)
+        .hget(token, 'roomId')
         .exec();
     },
 
