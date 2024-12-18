@@ -56,6 +56,7 @@ export const phaseUpdateNotificationHandler = async (room, nextState) => {
     } else if (room.phaseType === 2) {
       console.log(`밤으로 전환합니다. 현재 PhaseType: ${room.phaseType}.`);
       room.phaseType = 3;
+      room.isEventDraw = false;
 
       room.users.forEach((user) => {
         user.character.isEveningDraw = false;
