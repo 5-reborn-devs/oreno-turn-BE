@@ -20,7 +20,7 @@ export const createRoomHandler = async (socket, payloadData) => {
   try {
     const user = await redisManager.users.get(socket.token);
     if (user.roomId) {
-      console.error('이미 방에 들어가 있음.', user.roomId);
+      throw new Error(`이미 방에 들어가 있음 RoomId:${user.roomId}`);
     }
 
     // 여기서 방 번호 가져와서 방 번호 할당
