@@ -55,7 +55,6 @@ export const joinRoomHandler = async (socket, payload) => {
   sendResponsePacket(socket, PACKET_TYPE.JOIN_ROOM_RESPONSE, {
     joinRoomResponse,
   });
-  socket.isEndIgnore = true;
 
   // 서버를 옮김
   serverSwitch(socket, config.server.host, Number(roomPort));
