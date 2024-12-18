@@ -13,6 +13,7 @@ export const leaveRoomHandler = async (socket, payloadData) => {
   const failCode = getFailCode();
   const roomId = socket.roomId;
   let leaveRoomResponse;
+  let success = false;
 
   try {
     const room = await redisManager.rooms.getRoom(roomId);
@@ -21,18 +22,13 @@ export const leaveRoomHandler = async (socket, payloadData) => {
     }
 
     const user = await redisManager.users.get(socket.token);
-    if (!(await redisManager.rooms.getUser(roomId, user))) {
-      throw new Error('해당 방에 유저가 존재하지 않습니다');
+    if (await redisManager.rooms.getUser(roomId, user)) {
+      // 레디스 방 데이터 삭제
+      await redisManager.rooms.removeUser(roomId, user);
+      await redisManager.users.delRoomId(socket.token, roomId);
+    } else {
+      console.error('해당 방에 유저가 존재하지 않습니다');
     }
-
-    leaveRoomResponse = {
-      success: true,
-      failCode: failCode.NONE_FAILCODE,
-    };
-
-    // 레디스 방 데이터 삭제
-    await redisManager.rooms.removeUser(roomId, user);
-    await redisManager.users.delRoomId(socket.token, roomId);
 
     const usersInRoom = await redisManager.rooms.getUsers(roomId);
     const leaveRoomNotification = {
@@ -53,6 +49,12 @@ export const leaveRoomHandler = async (socket, payloadData) => {
         releaseRoomId(roomId);
       }
 
+      success = true;
+      leaveRoomResponse = {
+        success,
+        failCode: failCode.NONE_FAILCODE,
+      };
+
       // 남은 유저가 있다면 유저들에게 떠남을 알림.
       multiCast(usersInRoom, PACKET_TYPE.LEAVE_ROOM_NOTIFICATION, {
         leaveRoomNotification,
@@ -60,7 +62,7 @@ export const leaveRoomHandler = async (socket, payloadData) => {
     }
   } catch (error) {
     leaveRoomResponse = {
-      success: false,
+      success,
       failCode: failCode.LEAVE_ROOM_FAILED,
     };
 
@@ -71,7 +73,9 @@ export const leaveRoomHandler = async (socket, payloadData) => {
     leaveRoomResponse,
   });
 
-  users.get(socket.token).isEndIgnore = true;
   // 현재 위치가 로비서버가 아니라면 로비로 돌아감. ? 필요한가?
-  serverSwitch(socket, config.server.host, 9000);
+  if (success) {
+    users.get(socket.token).isEndIgnore = true;
+    serverSwitch(socket, config.server.host, 9000);
+  }
 };
