@@ -22,7 +22,7 @@ export const sendResponsePacket = async (
     //클라이언트에게 패킷 전송
     await socket.write(serializedPacket);
 
-    console.log(`Send packet of type ${PACKET_NUMBER[packetType]} to client.`);
+    // console.log(`Send packet of type ${PACKET_NUMBER[packetType]} to client.`);
   } catch (error) {
     console.error('Error sending response packet', error);
   }
