@@ -20,8 +20,8 @@ export const createRoomHandler = async (socket, payloadData) => {
   try {
     const user = await redisManager.users.get(socket.token);
 
-    // 여기서 방 번호 가ㅣ져와서 방 번호 할당
-    const roomId = getNextRoomId();
+    // 여기서 방 번호 가져와서 방 번호 할당
+    const roomId = await getNextRoomId();
 
     const room = {
       id: roomId,
