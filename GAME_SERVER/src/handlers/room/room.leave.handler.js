@@ -30,14 +30,9 @@ export const leaveRoomHandler = async (socket, payloadData) => {
       failCode: failCode.NONE_FAILCODE,
     };
 
-    // 레디스 방 데이터 삭제제
+    // 레디스 방 데이터 삭제
     await redisManager.rooms.removeUser(roomId, user);
     await redisManager.users.delRoomId(socket.token, roomId);
-
-    // 내부 데이터 삭제제
-    users.delete(socket.token);
-    clients.delete(Number(user.id));
-    socket.roomId = null;
 
     const usersInRoom = await redisManager.rooms.getUsers(roomId);
     const leaveRoomNotification = {
@@ -75,9 +70,8 @@ export const leaveRoomHandler = async (socket, payloadData) => {
   sendResponsePacket(socket, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
     leaveRoomResponse,
   });
+
   users.get(socket.token).isEndIgnore = true;
   // 현재 위치가 로비서버가 아니라면 로비로 돌아감. ? 필요한가?
-  if (true) {
-    serverSwitch(socket, config.server.host, 9000);
-  }
+  serverSwitch(socket, config.server.host, 9000);
 };
