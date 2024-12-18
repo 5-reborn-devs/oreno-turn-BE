@@ -18,7 +18,7 @@ export const sendResponsePacket = (socket, packetType, responseMessage) => {
     //클라이언트에게 패킷 전송
     socket.write(serializedPacket);
 
-    //console.log(`Send packet of type ${PACKET_NUMBER[packetType]} to client.`);
+    console.log(`Send packet of type ${PACKET_NUMBER[packetType]} to client.`);
   } catch (error) {
     console.error('Error sending response packet', error);
   }
