@@ -162,7 +162,7 @@ export const CARD_CONFIG = {
   [CARD_TYPES.MANA_RECOVERY]: {
     cost: 0,
     coin: 100,
-    param: { manaRecovery: 2 },
+    param: { manaRecovery: 3 },
   },
 };
 
