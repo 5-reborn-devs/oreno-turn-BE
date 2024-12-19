@@ -11,6 +11,7 @@ import { serverSwitch } from '../utils/notification/notification.serverSwitch.js
 import { config } from '../config/config.js';
 import { setUsersServerMove } from '../session/user.session.js';
 import { winMultiCast } from '../utils/notification/notification.win.js';
+import { leaveRoomHandler } from '../handlers/room/room.leave.handler.js';
 
 export const onEnd = (socket) => async () => {
   const token = socket.token;
@@ -50,7 +51,10 @@ export const onEnd = (socket) => async () => {
       redisManager.rooms.delete(roomId);
       releaseRoomId(roomId);
     }
-
+    // 방에서 종료하는 경우
+    else if (userIds.length > 1) {
+      leaveRoomHandler(socket);
+    }
     // 게임 안에 있는 경우 (탈주)
     else if (room.state == 2) {
       user = users.get(token);
@@ -85,6 +89,7 @@ export const onEnd = (socket) => async () => {
   } catch (err) {
     console.error('클라이언트 연결 종료 처리 중 오류 발생', err);
     console.error(`token:${socket.token} roomId:${socket.roomId}`);
+    console.error(`room data:\n${room}`);
   }
   sendResponsePacket(socket, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
     leaveRoomResponse,
