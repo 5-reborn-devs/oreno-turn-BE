@@ -52,7 +52,7 @@ export const verifyTokenHandler = async (socket, payload) => {
       success: false,
       failCode: failCode.INVALID_REQUEST,
     };
-    console.error(error);
+    console.error(error + `\ntoken:${socket.token}, roomId:${socket.roomId}`);
   }
   sendResponsePacket(socket, PACKET_TYPE.VERIFY_TOKEN_RESPONSE, {
     verifyTokenResponse,
