@@ -51,12 +51,8 @@ export const onEnd = (socket) => async () => {
       redisManager.rooms.delete(roomId);
       releaseRoomId(roomId);
     }
-    // 방에서 종료하는 경우
-    else if (userIds.length > 1) {
-      leaveRoomHandler(socket);
-    }
     // 게임 안에 있는 경우 (탈주)
-    else if (room.state == 2) {
+    else if (room.state == 2 || false) {
       user = users.get(token);
       user.character.hp = 0;
       multiCast(room.users, PACKET_TYPE.USER_UPDATE_NOTIFICATION, {
@@ -77,11 +73,11 @@ export const onEnd = (socket) => async () => {
       multiCast(userIds, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
         leaveRoomResponse,
       });
-
-      multiCast(userIds, PACKET_TYPE.LEAVE_ROOM_NOTIFICATION, {
-        leaveRoomNotification, // 방안에있는 다른유저들에게도 알려줌
-      });
     }
+
+    multiCast(userIds, PACKET_TYPE.LEAVE_ROOM_NOTIFICATION, {
+      leaveRoomNotification, // 방안에있는 다른유저들에게도 알려줌
+    });
 
     users.delete(token);
     redisManager.users.delete(token);
