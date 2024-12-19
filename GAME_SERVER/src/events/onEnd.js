@@ -53,7 +53,7 @@ export const onEnd = (socket) => async () => {
     } else if (!room) {
     }
     // 게임 안에 있는 경우 (탈주)
-    else if (room.state == 2 || false) {
+    else if (room.state == 2) {
       user = users.get(token);
       user.character.hp = 0;
       multiCast(room.users, PACKET_TYPE.USER_UPDATE_NOTIFICATION, {
