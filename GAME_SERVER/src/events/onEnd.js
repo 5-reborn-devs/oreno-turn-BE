@@ -84,6 +84,7 @@ export const onEnd = (socket) => async () => {
     console.log(message);
   } catch (err) {
     console.error('클라이언트 연결 종료 처리 중 오류 발생', err);
+    console.error(`token:${socket.token} roomId:${socket.roomId}`);
   }
   sendResponsePacket(socket, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
     leaveRoomResponse,
