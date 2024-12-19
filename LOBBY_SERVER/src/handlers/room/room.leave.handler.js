@@ -23,6 +23,13 @@ export const leaveRoomHandler = async (socket, payloadData) => {
 
     const user = await redisManager.users.get(socket.token);
     if (!(await rooms.getUser(roomId, user))) {
+      console.error('해당 방에 유저가 존재하지 않습니다');
+      leaveRoomResponse = {
+        success: true,
+        failCode: failCode.NONE_FAILCODE,
+      };
+
+      return;
       throw new Error('해당 방에 유저가 존재하지 않습니다');
     }
 
@@ -59,25 +66,12 @@ export const leaveRoomHandler = async (socket, payloadData) => {
       });
     }
   } catch (error) {
-    if (error.massage === '해당 방에 유저가 존재하지 않습니다') {
-      leaveRoomResponse = {
-        success: true,
-        failCode: failCode.NONE_FAILCODE,
-      };
+    leaveRoomResponse = {
+      success: false,
+      failCode: failCode.LEAVE_ROOM_FAILED,
+    };
 
-      sendResponsePacket(socket, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
-        leaveRoomResponse,
-      });
-
-      return;
-    } else {
-      leaveRoomResponse = {
-        success: false,
-        failCode: failCode.LEAVE_ROOM_FAILED,
-      };
-
-      console.error('방을 떠나는데 실패했습니다.', error);
-    }
+    console.error('방을 떠나는데 실패했습니다.', error);
   }
 
   sendResponsePacket(socket, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
@@ -86,6 +80,6 @@ export const leaveRoomHandler = async (socket, payloadData) => {
 
   // 현재 위치가 로비서버가 아니라면 로비로 돌아감. ? 필요한가?
   if (true) {
-    serverSwitch(socket, config.server.host, 6666);
+    serverSwitch(socket, config.server.host, 9000);
   }
 };

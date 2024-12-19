@@ -30,6 +30,9 @@ export const onData = (socket) => async (data) => {
 
       // 남은 데이터는 다시 버퍼 데이터에 추가
       socket.buffer = socket.buffer.subarray(requiredLength);
+      if (packetType !== 23) {
+        console.log('클라가 보낸 패킷타입 request', packetType);
+      }
 
       try {
         // 모든 패킷을 게임패킷으로 처리 가능하다고 한다
