@@ -97,7 +97,7 @@ class CardManager {
     }
 
     this.handCardsCount = this.handLimit;
-    console.log('리롤 현재 패', [...this.hands.values()]);
+    // console.log('리롤 현재 패', [...this.hands.values()]);
     return [...this.hands.values()];
   }
 
