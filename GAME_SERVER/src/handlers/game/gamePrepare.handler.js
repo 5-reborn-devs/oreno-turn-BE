@@ -25,7 +25,7 @@ export const gamePrepare = async (socket) => {
     });
 
     const prepareState = protoMessages.enum.RoomStateType.values['PREPARE'];
-    await redisClient.rooms.hset(roomId, 'state', prepareState);
+    await redisClient.hset(roomId, 'state', prepareState);
     const redisRoom = await redisManager.rooms.getRoom(roomId); // 클라이언트가 들어가 있는 방정보를 가져옴
     const room = new Room(
       redisRoom.id,
