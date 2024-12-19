@@ -119,7 +119,7 @@ export const CARD_CONFIG = {
     coin: 100,
     param: { buffType: BUFF_TYPES.ARMOR, stack: 10 },
   },
-  [CARD_TYPES.VACCINE]: { cost: 2, coin: 100, param: { heal: 10 } },
+  [CARD_TYPES.VACCINE]: { cost: 1, coin: 100, param: { heal: 10 } },
   [CARD_TYPES.CALL_119]: { cost: 1, coin: 100 },
   [CARD_TYPES.DEATH_MATCH]: { cost: 1, coin: 100 },
   [CARD_TYPES.GUERRILLA]: { cost: 1, coin: 100 },
