@@ -29,6 +29,10 @@ export const leaveRoomHandler = async (socket, payloadData) => {
         failCode: failCode.NONE_FAILCODE,
       };
 
+      sendResponsePacket(socket, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
+        leaveRoomResponse,
+      });
+
       return;
       throw new Error('해당 방에 유저가 존재하지 않습니다');
     }
