@@ -50,6 +50,7 @@ export const onEnd = (socket) => async () => {
     else if (userIds.length <= 1) {
       redisManager.rooms.delete(roomId);
       releaseRoomId(roomId);
+    } else if (!room) {
     }
     // 게임 안에 있는 경우 (탈주)
     else if (room.state == 2 || false) {
@@ -83,15 +84,6 @@ export const onEnd = (socket) => async () => {
     redisManager.users.delete(token);
     console.log(message);
   } catch (err) {
-    if (!room) {
-      multiCast(userIds, PACKET_TYPE.LEAVE_ROOM_NOTIFICATION, {
-        leaveRoomNotification, // 방안에있는 다른유저들에게도 알려줌
-      });
-
-      users.delete(token);
-      redisManager.users.delete(token);
-      console.log(message);
-    }
     console.error('클라이언트 연결 종료 처리 중 오류 발생', err);
     console.error(`token:${socket.token} roomId:${socket.roomId}`);
     console.error(`room data:\n${room}`);
