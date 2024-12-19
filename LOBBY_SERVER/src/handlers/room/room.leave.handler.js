@@ -59,12 +59,25 @@ export const leaveRoomHandler = async (socket, payloadData) => {
       });
     }
   } catch (error) {
-    leaveRoomResponse = {
-      success: false,
-      failCode: failCode.LEAVE_ROOM_FAILED,
-    };
+    if (error.massage === '해당 방에 유저가 존재하지 않습니다') {
+      leaveRoomResponse = {
+        success: true,
+        failCode: failCode.NONE_FAILCODE,
+      };
 
-    console.error('방을 떠나는데 실패했습니다.', error);
+      sendResponsePacket(socket, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
+        leaveRoomResponse,
+      });
+
+      return;
+    } else {
+      leaveRoomResponse = {
+        success: false,
+        failCode: failCode.LEAVE_ROOM_FAILED,
+      };
+
+      console.error('방을 떠나는데 실패했습니다.', error);
+    }
   }
 
   sendResponsePacket(socket, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
