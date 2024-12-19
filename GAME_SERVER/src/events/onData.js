@@ -41,7 +41,14 @@ export const onData = (socket) => async (data) => {
         await handler(socket, decodedPacket);
       } catch (err) {
         console.error(err);
-        console.error(`패킷처리 에러 : ${err}, packeyType : ${packetType}`);
+        console.error(
+          `패킷처리 에러 : ${err}, packeyType : ${packetType}`,
+          versionLength,
+          version,
+          sequence,
+          payloadLength,
+          JSON.stringify(payload),
+        );
       }
     } else {
       console.log(

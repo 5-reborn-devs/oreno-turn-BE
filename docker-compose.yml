@@ -19,7 +19,7 @@ services:
       - '16666:16666' # TCP 게임 서버 포트
     environment:
       - PORT=16666
-      - HOST=15.165.168.120
+      - HOST=43.202.60.191
       - CLIENT_VERSION=1.0.0
       - DB1_NAME=USER_DB
       - DB1_HOST=express-database.c94ueui6qc9r.ap-northeast-2.rds.amazonaws.com
@@ -38,7 +38,7 @@ services:
       - '6666:6666' # TCP 로비 서버 포트
     environment:
       - PORT=6666
-      - HOST=15.165.168.120
+      - HOST=43.202.60.191
       - CLIENT_VERSION=1.0.0
       - DB1_NAME=USER_DB
       - DB1_HOST=express-database.c94ueui6qc9r.ap-northeast-2.rds.amazonaws.com
@@ -50,5 +50,5 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.20' # 최대 1개의 코어 할당
-          memory: 128MB # 최대 2GB의 메모리 할당
+          cpus: '0.50' # 최대 1개의 코어 할당
+          memory: 256MB # 최대 2GB의 메모리 할당
