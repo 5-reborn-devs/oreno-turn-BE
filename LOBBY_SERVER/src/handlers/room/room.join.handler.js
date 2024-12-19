@@ -16,7 +16,7 @@ export const joinRoomHandler = async (socket, payload) => {
   const rooms = redisManager.rooms;
   let joinRoomResponse;
   let notification;
-  const roomPort = await redisClient.hget(roomId, 'roomPort');
+  let roomPort = await redisClient.hget(roomId, 'roomPort');
   try {
     const user = await redisManager.users.get(socket.token);
     const usersInRoomWithoutMe = await rooms.getUsers(roomId);
@@ -24,8 +24,13 @@ export const joinRoomHandler = async (socket, payload) => {
     await redisManager.users.setRoomId(socket.token, roomId);
     const room = await rooms.getRoomData(roomId);
 
+    if (!room) {
+      throw new Error(`방정보가 없습니다. 방번호:${roomId}`);
+    }
     if (!roomPort) {
-      throw new Error(`룸아이디에 포트값이없어요!! 방번호:${roomId}`);
+      // throw new Error(`룸아이디에 포트값이없어요!! 방번호:${roomId}`);
+      console.error(`룸아이디에 포트값이없어요!! 방번호:${roomId}`);
+      roomPort = 16666; // 하드코딩 강제 지정
     }
 
     socket.roomId = roomId;
@@ -43,6 +48,13 @@ export const joinRoomHandler = async (socket, payload) => {
         joinRoomNotification,
       },
     ];
+
+    sendResponsePacket(socket, PACKET_TYPE.JOIN_ROOM_RESPONSE, {
+      joinRoomResponse,
+    });
+
+    // 서버를 옮김
+    serverSwitch(socket, config.server.host, Number(roomPort));
   } catch (error) {
     joinRoomResponse = {
       success: false,
@@ -50,12 +62,9 @@ export const joinRoomHandler = async (socket, payload) => {
       failCode: failCode.JOIN_ROOM_FAILED,
     };
     console.error(error);
+
+    sendResponsePacket(socket, PACKET_TYPE.JOIN_ROOM_RESPONSE, {
+      joinRoomResponse,
+    });
   }
-
-  sendResponsePacket(socket, PACKET_TYPE.JOIN_ROOM_RESPONSE, {
-    joinRoomResponse,
-  });
-
-  // 서버를 옮김
-  serverSwitch(socket, config.server.host, Number(roomPort));
 };
