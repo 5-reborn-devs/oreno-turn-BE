@@ -9,8 +9,9 @@ export const getRoomListHandler = async (socket, payloadData) => {
 
   try {
     const rooms = await redisManager.rooms.getRooms();
+    const readyRooms = rooms.filter((room) => room.state != inGameState);
     const getRoomListResponse = {
-      rooms: rooms.filter((room) => room.state != inGameState),
+      rooms: typeof readyRooms === 'string' ? [] : readyRooms,
     };
 
     sendResponsePacket(socket, PACKET_TYPE.GET_ROOM_LIST_RESPONSE, {
