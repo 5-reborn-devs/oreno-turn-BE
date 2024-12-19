@@ -27,8 +27,10 @@ export const sendResponsePacket = (socket, packetType, responseMessage) => {
 export const multiCast = (users, packetType, message) => {
   if (users[0] instanceof User) {
     users.forEach((user) => {
-      const client = clients.get(user.id);
-      sendResponsePacket(client, packetType, message);
+      if (user.id) {
+        const client = clients.get(user.id);
+        sendResponsePacket(client, packetType, message);
+      }
     });
   } else {
     users.forEach((id) => {
