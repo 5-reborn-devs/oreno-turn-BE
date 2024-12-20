@@ -1,0 +1,102 @@
+syntax = "proto3";
+
+package request;
+
+/* 
+    패킷 명세
+*/
+message C2SRegisterRequest {
+    string email = 1;
+    string nickname = 2;
+    string password = 3;
+}
+
+message C2SLoginRequest {
+    string email = 1;
+    string password = 2;
+}
+
+message C2SCreateRoomRequest {
+    string name = 1;
+    int32 maxUserNum = 2;
+}
+
+message C2SGetRoomListRequest {
+    
+}
+
+
+message C2SJoinRoomRequest {
+    int32 roomId = 1;
+}
+
+message C2SJoinRandomRoomRequest {
+}
+
+message C2SLeaveRoomRequest {
+
+}
+// 게임 시작 전 역할 및 캐릭터 셔플 요청
+message C2SGamePrepareRequest {
+
+}
+
+message C2SGameStartRequest {
+
+}
+
+message C2SPositionUpdateRequest {
+    double x = 1;
+    double y = 2;
+}
+
+message C2SUseCardRequest {
+    CardType cardType = 1;
+    int64 targetUserId = 2; // 타겟 없으면 빈 값
+}
+
+message C2SFleaMarketPickRequest {
+    int32 pickIndex = 1;
+}
+
+message C2SReactionRequest {
+    ReactionType reactionType = 1; // NOT_USE_CARD = 1
+}
+
+message C2SDestroyCardRequest {
+    repeated CardData destroyCards = 1;
+}
+
+message C2SCardSelectRequest {
+    SelectCardType selectType = 1; // 0: 핸드, 1: 장비, 2: 무기, 3: 디버프
+    CardType selectCardType = 2; // selectType이  0일 경우 0, / 1, 2, 3일 경우 원하는 장비의 cardType
+}
+
+message C2SPassDebuffRequest { 
+    int64 targetUserId = 1;
+    CardType debuffCardType = 2;
+}
+
+
+// 여기부터 추가
+
+message C2SEveningPickRequest  {
+    CardType cardType = 1;
+}
+
+message C2SMarketCardDeleteRequest {
+    CardType cardType = 1;
+}
+
+message C2SRerollRequest {}
+
+message C2SVerifyTokenRequest
+{
+  string token = 1;
+}
+
+message C2SPingRequest
+{
+  string message = 1;
+  int64 timestamp = 2;
+}
