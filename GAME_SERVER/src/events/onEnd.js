@@ -37,7 +37,7 @@ export const onEnd = (socket) => async () => {
     failCode: failCode.NONE_FAILCODE,
   };
   let message = `유저 ${user.nickname}가 방에서 연결이 종료되었습니다.`;
-  const leaveRoomNotification = {
+  let leaveRoomNotification = {
     userId: user.id,
   };
 
