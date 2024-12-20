@@ -66,10 +66,12 @@ const handlers = {
 };
 
 export const getHandlerByPacketType = (packetType) => {
-  if (!handlers[packetType]) {
-    throw Error();
+  const handler = handlers[packetType];
+  if (!handler) {
+    if (!PACKET_TYPE[packetType]) return; // 다른 서버의 기능이 호출된 경우
+    throw Error(`알 수 없는 패킷타입: ${packetType}`);
   }
-  return handlers[packetType].handler;
+  return handler.handler;
 };
 
 export const getHandlerByHandlerId = (packetType) => {
