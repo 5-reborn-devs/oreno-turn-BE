@@ -27,10 +27,13 @@ export const joinRoomHandler = async (socket, payload) => {
     if (!room) {
       throw new Error(`방정보가 없습니다. 방번호:${roomId}`);
     }
+    if (room.state != 0) {
+      throw new Error(`이미 시작한 방입니다.`);
+    }
     if (!roomPort) {
-      // throw new Error(`룸아이디에 포트값이없어요!! 방번호:${roomId}`);
-      console.error(`룸아이디에 포트값이없어요!! 방번호:${roomId}`);
-      roomPort = 16666; // 하드코딩 강제 지정
+      throw new Error(`룸아이디에 포트값이없어요!! 방번호:${roomId}`);
+      // console.error(`룸아이디에 포트값이없어요!! 방번호:${roomId}`);
+      // roomPort = 16666; // 하드코딩 강제 지정
     }
 
     socket.roomId = roomId;
@@ -56,15 +59,18 @@ export const joinRoomHandler = async (socket, payload) => {
     // 서버를 옮김
     serverSwitch(socket, config.server.host, Number(roomPort));
   } catch (error) {
+    console.error(error);
+
     joinRoomResponse = {
       success: false,
       room: null,
       failCode: failCode.JOIN_ROOM_FAILED,
     };
-    console.error(error);
-
     sendResponsePacket(socket, PACKET_TYPE.JOIN_ROOM_RESPONSE, {
       joinRoomResponse,
     });
+
+    // 입장에 실패하면 방 리스트 업데이트
+    getRoomListHandler(socket);
   }
 };

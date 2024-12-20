@@ -17,15 +17,16 @@ export const verifyTokenHandler = async (socket, payload) => {
     const userRoomPort = socket._server._connectionKey; // 소켓에서 유저 host port 뽑아 옴
     const roomPort = userRoomPort.split(':').pop(); // 포트만 가져옴
     const user = await redisManager.users.get(token);
-    if (!user) {
+    if (Object.keys(user).length) {
+      console.error('[verifyToken] token:', token);
       throw new Error('유효하지 않은 토큰');
     }
     console.log('verifyToken user:', user);
     const roomId = user.roomId;
-    await redisClient.hset(roomId, 'roomPort', roomPort); // redis roomId에 roomPort넣어줌
     if (!roomId) {
       throw new Error('방에 속하지 않은 유저');
     }
+    await redisClient.hset(roomId, 'roomPort', roomPort); // redis roomId에 roomPort넣어줌
 
     socket.token = token;
     socket.roomId = roomId;

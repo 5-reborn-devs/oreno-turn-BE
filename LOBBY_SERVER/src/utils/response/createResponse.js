@@ -24,6 +24,7 @@ export const sendResponsePacket = async (
 
     // console.log(`Send packet of type ${PACKET_NUMBER[packetType]} to client.`);
   } catch (error) {
+    console.error('sendPacket Error Payload:', JSON.stringify(responseMessage));
     console.error('Error sending response packet', error);
   }
 };
