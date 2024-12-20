@@ -9,6 +9,7 @@ import { redisManager } from '../../classes/managers/redis.manager.js';
 import { serverSwitch } from '../../utils/notification/notification.serverSwitch.js';
 import { config } from '../../config/config.js';
 import { redisClient } from '../../init/redisConnect.js';
+import { getRoomListHandler } from './room.getList.handler.js';
 
 export const joinRoomHandler = async (socket, payload) => {
   const { roomId } = payload;
