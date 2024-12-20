@@ -47,7 +47,7 @@ export const leaveRoomHandler = async (socket, payloadData) => {
       releaseRoomId(roomId);
     } else {
       // 나간 유저가 방장일 경우 방이 폭파됨.
-      if (user.id === room.ownerId) {
+      if (user.id == room.ownerId) {
         multiCast(usersInRoom, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
           leaveRoomResponse,
         });
