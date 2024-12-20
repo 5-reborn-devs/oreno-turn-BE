@@ -18,8 +18,9 @@ export const sendResponsePacket = (socket, packetType, responseMessage) => {
     //클라이언트에게 패킷 전송
     socket.write(serializedPacket);
 
-    //console.log(`Send packet of type ${PACKET_NUMBER[packetType]} to client.`);
+    // console.log(`Send packet of type ${PACKET_NUMBER[packetType]} to client.`);
   } catch (error) {
+    console.error('sendPacket Error Payload:', JSON.stringify(responseMessage));
     console.error('Error sending response packet', error);
   }
 };
@@ -27,13 +28,17 @@ export const sendResponsePacket = (socket, packetType, responseMessage) => {
 export const multiCast = (users, packetType, message) => {
   if (users[0] instanceof User) {
     users.forEach((user) => {
-      const client = clients.get(user.id);
-      sendResponsePacket(client, packetType, message);
+      if (user.id) {
+        const client = clients.get(user.id);
+        sendResponsePacket(client, packetType, message);
+      }
     });
   } else {
     users.forEach((id) => {
-      const client = clients.get(Number(id));
-      sendResponsePacket(client, packetType, message);
+      if (id !== '') {
+        const client = clients.get(Number(id));
+        sendResponsePacket(client, packetType, message);
+      }
     });
   }
 };

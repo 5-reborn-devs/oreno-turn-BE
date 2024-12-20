@@ -90,7 +90,7 @@ export const CARD_LIMIT = {
   [CARD_TYPES.STEALTH_SUIT]: 0,
   [CARD_TYPES.CONTAINMENT_UNIT]: 0,
   [CARD_TYPES.SATELLITE_TARGET]: 0,
-  [CARD_TYPES.BOMB]: 1,
+  [CARD_TYPES.BOMB]: 0,
   [CARD_TYPES.ARMOR]: 20,
   [CARD_TYPES.STRENGTH]: 5,
   [CARD_TYPES.VULNERABLE]: 6,
@@ -119,7 +119,7 @@ export const CARD_CONFIG = {
     coin: 100,
     param: { buffType: BUFF_TYPES.ARMOR, stack: 10 },
   },
-  [CARD_TYPES.VACCINE]: { cost: 2, coin: 100, param: { heal: 10 } },
+  [CARD_TYPES.VACCINE]: { cost: 1, coin: 100, param: { heal: 10 } },
   [CARD_TYPES.CALL_119]: { cost: 1, coin: 100 },
   [CARD_TYPES.DEATH_MATCH]: { cost: 1, coin: 100 },
   [CARD_TYPES.GUERRILLA]: { cost: 1, coin: 100 },
@@ -162,7 +162,7 @@ export const CARD_CONFIG = {
   [CARD_TYPES.MANA_RECOVERY]: {
     cost: 0,
     coin: 100,
-    param: { manaRecovery: 2 },
+    param: { manaRecovery: 3 },
   },
 };
 

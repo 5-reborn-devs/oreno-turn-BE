@@ -3,6 +3,7 @@ import Room from '../../classes/models/room.class.js';
 import User from '../../classes/models/user.class.js';
 import { PACKET_TYPE } from '../../constants/header.js';
 import { getProtoMessages } from '../../init/loadProto.js';
+import { redisClient } from '../../init/redisConnect.js';
 import { clients, games, rooms, users } from '../../session/session.js';
 import { fyShuffle } from '../../utils/fisherYatesShuffle.js';
 import { multiCast } from '../../utils/response/createResponse.js';
@@ -23,6 +24,8 @@ export const gamePrepare = async (socket) => {
       return newUser;
     });
 
+    const prepareState = protoMessages.enum.RoomStateType.values['PREPARE'];
+    await redisClient.hset(roomId, 'state', prepareState);
     const redisRoom = await redisManager.rooms.getRoom(roomId); // 클라이언트가 들어가 있는 방정보를 가져옴
     const room = new Room(
       redisRoom.id,
@@ -34,7 +37,7 @@ export const gamePrepare = async (socket) => {
     );
     rooms.set(roomId, room);
 
-    room.state = protoMessages.enum.RoomStateType.values['PREPARE'];
+    room.state = prepareState;
     const userCount = usersInRoom.length;
     if (userCount < 2 || userCount > 7) {
       throw new Error(`지원하지 않는 인원 수: ${userCount}`);

@@ -23,6 +23,17 @@ export const leaveRoomHandler = async (socket, payloadData) => {
 
     const user = await redisManager.users.get(socket.token);
     if (!(await rooms.getUser(roomId, user))) {
+      console.error('해당 방에 유저가 존재하지 않습니다');
+      leaveRoomResponse = {
+        success: true,
+        failCode: failCode.NONE_FAILCODE,
+      };
+
+      sendResponsePacket(socket, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
+        leaveRoomResponse,
+      });
+
+      return;
       throw new Error('해당 방에 유저가 존재하지 않습니다');
     }
 

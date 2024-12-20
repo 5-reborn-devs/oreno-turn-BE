@@ -2,12 +2,13 @@ import { config } from '../../config/config.js';
 import { PACKET_TYPE } from '../../constants/header.js';
 import { RANDOM_POSITIONS } from '../../constants/randomPositions.js';
 import { getProtoMessages } from '../../init/loadProto.js';
+import { redisClient } from '../../init/redisConnect.js';
 import { rooms } from '../../session/session.js';
 import { gameStartMultiCast } from '../../utils/notification/notification.gameStart.js';
 import { sendResponsePacket } from '../../utils/response/createResponse.js';
 import { getFailCode } from '../../utils/response/failCode.js';
 
-export const gameStart = (socket) => {
+export const gameStart = async (socket) => {
   const protoMessages = getProtoMessages();
   let gameStartResponse;
   const failCode = getFailCode();
@@ -18,13 +19,16 @@ export const gameStart = (socket) => {
     const room = rooms.get(roomId);
     const currentTime = Date.now();
     const nextPhaseAt = currentTime + config.page.afternoon; // 3분후에 넥스트 페이즈 타입으로 이동 // 테스트용 10초
+    const ingameState = protoMessages.enum.RoomStateType.values['INGAME'];
+
+    await redisClient.hset(roomId, 'state', ingameState);
 
     const gameState = {
       phaseType: room.phaseType,
       nextPhaseAt: nextPhaseAt,
     };
 
-    room.state = protoMessages.enum.RoomStateType.values['INGAME'];
+    room.state = ingameState;
     const usersInRoom = [...room.users]; // 방 안에 있는 모든 유저들의 정보를 가져옴
 
     const characterPositions = [];

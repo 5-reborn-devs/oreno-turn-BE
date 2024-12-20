@@ -53,6 +53,17 @@ export const redisManager = {
       return await redisClient.hgetall(roomId);
     },
 
+    createRoom: async (roomId, data, token) => {
+      await redisClient
+        .multi()
+        .hset(roomId, data)
+        .sadd('rooms', roomId)
+        .hset(`${roomId}:users`, data.ownerId, token)
+        .hset(token, 'roomId', roomId)
+        .hget(token, 'roomId')
+        .exec();
+    },
+
     getRooms: async () => {
       const roomIds = await redisClient.smembers('rooms');
       return await Promise.all(

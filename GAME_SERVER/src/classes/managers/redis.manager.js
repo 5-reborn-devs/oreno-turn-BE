@@ -33,7 +33,11 @@ export const redisManager = {
     },
 
     setRoomId: async (token, roomId) => {
-      await redisClient.hset(token, 'roomId', roomId);
+      await redisClient
+        .multi()
+        .hset(token, 'roomId', roomId)
+        .hget(token, 'roomId')
+        .exec();
     },
 
     delRoomId: async (token) => {
@@ -47,6 +51,16 @@ export const redisManager = {
       pipeline.hset(roomId, data);
       pipeline.sadd('rooms', roomId);
       await pipeline.exec();
+    },
+
+    createRoom: async (roomId, data, token) => {
+      await redisClient
+        .multi()
+        .hset(roomId, data)
+        .sadd('rooms', roomId)
+        .hset(`${roomId}:users`, data.ownerId, token)
+        .hset(token, 'roomId', roomId)
+        .exec();
     },
 
     getRoom: async (roomId) => {

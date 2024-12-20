@@ -14,6 +14,7 @@ export const createRoomHandler = async (socket, payloadData) => {
   const roomStateType = protoMessages.enum.RoomStateType.values;
   const { name, maxUserNum } = payloadData;
   const failCode = getFailCode();
+  let success = false;
 
   let createRoomResponse;
   try {
@@ -30,20 +31,25 @@ export const createRoomHandler = async (socket, payloadData) => {
       state: roomStateType.WAIT,
     };
 
-    redisManager.rooms.addRoom(roomId, room); // 방 생성
-    redisManager.rooms.addUser(roomId, user, socket.token); // 방에 유저 추가
-    // 레디스 유저 정보에 방정보 저장
-    redisManager.users.setRoomId(socket.token, roomId);
-    socket.roomId = roomId;
+    // await redisManager.rooms.addRoom(roomId, room); // 방 생성
+    // await redisManager.rooms.addUser(roomId, user, socket.token); // 방에 유저 추가
+    // // 레디스 유저 정보에 방정보 저장
+    // await redisManager.users.setRoomId(socket.token, roomId);
+    // socket.roomId = roomId;
 
+    redisManager.rooms
+      .createRoom(roomId, room, socket.token)
+      .then(console.log('방생성 로그', this));
+
+    success = true;
     createRoomResponse = {
-      success: true,
+      success,
       room: room,
       failCode: failCode.NONE_FAILCODE,
     };
   } catch (error) {
     createRoomResponse = {
-      success: false,
+      success,
       room: null,
       failCode: failCode.CREATE_ROOM_FAILED,
     };
@@ -58,5 +64,5 @@ export const createRoomHandler = async (socket, payloadData) => {
   // 게임 서버 리스트를 받음.
   // 라운드로빈으로선정
   // 레디스에 해당 방의 IP를 저장.
-  serverSwitch(socket, config.server.host, 6666);
+  if (success) serverSwitch(socket, config.server.host, 6666);
 };

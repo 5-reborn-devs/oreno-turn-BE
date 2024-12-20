@@ -22,8 +22,9 @@ export const sendResponsePacket = async (
     //클라이언트에게 패킷 전송
     await socket.write(serializedPacket);
 
-    //console.log(`Send packet of type ${PACKET_NUMBER[packetType]} to client.`);
+    // console.log(`Send packet of type ${PACKET_NUMBER[packetType]} to client.`);
   } catch (error) {
+    console.error('sendPacket Error Payload:', JSON.stringify(responseMessage));
     console.error('Error sending response packet', error);
   }
 };
@@ -36,8 +37,10 @@ export const multiCast = (users, packetType, message) => {
     });
   } else {
     users.forEach((id) => {
-      const client = clients.get(Number(id));
-      sendResponsePacket(client, packetType, message);
+      if (id !== '') {
+        const client = clients.get(Number(id));
+        sendResponsePacket(client, packetType, message);
+      }
     });
   }
 };

@@ -13,6 +13,7 @@ export const leaveRoomHandler = async (socket, payloadData) => {
   const failCode = getFailCode();
   const roomId = socket.roomId;
   let leaveRoomResponse;
+  let success = false;
 
   try {
     const room = await redisManager.rooms.getRoom(roomId);
@@ -21,27 +22,23 @@ export const leaveRoomHandler = async (socket, payloadData) => {
     }
 
     const user = await redisManager.users.get(socket.token);
-    if (!(await redisManager.rooms.getUser(roomId, user))) {
-      throw new Error('해당 방에 유저가 존재하지 않습니다');
+    if (await redisManager.rooms.getUser(roomId, user)) {
+      // 레디스 방 데이터 삭제
+      await redisManager.rooms.removeUser(roomId, user);
+      await redisManager.users.delRoomId(socket.token, roomId);
+    } else {
+      console.error('해당 방에 유저가 존재하지 않습니다');
     }
-
-    leaveRoomResponse = {
-      success: true,
-      failCode: failCode.NONE_FAILCODE,
-    };
-
-    // 레디스 방 데이터 삭제제
-    await redisManager.rooms.removeUser(roomId, user);
-    await redisManager.users.delRoomId(socket.token, roomId);
-
-    // 내부 데이터 삭제제
-    users.delete(socket.token);
-    clients.delete(Number(user.id));
-    socket.roomId = null;
 
     const usersInRoom = await redisManager.rooms.getUsers(roomId);
     const leaveRoomNotification = {
       userId: user.id,
+    };
+
+    success = true;
+    leaveRoomResponse = {
+      success,
+      failCode: failCode.NONE_FAILCODE,
     };
 
     // 남은 유저가 없다면 방 삭제
@@ -50,7 +47,7 @@ export const leaveRoomHandler = async (socket, payloadData) => {
       releaseRoomId(roomId);
     } else {
       // 나간 유저가 방장일 경우 방이 폭파됨.
-      if (user.id === room.ownerId) {
+      if (user.id == room.ownerId) {
         multiCast(usersInRoom, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
           leaveRoomResponse,
         });
@@ -65,7 +62,7 @@ export const leaveRoomHandler = async (socket, payloadData) => {
     }
   } catch (error) {
     leaveRoomResponse = {
-      success: false,
+      success,
       failCode: failCode.LEAVE_ROOM_FAILED,
     };
 
@@ -75,9 +72,10 @@ export const leaveRoomHandler = async (socket, payloadData) => {
   sendResponsePacket(socket, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
     leaveRoomResponse,
   });
-  users.get(socket.token).isEndIgnore = true;
+
   // 현재 위치가 로비서버가 아니라면 로비로 돌아감. ? 필요한가?
-  if (true) {
-    serverSwitch(socket, config.server.host, 9000);
+  if (success) {
+    users.get(socket.token).isEndIgnore = true;
+    serverSwitch(socket, config.server.host, 6666);
   }
 };

@@ -5,12 +5,13 @@ import { sendResponsePacket } from '../../utils/response/createResponse.js';
 
 export const getRoomListHandler = async (socket, payloadData) => {
   const protoMessages = getProtoMessages();
-  const inGameState = protoMessages.enum.RoomStateType.values['INGAME'];
+  const inWaitState = protoMessages.enum.RoomStateType.values['WAIT'];
 
   try {
     const rooms = await redisManager.rooms.getRooms();
+    const readyRooms = rooms.filter((room) => room.state == inWaitState);
     const getRoomListResponse = {
-      rooms: rooms.filter((room) => room.state != inGameState),
+      rooms: readyRooms,
     };
 
     sendResponsePacket(socket, PACKET_TYPE.GET_ROOM_LIST_RESPONSE, {

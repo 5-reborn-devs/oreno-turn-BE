@@ -46,10 +46,10 @@ const handlers = {
     handler: createRoomHandler,
     protoType: 'request.C2SCreateRoomRequest',
   },
-  // [PACKET_TYPE.LEAVE_ROOM_REQUEST]: {
-  //   handler: leaveRoomHandler,
-  //   protoType: 'request.C2SLeaveRoomRequest',
-  // },
+  [PACKET_TYPE.LEAVE_ROOM_REQUEST]: {
+    handler: leaveRoomHandler,
+    protoType: 'request.C2SLeaveRoomRequest',
+  },
   [PACKET_TYPE.GAME_PREPARE_REQUEST]: {
     handler: gamePrepare,
     protoType: 'request.C2SGamePrepareRequest',
