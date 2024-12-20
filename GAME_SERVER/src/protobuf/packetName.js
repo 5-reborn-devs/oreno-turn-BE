@@ -51,6 +51,7 @@ export const packetNames = {
     C2SMarketCardDeleteRequest: 'request.C2SMarketCardDeleteRequest',
     C2SRerollRequest: 'request.C2SRerollRequest',
     C2SVerifyTokenRequest: 'request.verifyTokenRequest',
+    C2SPingRequest: 'request.pingRequest',
   },
   response: {
     S2CRegisterResponse: 'response.S2CRegisterResponse',
@@ -91,5 +92,6 @@ export const packetNames = {
     S2CRerollResponse: 'reponse.S2CRerollResponse',
     S2CGameServerSwitchNotification: 'response.gameServerSwitchNotification',
     S2CVerifyTokenResponse: 'response.verifyTokenResponse',
+    S2CPongResponse: 'response.pongResponse',
   },
 };

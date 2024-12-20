@@ -117,5 +117,9 @@ message GamePacket {
         // 게임 서버 연결 뒤 토큰 확인
         C2SVerifyTokenRequest verifyTokenRequest = 54;
         S2CVerifyTokenResponse verifyTokenResponse = 55;
+
+        // 하트 비트
+        C2SPingRequest pingRequest = 56;
+        S2CPongResponse pongResponse = 57;
     }
 }
