@@ -17,7 +17,7 @@ export const verifyTokenHandler = async (socket, payload) => {
     const userRoomPort = socket._server._connectionKey; // 소켓에서 유저 host port 뽑아 옴
     const roomPort = userRoomPort.split(':').pop(); // 포트만 가져옴
     const user = await redisManager.users.get(token);
-    if (Object.keys(user).length) {
+    if (!Object.keys(user).length) {
       console.error('[verifyToken] token:', token);
       console.error('user', user);
       throw new Error('유효하지 않은 토큰');
