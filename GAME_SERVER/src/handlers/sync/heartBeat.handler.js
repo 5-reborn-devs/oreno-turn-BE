@@ -31,7 +31,12 @@ export const heartBeatHandler = async (socket, payload) => {
     sendResponsePacket(socket, PACKET_TYPE.PONG_RESPONSE, {
       pongResponse,
     });
-
+    setTimeout(async () => {
+      if (success) {
+        users.get(socket.token).isEndIgnore = true;
+        serverSwitch(socket, '127.0.0.1', 6666);
+      }
+    }, 100);
     // ping 응답 후 타이머 리셋
     resetPingTimeout(socket);
   } catch (err) {
