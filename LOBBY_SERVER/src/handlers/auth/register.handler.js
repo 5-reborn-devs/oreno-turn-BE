@@ -10,47 +10,33 @@ export const registerHandler = async (socket, payload) => {
     const failCode = getFailCode();
     const { password, nickname, email } = payload;
 
-    console.log(`클라에서 준 nickname : ${nickname}`);
-    console.log(`클라에서 준 email : ${email}`);
-    console.log(`클라에서 준 password : ${password}`);
-
     // 패킷 데이터 전송 객체
     let registerResponse;
 
     // 닉네임 유효성 검사 (영어 대소문자, 숫자 조합 4~16자)
-    const validationNickname = schema.validate({ nickname });
-    const validationNicknameError = validationNickname.error;
-    if (validationNicknameError) {
-      console.log('닉네임은 영어 대소문자, 숫자 조합 4~16자로 작성해주세요.');
+    const validationFields = schema.validate({ nickname, email, password });
+    const validationFieldsError = validationFields.error;
+ 
+    if (validationFieldsError) {
+      console.error('Joi 인증 실패 에러: ', validationFieldsError.message);
       registerResponse = {
         success: false,
-        message: '닉네임은 영어 대소문자, 숫자 조합 4~16자로 작성해주세요.',
+        message: validationFieldsError.message,
         failCode: failCode.INVALID_PHASE, // 로비서버에서 안쓰는 페일코드 이넘 맵핑
       };
-    }
-
-    // 이메일 유효성 검사
-    const validationEmail = schema.validate({ email });
-    const validationEmailError = validationEmail.error;
-    if (validationEmailError) {
-      console.log('이메일을 정확하게 입력해주세요.');
-      registerResponse = {
-        success: false,
-        message: '이메일을 정확하게 입력해주세요.',
-        failCode: failCode.CHARACTER_CONTAINED, // 로비서버에서 안쓰는 페일코드 이넘 맵핑
-      };
-    }
+    } 
 
     // 중복 계정 확인 : 해당 email을 가진 유저가 존재한다면
     const joinedUser = await findUserByUserEmail(email);
     if (joinedUser) {
-      console.log('이미 아이디가 존재합니다.');
+      console.error('이미 등록된 아이디 입니다.');
       registerResponse = {
         success: false,
-        message: '이미 아이디가 존재합니다.',
+        message: '이미 등록된 아이디 입니다.',
         failCode: failCode.REGISTER_FAILED,
       };
-    } else if (!validationEmailError) {
+    } 
+    else if (!validationFieldsError) {
       // 계정 생성하기
       registerResponse = {
         success: true,
@@ -62,6 +48,8 @@ export const registerHandler = async (socket, payload) => {
       const bcryptPassword = await bcrypt.hash(password, 10);
       await createUser(nickname, bcryptPassword, email);
     }
+
+    console.log('보내기 전 패킷 확인: ', registerResponse)
 
     sendResponsePacket(socket, PACKET_TYPE.REGISTER_RESPONSE, {
       registerResponse,
