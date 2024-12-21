@@ -43,15 +43,6 @@ export const joinRoomHandler = async (socket, payload) => {
       room: room,
       failCode: failCode.NONE_FAILCODE,
     };
-    const joinRoomNotification = { joinUser: user };
-
-    notification = [
-      usersInRoomWithoutMe,
-      PACKET_TYPE.JOIN_ROOM_NOTIFICATION,
-      {
-        joinRoomNotification,
-      },
-    ];
 
     sendResponsePacket(socket, PACKET_TYPE.JOIN_ROOM_RESPONSE, {
       joinRoomResponse,
