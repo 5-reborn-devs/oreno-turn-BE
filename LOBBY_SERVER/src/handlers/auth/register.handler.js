@@ -49,8 +49,6 @@ export const registerHandler = async (socket, payload) => {
       await createUser(nickname, bcryptPassword, email);
     }
 
-    console.log('보내기 전 패킷 확인: ', registerResponse)
-
     sendResponsePacket(socket, PACKET_TYPE.REGISTER_RESPONSE, {
       registerResponse,
     });
