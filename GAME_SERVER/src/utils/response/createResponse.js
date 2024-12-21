@@ -4,7 +4,11 @@ import { getProtoMessages } from '../../init/loadProto.js';
 import { clients } from '../../session/session.js';
 import { serializer } from '../serilaizer.js';
 
-export const sendResponsePacket = (socket, packetType, responseMessage) => {
+export const sendResponsePacket = async (
+  socket,
+  packetType,
+  responseMessage,
+) => {
   try {
     const protoMessages = getProtoMessages();
     const GamePacket = protoMessages.gamePacket.GamePacket;
@@ -24,7 +28,7 @@ export const sendResponsePacket = (socket, packetType, responseMessage) => {
   }
 };
 
-export const multiCast = (users, packetType, message) => {
+export const multiCast = async (users, packetType, message) => {
   if (users[0] instanceof User) {
     users.forEach((user) => {
       if (user.id) {

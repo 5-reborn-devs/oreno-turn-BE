@@ -16,6 +16,7 @@ export const leaveRoomHandler = async (socket, payloadData) => {
   let success = false;
 
   try {
+    console.log('testtest');
     const room = await redisManager.rooms.getRoom(roomId);
     if (!room) {
       throw new Error('해당 방이 존재하지 않습니다');
@@ -48,7 +49,7 @@ export const leaveRoomHandler = async (socket, payloadData) => {
     } else {
       // 나간 유저가 방장일 경우 방이 폭파됨.
       if (user.id == room.ownerId) {
-        multiCast(usersInRoom, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
+        await multiCast(usersInRoom, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
           leaveRoomResponse,
         });
         await redisManager.rooms.delete(roomId);
@@ -56,10 +57,11 @@ export const leaveRoomHandler = async (socket, payloadData) => {
       }
 
       // 남은 유저가 있다면 유저들에게 떠남을 알림.
-      multiCast(usersInRoom, PACKET_TYPE.LEAVE_ROOM_NOTIFICATION, {
+      await multiCast(usersInRoom, PACKET_TYPE.LEAVE_ROOM_NOTIFICATION, {
         leaveRoomNotification,
       });
     }
+    console.log('들어오긴하나');
   } catch (error) {
     leaveRoomResponse = {
       success,
@@ -69,13 +71,16 @@ export const leaveRoomHandler = async (socket, payloadData) => {
     console.error('방을 떠나는데 실패했습니다.', error);
   }
   // console.log('[leaveHandler]socket:\n', socket);
-  sendResponsePacket(socket, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
+  await sendResponsePacket(socket, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
     leaveRoomResponse,
   });
+  console.log('응답전송', leaveRoomResponse);
 
   // 현재 위치가 로비서버가 아니라면 로비로 돌아감. ? 필요한가?
-  if (success) {
-    users.get(socket.token).isEndIgnore = true;
-    serverSwitch(socket, '127.0.0.1', 9000);
-  }
+  setTimeout(async () => {
+    if (success) {
+      users.get(socket.token).isEndIgnore = true;
+      serverSwitch(socket, '127.0.0.1', 6666);
+    }
+  }, 100);
 };

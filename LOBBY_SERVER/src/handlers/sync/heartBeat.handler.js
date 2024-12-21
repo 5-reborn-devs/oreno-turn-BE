@@ -33,14 +33,14 @@ export const heartBeatHandler = async (socket, payload) => {
     });
 
     // ping 응답 후 타이머 리셋
-    resetPingTimeout();
+    resetPingTimeout(socket);
   } catch (err) {
     console.error('하트비트 에러');
   }
 };
 
 // 클라이언트로부터 일정 시간동안 ping이 오지 않으면 연결 끊기
-const resetPingTimeout = () => {
+const resetPingTimeout = (socket) => {
   clearTimeout(pingTimeout); // 이전 타이머 클리어
 
   pingTimeout = setTimeout(() => {
@@ -56,7 +56,6 @@ const resetPingTimeout = () => {
       sendResponsePacket(socket, PACKET_TYPE.PONG_RESPONSE, {
         message: 'fail',
       });
-      socket.disconnect(); // 연결 종료
     }
   }, PING_TIMEOUT); // 타임아웃 시간만큼 대기
 };

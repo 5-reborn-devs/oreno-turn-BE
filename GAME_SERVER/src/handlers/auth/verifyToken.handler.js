@@ -41,7 +41,7 @@ export const verifyTokenHandler = async (socket, payload) => {
     };
     addUser(socket.token, joinRoomNotification.joinUser);
     console.log('verifyToken users:', usersInRoom);
-    multiCast(usersInRoom, PACKET_TYPE.JOIN_ROOM_NOTIFICATION, {
+    await multiCast(usersInRoom, PACKET_TYPE.JOIN_ROOM_NOTIFICATION, {
       joinRoomNotification,
     });
     verifyTokenResponse = {
@@ -57,7 +57,7 @@ export const verifyTokenHandler = async (socket, payload) => {
     console.error(error);
     console.error(`token:${socket.token}, roomId:${socket.roomId}`);
   }
-  sendResponsePacket(socket, PACKET_TYPE.VERIFY_TOKEN_RESPONSE, {
+  await sendResponsePacket(socket, PACKET_TYPE.VERIFY_TOKEN_RESPONSE, {
     verifyTokenResponse,
   });
 };
