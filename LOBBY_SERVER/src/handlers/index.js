@@ -37,10 +37,6 @@ const handlers = {
     handler: verifyTokenHandler,
     protoType: 'request.C2SVerifyTokenReqeset',
   },
-  [PACKET_TYPE.LEAVE_ROOM_REQUEST]: {
-    handler: leaveRoomHandler,
-    protoType: 'request.C2SLeaveRoomRequest',
-  },
 };
 
 export const getHandlerByPacketType = (packetType) => {
