@@ -31,12 +31,6 @@ export const heartBeatHandler = async (socket, payload) => {
     sendResponsePacket(socket, PACKET_TYPE.PONG_RESPONSE, {
       pongResponse,
     });
-    setTimeout(async () => {
-      if (success) {
-        users.get(socket.token).isEndIgnore = true;
-        serverSwitch(socket, '127.0.0.1', 6666);
-      }
-    }, 100);
     // ping 응답 후 타이머 리셋
     resetPingTimeout(socket);
   } catch (err) {
@@ -61,6 +55,10 @@ const resetPingTimeout = (socket) => {
       sendResponsePacket(socket, PACKET_TYPE.PONG_RESPONSE, {
         message: 'fail',
       });
+      setTimeout(async () => {
+        users.get(socket.token).isEndIgnore = true;
+        serverSwitch(socket, '15.165.168.120', 9000);
+      }, 1000);
     }
   }, PING_TIMEOUT); // 타임아웃 시간만큼 대기
 };
