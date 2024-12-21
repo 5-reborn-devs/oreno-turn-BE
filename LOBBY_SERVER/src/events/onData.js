@@ -12,7 +12,6 @@ const RequestWorker = async (task, cb) => {
   
   const handler = getHandlerByPacketType(task.packetType);
   await handler(task.socket, task.decodedPacket);
-
   
   //2초뒤에 set 데이터 제거
   setTimeout(() => {
@@ -33,7 +32,7 @@ const addRequest = (task) => {
   }
 
   // 최근 작업에 추가
-  if (task.packetType !== 33) {
+  if (task.packetType !== 33 || task.packetType !== 56) {
   recentTasks.add(task.packetType);  
   }
   RequestQueue.push(task, (err, result) => {
@@ -72,9 +71,11 @@ export const onData = (socket) => async (data) => {
 
       // 남은 데이터는 다시 버퍼 데이터에 추가
       socket.buffer = socket.buffer.subarray(requiredLength);
+      if (packetType !== 23) {
+        console.log('클라가 보낸 패킷타입 request', packetType);
+      }
 
       try {
-
         // 모든 패킷을 게임패킷으로 처리 가능하다고 한다
         const decodedPacket = decoder(payload);
 

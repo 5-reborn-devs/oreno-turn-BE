@@ -24,8 +24,6 @@ ResponseQueue.drain = () => {
   console.log('All tasks completed!');
 };
 
-
-
 export const sendResponsePacket = async (
   socket,
   packetType,
