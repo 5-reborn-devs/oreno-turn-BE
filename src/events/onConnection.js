@@ -10,14 +10,4 @@ export const onConnection = (socket) => {
   socket.on('end', onEnd(socket));
   socket.on('error', onError(socket));
 
-  // const room = new Room(
-  //   1,1,'같이할사람',7,2,[]
-  // );
-
-  // //여기서부터 강제 방 생성 테스트임
-  // const currentTime = Date.now();
-  // const nextPhaseAt = currentTime + 18000; //페이즈 초기값
-  // console.log(room.name);
-  // room.button(nextPhaseAt);
-
 };

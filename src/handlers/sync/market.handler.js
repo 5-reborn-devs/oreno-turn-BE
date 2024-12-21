@@ -60,6 +60,8 @@ export const marketPickHandler = (socket, payloadData) => {
   const roomId = socket.roomId;
   const room = rooms.get(roomId);
 
+  if(user.character.hp > 0){
+
   // 힐,제거,나가기 선택 처리
   if (pickIndex === 3) {
     user.character.hp += 2;
@@ -131,6 +133,7 @@ export const marketPickHandler = (socket, payloadData) => {
     user.character.isEveningDraw = true;
   }
   //console.log(isEveningDraw);
+};
 
 };
 

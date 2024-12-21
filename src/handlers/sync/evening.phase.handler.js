@@ -14,9 +14,10 @@ export const eveningDrawHandler = async (room) => {
 
     //반복 돌면서 드로우 리스트에 추가
     room.users.forEach((user) => {
-      const client = clients.get(user.id);
 
-    
+      if(user.character.hp > 0){
+
+      const client = clients.get(user.id);
       user.character.cards.getDeckMap();
 
 
@@ -47,6 +48,8 @@ export const eveningDrawHandler = async (room) => {
       sendResponsePacket(client, PACKET_TYPE.EVENING_DRAW_NOTIFICATION, {
         eveningDistributionNotification,
       });
+
+    }
       // eveningPickHandler(client, { cardType: 1 });
     });
   } catch (error) {

@@ -111,7 +111,7 @@ export const INIT_DECK = {
 
 export const CARD_CONFIG = {
   [CARD_TYPES.NONE]: { cost: 1, coin: 100 },
-  [CARD_TYPES.BBANG]: { cost: 3, coin: 100, param: { attack: 10 } },
+  [CARD_TYPES.BBANG]: { cost: 3, coin: 100, param: { attack: 30 } },
   [CARD_TYPES.BIG_BBANG]: { cost: 1, coin: 100 },
   [CARD_TYPES.SHIELD]: {
     cost: 1,

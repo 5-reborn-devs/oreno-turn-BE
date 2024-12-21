@@ -50,7 +50,7 @@ export const phaseUpdateNotificationHandler = async (room, nextState) => {
     // characterPositions : 캐릭터 위치 랜덤
     const characterPositions = [];
     //const positionKeys = Object.keys(RANDOM_POSITIONS);
-    const positionKeys = [21, 22, 23];
+    const positionKeys = [20, 21, 22, 23];
     const usedPositions = new Set();
     room.users.forEach((user) => {
       let positionKey;

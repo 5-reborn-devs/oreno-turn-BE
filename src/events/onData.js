@@ -1,7 +1,30 @@
 import { config } from '../config/config.js';
 import { TOTAL_LENGTH } from '../constants/header.js';
 import { getHandlerByPacketType } from '../handlers/index.js';
+import { receiveQueue } from '../qclass.js';
 import { decoder } from '../utils/response/decoder.js';
+
+const processReceiveQueue = async () => { 
+
+  if (!receiveQueue.isEmpty()) { 
+
+    //console.log("receiveQueue 콘솔",receiveQueue);
+    //console.log("responseQueue 콘솔",responseQueue);
+    
+    const { socket, packetType, decodedPacket } = receiveQueue.dequeue(); 
+    // 인자로 받을 패킷 타입 전송 
+
+    const handler = getHandlerByPacketType(packetType); 
+    
+    console.log('클라가 보낸 패킷타입 request', packetType); 
+    
+    handler(socket, decodedPacket); 
+    
+  }setImmediate(processReceiveQueue); // 다음 틱에 큐를 처리하도록 예약 
+  }; 
+  // 초기 호출 
+  setImmediate(processReceiveQueue);
+
 
 export const onData = (socket) => async (data) => {
   socket.buffer = Buffer.concat([socket.buffer, data]);
@@ -11,9 +34,7 @@ export const onData = (socket) => async (data) => {
     let offset = config.packet.typeLength;
     const versionLength = socket.buffer.readUInt8(offset);
     offset += config.packet.versionLength;
-    const version = socket.buffer
-      .subarray(offset, offset + versionLength)
-      .toString();
+    const version = socket.buffer.subarray(offset, offset + versionLength).toString();
     offset += versionLength;
     const sequence = socket.buffer.readUInt32BE(offset);
     offset += config.packet.sequenceLength;
@@ -31,14 +52,15 @@ export const onData = (socket) => async (data) => {
       // 남은 데이터는 다시 버퍼 데이터에 추가
       socket.buffer = socket.buffer.subarray(requiredLength);
 
-      try {
+    try {
         // 모든 패킷을 게임패킷으로 처리 가능하다고 한다
-        const decodedPacket = decoder(payload);
+         const decodedPacket = decoder(payload);
+        // const handler = getHandlerByPacketType(packetType); 
+        // handler(socket, decodedPacket); 
+        console.log("들어온 패킷타입 체크",packetType);
+         receiveQueue.enqueue({ socket, packetType, decodedPacket });
+        console.log("리시브큐 체크",receiveQueue);
 
-        // 인자로 받을 패킷 타입 전송
-        const handler = getHandlerByPacketType(packetType);
-        console.log('클라가 보낸 패킷타입 request', packetType);
-        await handler(socket, decodedPacket);
       } catch (err) {
         console.error(err);
         console.error(`패킷처리 에러 : ${err}, packeyType : ${packetType}`);
@@ -50,4 +72,5 @@ export const onData = (socket) => async (data) => {
       break;
     }
   }
+
 };
