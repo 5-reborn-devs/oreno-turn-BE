@@ -70,5 +70,5 @@ export const createRoomHandler = async (socket, payloadData) => {
     if (success) {
       serverSwitch(socket, '15.165.168.120', 1666);
     }
-  }, 100);
+  }, 1000);
 };

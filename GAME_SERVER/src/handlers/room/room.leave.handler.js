@@ -82,5 +82,5 @@ export const leaveRoomHandler = async (socket, payloadData) => {
       users.get(socket.token).isEndIgnore = true;
       serverSwitch(socket, '15.165.168.120', 9000);
     }
-  }, 100);
+  }, 1000);
 };
