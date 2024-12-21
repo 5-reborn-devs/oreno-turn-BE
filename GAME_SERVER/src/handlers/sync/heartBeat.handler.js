@@ -59,7 +59,7 @@ const resetPingTimeout = (socket) => {
         users.get(socket.token).isEndIgnore = true;
         serverSwitch(socket, '15.165.168.120', 9000);
       }, 1000);
-      socket.disconnect();
+      //socket.disconnect();
     }
   }, PING_TIMEOUT); // 타임아웃 시간만큼 대기
 };

@@ -9,7 +9,10 @@ services:
     depends_on:
       - lobby-server-1
       - game-server-1
-
+  redis:
+    image: redis:latest
+    ports:
+      - '16379:6379'
   game-server-1:
     build:
       context: ./GAME_SERVER
@@ -28,6 +31,8 @@ services:
       - DB1_PASSWORD=gLaFmvi38uW4c5z
       - REDIS_HOST=oredis.mmnarf.ng.0001.apn2.cache.amazonaws.com
       - REDIS_PORT=6379
+    depends_on:
+      - redis
 
   lobby-server-1:
     build:
@@ -47,6 +52,8 @@ services:
       - DB1_PASSWORD=gLaFmvi38uW4c5z
       - REDIS_HOST=oredis.mmnarf.ng.0001.apn2.cache.amazonaws.com
       - REDIS_PORT=6379
+    depends_on:
+      - redis
     deploy:
       resources:
         limits:

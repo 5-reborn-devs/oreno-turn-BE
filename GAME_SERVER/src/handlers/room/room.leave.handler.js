@@ -83,5 +83,5 @@ export const leaveRoomHandler = async (socket, payloadData) => {
       serverSwitch(socket, '15.165.168.120', 9000);
     }
   }, 1000);
-  socket.disconnect();
+  //socket.disconnect();
 };
