@@ -21,6 +21,7 @@ import {
 import { rerollHandler } from './card/card.reroll.handler.js';
 import { verifyTokenHandler } from './auth/verifyToken.handler.js';
 import { heartBeatHandler } from './sync/heartBeat.handler.js';
+import { switchHandler } from './sync/switch.handler.js';
 
 const handlers = {
   [PACKET_TYPE.REGISTER_REQUEST]: {
@@ -98,6 +99,10 @@ const handlers = {
   [PACKET_TYPE.PING_REQUEST]: {
     handler: heartBeatHandler,
     protoType: 'request.C2SPingRequest',
+  },
+  [PACKET_TYPE.SWITCH_REQUEST]: {
+    handler: switchHandler,
+    protoType: 'request.C2SSwitchRequest',
   },
 };
 

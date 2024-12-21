@@ -28,15 +28,15 @@ export const winMultiCast = async (room) => {
     // 방정보 제거
     await redisManager.rooms.delete(room.id); // Redis
 
-    const gameServerSwitchNotification = {
+    const SWITCH_RESPONSE = {
       ip: config.server.host,
       port: 9000,
     };
 
     // 다른 유저들을 로비서버로 이동시킴.
     setUsersServerMove(usersInRoom);
-    multiCast(usersInRoom, PACKET_TYPE.GAME_SERVER_SWITCH_NOTIFICATION, {
-      gameServerSwitchNotification, // 승리자 클라에게 전송해줌 로비 서버로 변경하라고 요청 -> 클라에서 변경 ->
+    multiCast(usersInRoom, PACKET_TYPE.SWITCH_RESPONSE, {
+      SWITCH_RESPONSE, // 승리자 클라에게 전송해줌 로비 서버로 변경하라고 요청 -> 클라에서 변경 ->
     });
 
     // 방 정보 제거
