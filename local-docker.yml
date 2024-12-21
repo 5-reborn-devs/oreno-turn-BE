@@ -34,7 +34,7 @@ services:
       - '16666:16666' # TCP 게임 서버 포트
     environment:
       - PORT=16666
-      - HOST=0.0.0.0
+      - HOST=127.0.0.1
       - CLIENT_VERSION=1.0.0
       - DB1_HOST=mysql
       - DB1_PORT=3306
@@ -54,7 +54,7 @@ services:
       - '16667:16667' # TCP 게임 서버 포트
     environment:
       - PORT=16667
-      - HOST=0.0.0.0
+      - HOST=127.0.0.1
       - CLIENT_VERSION=1.0.0
       - DB1_HOST=mysql
       - DB1_PORT=3306
@@ -74,7 +74,7 @@ services:
       - '16668:16668' # TCP 게임 서버 포트
     environment:
       - PORT=16668
-      - HOST=0.0.0.0
+      - HOST=127.0.0.1
       - CLIENT_VERSION=1.0.0
       - DB1_HOST=mysql
       - DB1_PORT=3306
@@ -94,7 +94,7 @@ services:
       - '6666:6666' # TCP 로비 서버 포트
     environment:
       - PORT=6666
-      - HOST=0.0.0.0
+      - HOST=127.0.0.1
       - CLIENT_VERSION=1.0.0
       - DB1_NAME=USER_DB
       - DB1_HOST=mysql
@@ -115,7 +115,7 @@ services:
       - '6667:6667' # TCP 로비 서버 포트
     environment:
       - PORT=6667
-      - HOST=0.0.0.0
+      - HOST=127.0.0.1
       - CLIENT_VERSION=1.0.0
       - DB1_NAME=USER_DB
       - DB1_HOST=mysql

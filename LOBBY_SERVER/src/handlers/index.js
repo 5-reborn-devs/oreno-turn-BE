@@ -6,6 +6,7 @@ import { getRoomListHandler } from './room/room.getList.handler.js';
 import { joinRoomHandler } from './room/room.join.handler.js';
 import { joinRandomRoomHandler } from './room/room.joinRandom.handler.js';
 import { verifyTokenHandler } from './auth/verifyToken.handler.js';
+import { leaveRoomHandler } from './room/room.leave.handler.js';
 
 const handlers = {
   [PACKET_TYPE.REGISTER_REQUEST]: {
@@ -35,6 +36,10 @@ const handlers = {
   [PACKET_TYPE.VERIFY_TOKEN_REQUEST]: {
     handler: verifyTokenHandler,
     protoType: 'request.C2SVerifyTokenReqeset',
+  },
+  [PACKET_TYPE.LEAVE_ROOM_REQUEST]: {
+    handler: leaveRoomHandler,
+    protoType: 'request.C2SLeaveRoomRequest',
   },
 };
 
