@@ -80,7 +80,7 @@ export const leaveRoomHandler = async (socket, payloadData) => {
   setTimeout(async () => {
     if (success) {
       users.get(socket.token).isEndIgnore = true;
-      serverSwitch(socket, '127.0.0.1', 6666);
+      serverSwitch(socket, '15.165.168.120', 9000);
     }
   }, 100);
 };
