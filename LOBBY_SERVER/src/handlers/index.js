@@ -99,6 +99,10 @@ const handlers = {
     handler: heartBeatHandler,
     protoType: 'request.C2SPingRequest',
   },
+  [PACKET_TYPE.SWITCH_REQUEST]: {
+    handler: switchHandler,
+    protoType: 'request.C2SSwitchRequest',
+  },
 };
 
 export const getHandlerByPacketType = (packetType) => {

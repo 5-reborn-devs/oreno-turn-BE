@@ -8,6 +8,7 @@ import { releaseRoomId } from '../../session/room.session.js';
 import { redisManager } from '../../classes/managers/redis.manager.js';
 import { serverSwitch } from '../../utils/notification/notification.serverSwitch.js';
 import { config } from '../../config/config.js';
+import { getUserById } from '../../session/user.session.js';
 
 export const leaveRoomHandler = async (socket, payloadData) => {
   // 페일코드를 들고옴
@@ -25,7 +26,10 @@ export const leaveRoomHandler = async (socket, payloadData) => {
       throw new Error('해당 방이 존재하지 않습니다');
     }
     // 유저를 레디스에서 소켓 토큰으로 가져옴 검증됨
-    const user = await redisManager.users.get(socket.token);
+    // const user = await redisManager.users.get(socket.token);
+
+    // user session에서 유저 정보 가져오기
+    const user = users.get(socket.token);
 
     // 만약 룸안에 있는 유저 정보가 존재하면 레디스에서 방에서 지워주고,
     // 유저에 정보에서도 방을 지워줌
@@ -44,6 +48,10 @@ export const leaveRoomHandler = async (socket, payloadData) => {
     const leaveRoomNotification = {
       userId: user.id,
     };
+
+    // 유저 onEnd 무시
+    user.isEndIgnore = true;
+
     // 트루가됨
     success = true;
     leaveRoomResponse = {
@@ -57,6 +65,15 @@ export const leaveRoomHandler = async (socket, payloadData) => {
     } else {
       // 나간 유저가 방장일 경우 방이 폭파됨.
       if (user.id == room.ownerId) {
+        usersInRoom.forEach((userId) => {
+          const user = getUserById(userId);
+          user.isEndIgnore = true;
+        });
+
+        await multiCast(usersInRoom, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
+          leaveRoomResponse,
+        });
+
         await redisManager.rooms.delete(roomId);
       }
 
@@ -79,11 +96,11 @@ export const leaveRoomHandler = async (socket, payloadData) => {
   });
 
   // 현재 위치가 로비서버가 아니라면 로비로 돌아감. ? 필요한가?
-  setTimeout(async () => {
-    if (success) {
-      socket.isEndIgnore = true;
-      serverSwitch(socket, '3.34.13.74', 9000);
-    }
-  }, 1000);
+  // setTimeout(async () => {
+  //   if (success) {
+  //     socket.isEndIgnore = true;
+  //     serverSwitch(socket, '3.34.13.74', 9000);
+  //   }
+  // }, 1000);
   //socket.disconnect();
 };

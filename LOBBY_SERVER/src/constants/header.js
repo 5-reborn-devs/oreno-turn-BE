@@ -108,8 +108,8 @@ export const PACKET_TYPE = {
   EVENING_DRAW_NOTIFICATION: 52,
 
   //게임 서버 스위치
-  Swtich_Request: 53,
-  Swtich_Response: 54,
+  SWITCH_REQUEST: 53,
+  SWITCH_RESPONSE: 54,
 
   //토큰 유효 검사
   VERIFY_TOKEN_REQUEST: 55,

@@ -38,6 +38,7 @@ export const joinRoomHandler = async (socket, payload) => {
     }
 
     socket.roomId = roomId;
+    socket.gameIp = `${config.server.host}:${roomPort}`;
     joinRoomResponse = {
       success: true,
       room: room,
@@ -47,9 +48,6 @@ export const joinRoomHandler = async (socket, payload) => {
     sendResponsePacket(socket, PACKET_TYPE.JOIN_ROOM_RESPONSE, {
       joinRoomResponse,
     });
-
-    // 서버를 옮김
-    serverSwitch(socket, config.server.host, Number(roomPort));
   } catch (error) {
     console.error(error);
 
