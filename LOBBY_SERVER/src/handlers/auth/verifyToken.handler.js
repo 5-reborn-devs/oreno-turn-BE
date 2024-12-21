@@ -12,10 +12,11 @@ export const verifyTokenHandler = async (socket, payload) => {
   const { token } = payload;
   let verifyTokenResponse;
   try {
+    console.log('[verifyToken] token:', token);
     const user = await redisManager.users.get(token);
-    if (!Object.keys(user).length) {
+    if (!user || !Object.keys(user).length) {
       console.error('[verifyToken] token:', token);
-      console.error('user', user);
+      console.error('Returned user object:', user);
       throw new Error('유효하지 않은 토큰');
     }
     console.log('verifyToken user:', user);
