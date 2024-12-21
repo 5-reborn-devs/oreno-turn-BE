@@ -47,16 +47,7 @@ export const getNextRoomId = () => {
   }
   return nextRoomId++;
 };
-
-// // 방 번호 반납
-// export const releaseRoomId = (roomId) => {
-//   roomIdSet.add(roomId);
-// };
-// 여기서 방 생성
-// 1 //초기에는 roomIdSet.Size 가 0이니까 바로 1을 반환하게됨 return nextRoomId
-// 2 // 여기서부터는 사이즈가 1이니까 조건 충족해서 2를 반환하게 됨
-// 3
-
-// 반환
-// roomidSet = {1}
-//
+// 방 번호 반납
+export const releaseRoomId = (roomId) => {
+  roomIdSet.add(roomId);
+};

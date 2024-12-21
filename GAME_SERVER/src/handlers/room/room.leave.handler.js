@@ -4,7 +4,6 @@ import { getFailCode } from '../../utils/response/failCode.js';
 import sendResponsePacket, {
   multiCast,
 } from '../../utils/response/createResponse.js';
-import { releaseRoomId } from '../../session/room.session.js';
 import { redisManager } from '../../classes/managers/redis.manager.js';
 import { serverSwitch } from '../../utils/notification/notification.serverSwitch.js';
 import { config } from '../../config/config.js';

@@ -1,5 +1,5 @@
-import { PACKET_TYPE } from '../../constants/header';
-import sendResponsePacket from '../../utils/response/createResponse';
+import { PACKET_TYPE } from '../../constants/header.js';
+import sendResponsePacket from '../../utils/response/createResponse.js';
 
 export const switchHandler = (socket) => {
   const [ip, port] = socket.gameIp.split(':');
