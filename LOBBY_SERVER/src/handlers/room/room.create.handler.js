@@ -68,7 +68,7 @@ export const createRoomHandler = async (socket, payloadData) => {
   //if (success) serverSwitch(socket, '127.0.0.1', 16666);
   setTimeout(async () => {
     if (success) {
-      serverSwitch(socket, '15.165.168.120', 1666);
+      serverSwitch(socket, '3.34.13.74', 1666);
     }
   }, 1000);
 };
