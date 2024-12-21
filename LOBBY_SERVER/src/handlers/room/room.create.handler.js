@@ -43,6 +43,7 @@ export const createRoomHandler = async (socket, payloadData) => {
     // await redisManager.rooms.createRoom(roomId, room, socket.token);
 
     socket.gameIp = `${config.server.host}:1666`;
+    console.log(socket.gameIp);
 
     success = true;
     createRoomResponse = {
