@@ -1,4 +1,5 @@
 import { PACKET_TYPE } from '../../constants/header.js';
+import { serverSwitch } from '../../utils/notification/notification.serverSwitch.js';
 import sendResponsePacket from '../../utils/response/createResponse.js';
 
 const PING_TIMEOUT = 10000; // 타임아웃 시간 10초 (10000ms)
