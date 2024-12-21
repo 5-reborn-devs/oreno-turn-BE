@@ -56,7 +56,7 @@ const resetPingTimeout = (socket) => {
         message: 'fail',
       });
       setTimeout(async () => {
-        users.get(socket.token).isEndIgnore = true;
+        socket.isEndIgnore = true;
         serverSwitch(socket, '3.34.13.74', 9000);
       }, 1000);
       //socket.disconnect();
