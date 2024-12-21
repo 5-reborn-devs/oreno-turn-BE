@@ -21,6 +21,7 @@ import {
 import { rerollHandler } from './card/card.reroll.handler.js';
 import { verifyTokenHandler } from './auth/verifyToken.handler.js';
 import { heartBeatHandler } from './sync/heartBeat.handler.js';
+import { switchHandler } from './sync/switch.handler.js';
 
 const handlers = {
   [PACKET_TYPE.REGISTER_REQUEST]: {
