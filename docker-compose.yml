@@ -29,7 +29,7 @@ services:
       - DB1_PORT=3306
       - DB1_USER=root
       - DB1_PASSWORD=gLaFmvi38uW4c5z
-      - REDIS_HOST=oredis.mmnarf.ng.0001.apn2.cache.amazonaws.com
+      - REDIS_HOST=redis
       - REDIS_PORT=6379
     depends_on:
       - redis
@@ -50,7 +50,7 @@ services:
       - DB1_PORT=3306
       - DB1_USER=root
       - DB1_PASSWORD=gLaFmvi38uW4c5z
-      - REDIS_HOST=oredis.mmnarf.ng.0001.apn2.cache.amazonaws.com
+      - REDIS_HOST=redis
       - REDIS_PORT=6379
     depends_on:
       - redis
