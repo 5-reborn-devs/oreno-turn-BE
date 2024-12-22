@@ -1,7 +1,7 @@
 import { PACKET_TYPE } from '../../constants/header.js';
 import sendResponsePacket from '../../utils/response/createResponse.js';
 
-const PING_TIMEOUT = 1000; // 타임아웃 시간 1초 (1000ms)
+const PING_TIMEOUT = 10000; // 타임아웃 시간 1초 (1000ms)
 let lastPingTime; // 마지막 ping 시간을 기록
 
 // 클라이언트 연결이 끊어진다고 가정한 타이머
