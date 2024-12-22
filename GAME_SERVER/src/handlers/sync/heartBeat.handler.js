@@ -1,5 +1,4 @@
 import { PACKET_TYPE } from '../../constants/header.js';
-import { serverSwitch } from '../../utils/notification/notification.serverSwitch.js';
 import sendResponsePacket from '../../utils/response/createResponse.js';
 
 const PING_TIMEOUT = 10000; // 타임아웃 시간 10초 (1000ms)
@@ -60,14 +59,14 @@ const resetPingTimeout = (socket) => {
         pongResponse,
       });
       serverSwitch(socket, '3.34.13.74', 9000);
-      socket.setTimeout(async () => {
+      socket.setTimeout(PING_TIMEOUT, () => {
         socket.isEndIgnore = true;
         socket.end(); // 타임아웃 시 연결 종료
         socket.destroy();
         console.log(
           '소켓 타임아웃: 클라이언트 응답이 없습니다. 연결을 종료합니다.',
         );
-      }, 1000);
+      });
     }
   }, PING_TIMEOUT); // 타임아웃 시간만큼 대기
 };
