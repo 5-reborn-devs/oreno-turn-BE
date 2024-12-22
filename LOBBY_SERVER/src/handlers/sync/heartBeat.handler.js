@@ -54,7 +54,6 @@ const resetPingTimeout = (socket) => {
       );
       pongResponse = {
         message: 'fail',
-        timestamp: localTime,
       };
       // 실패 메시지 전송 후 연결 종료
       sendResponsePacket(socket, PACKET_TYPE.PONG_RESPONSE, {
