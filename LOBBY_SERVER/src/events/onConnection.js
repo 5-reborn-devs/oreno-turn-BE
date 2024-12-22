@@ -2,6 +2,7 @@ import { onClose } from './onClose.js';
 import { onData } from './onData.js';
 import { onEnd } from './onEnd.js';
 import { onError } from './onError.js';
+import { onTimeout } from './onTimeout.js';
 
 export const onConnection = (socket) => {
   console.log(`클라이언트 연결: ${socket.remoteAddress}`);
@@ -10,4 +11,5 @@ export const onConnection = (socket) => {
   socket.on('end', onEnd(socket));
   socket.on('error', onError(socket));
   socket.on('close', onClose(socket));
+  socket.on('timeout', onTimeout(socket));
 };
