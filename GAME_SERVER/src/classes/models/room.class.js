@@ -92,9 +92,9 @@ class Room {
       console.log('드리프트 값!: ', drifted); // 초기값+페이즈 원론적인 시간에서 실제 시간과 비교해서 차이 구하기
 
       nextPhaseAt += intervals[currentIndex]; // 원론적인 다음 페이즈 시간 업데이트
-      console.log('드리프트 적용 전 : ', intervals[currentIndex]);
-      const nextState = intervals[currentIndex] + drifted; // 넥스트 페이즈에 시간차이 게산 더해주기
-      console.log('드리프트 적용 후 :', nextState);
+      const nextState = intervals[currentIndex];
+      // const nextState = intervals[currentIndex] + drifted; // 넥스트 페이즈에 시간차이 게산 더해주기
+      console.log('적용 전 드리프트 값', nextState);
       phaseUpdateNotificationHandler(room, nextState); //페이즈 업데이트 핸들러 호출
 
       room.intervalId = setTimeout(runInterval, nextState); //다음 인터벌 설정(next state 보정 처리)
