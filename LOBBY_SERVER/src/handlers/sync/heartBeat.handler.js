@@ -6,9 +6,8 @@ let lastPingTime; // 마지막 ping 시간을 기록
 
 // 클라이언트 연결이 끊어진다고 가정한 타이머
 let pingTimeout;
-
+let pongResponse;
 export const heartBeatHandler = async (socket, payload) => {
-  let pongResponse;
   try {
     const { message, timestamp } = payload;
     const combinedTimestamp = timestamp.toNumber();
