@@ -61,31 +61,68 @@ class Room {
     // 함수를 전달
   }
 
-  button() {
+  button(nextPhaseAt) {
+    // 진수님거
     if (this.isPushed) {
-      this.startCustomInterval();
+      this.startCustomInterval(nextPhaseAt);
       this.positionUpdateInterval();
       this.isPushed = false;
     }
   }
 
-  startCustomInterval() {
-    const intervals = [
-      config.page.afternoon,
-      config.page.evening,
-      config.page.night,
-    ];
+  // button() {  기존거
+  //   if (this.isPushed) {
+  //     this.startCustomInterval();
+  //     this.positionUpdateInterval();
+  //     this.isPushed = false;
+  //   }
+  // }
+
+  startCustomInterval(nextPhaseAt) {
+    //진수님 거
+    const intervals = [18000, 12000, 18000]; // afternoon, evening, night
     let currentIndex = 0;
     const room = this;
     function runInterval() {
       // 다음 인터벌 설정
       currentIndex = (currentIndex + 1) % intervals.length;
-      const nextState = intervals[currentIndex];
-      phaseUpdateNotificationHandler(room, nextState);
-      room.intervalId = setTimeout(runInterval, nextState);
+
+      let drifted = nextPhaseAt - Date.now();
+      console.log('시간값 두개 먼저 보여줘! :', nextPhaseAt, Date.now());
+      console.log('드리프트 값!: ', drifted); // 초기값+페이즈 원론적인 시간에서 실제 시간과 비교해서 차이 구하기
+
+      nextPhaseAt += intervals[currentIndex]; // 원론적인 다음 페이즈 시간 업데이트
+      console.log('드리프트 적용 전 : ', intervals[currentIndex]);
+      const nextState = intervals[currentIndex] + drifted; // 넥스트 페이즈에 시간차이 게산 더해주기
+      console.log('드리프트 적용 후 :', nextState);
+      phaseUpdateNotificationHandler(room, nextState); //페이즈 업데이트 핸들러 호출
+
+      room.intervalId = setTimeout(runInterval, nextState); //다음 인터벌 설정(next state 보정 처리)
     }
-    this.intervalId = setTimeout(runInterval, intervals[currentIndex]);
+
+    const firstDelay = nextPhaseAt - Date.now(); //첫 인터벌 지연시간 계산
+
+    this.intervalId = setTimeout(runInterval, firstDelay); //첫 인터벌 시작(보정값)
   }
+
+  // startCustomInterval() { // 기존거
+  //   const intervals = [
+  //     config.page.afternoon,
+  //     config.page.evening,
+  //     config.page.night,
+  //   ];
+  //   let currentIndex = 0;
+  //   const room = this;
+  //   function runInterval() {
+  //     // 다음 인터벌 설정
+  //     currentIndex = (currentIndex + 1) % intervals.length;
+
+  //     const nextState = intervals[currentIndex];
+  //     phaseUpdateNotificationHandler(room, nextState);
+  //     room.intervalId = setTimeout(runInterval, nextState);
+  //   }
+  //   this.intervalId = setTimeout(runInterval, intervals[currentIndex]);
+  // }
 
   stopCustomInterval() {
     console.log('커스텀 인터벌 지우기 실행 되었음!!!!');
