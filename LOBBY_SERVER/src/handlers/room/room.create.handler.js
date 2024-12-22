@@ -1,3 +1,4 @@
+import { getRounds } from 'bcrypt';
 import { redisManager } from '../../classes/managers/redis.manager.js';
 import { config } from '../../config/config.js';
 import { PACKET_TYPE } from '../../constants/header.js';
@@ -76,9 +77,12 @@ export const createRoomHandler = async (socket, payloadData) => {
     // await redisManager.rooms.createRoom(roomId, room, socket.token);
     // 게임 서버 리스트를 받음.
     const gameServers = await redisClient.lrange('gameServers', 0, -1);
+    console.log('게임서버리스트', gameServers);
     // 라운드로빈으로선정
     const roundRobinCount = Number(await redisClient.get('roundRobin'));
+    console.log('roundRobinCount', roundRobinCount);
     [host, port] = gameServers[roundRobinCount % gameServers.length].split(':');
+    console.log(host, port);
 
     // JS가 처리할 수 있는 Number 범위
     if (roundRobinCount > 9007199254740990) {
