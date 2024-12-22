@@ -9,6 +9,7 @@ import { redisManager } from '../classes/managers/redis.manager.js';
 import { redisClient } from '../init/redisConnect.js';
 
 export const onEnd = (socket) => async () => {
+  console.log('온엔드로들어오는지확인용');
   if (socket.isEndIgnore) {
     console.log('[서버 이동] Lobby -> Game'); // onEnd 무시됨.
     return;
