@@ -1,15 +1,4 @@
 services:
-  haproxy:
-    image: haproxy:2.3
-    ports:
-      - '9000:9000'
-      - '1666:1666'
-    volumes:
-      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
-    depends_on:
-      - lobby-server-1
-      - game-server-1
-
   game-server-1:
     build:
       context: ./GAME_SERVER
