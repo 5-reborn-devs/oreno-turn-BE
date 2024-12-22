@@ -52,9 +52,13 @@ const resetPingTimeout = (socket) => {
       console.log(
         `클라이언트가 일정 시간 동안 응답하지 않아 연결을 종료합니다.`,
       );
+      pongResponse = {
+        message: 'fail',
+        timestamp: localTime,
+      };
       // 실패 메시지 전송 후 연결 종료
       sendResponsePacket(socket, PACKET_TYPE.PONG_RESPONSE, {
-        message: 'fail',
+        pongResponse,
       });
     }
   }, PING_TIMEOUT); // 타임아웃 시간만큼 대기
