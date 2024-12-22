@@ -5,7 +5,7 @@ import sendResponsePacket from '../../utils/response/createResponse.js';
 
 export const switchHandler = (socket) => {
   const ip = config.server.host;
-  const port = 9000;
+  const port = 6666;
 
   const switchResponse = { ip, port };
   sendResponsePacket(socket, PACKET_TYPE.SWITCH_RESPONSE, {
