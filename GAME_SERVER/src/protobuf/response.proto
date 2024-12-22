@@ -197,3 +197,8 @@ message S2CPongResponse
   string message = 1;
   int64 timestamp = 2;
 }
+
+message S2CSwitchResponse{
+	string ip = 1;
+	int32 port = 2;
+}

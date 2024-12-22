@@ -4,7 +4,11 @@ import { getProtoMessages } from '../../init/loadProto.js';
 import { clients } from '../../session/session.js';
 import { serializer } from '../serilaizer.js';
 
-export const sendResponsePacket = (socket, packetType, responseMessage) => {
+export const sendResponsePacket = async (
+  socket,
+  packetType,
+  responseMessage,
+) => {
   try {
     const protoMessages = getProtoMessages();
     const GamePacket = protoMessages.gamePacket.GamePacket;
@@ -14,7 +18,8 @@ export const sendResponsePacket = (socket, packetType, responseMessage) => {
 
     // 정규화 과정을 통해 패킷 제작
     const serializedPacket = serializer(gamePacketBuffer, packetType);
-    //클라이언트에게 패킷 전송
+
+    // //클라이언트에게 패킷 전송
     socket.write(serializedPacket);
 
     // console.log(`Send packet of type ${PACKET_NUMBER[packetType]} to client.`);
@@ -24,7 +29,7 @@ export const sendResponsePacket = (socket, packetType, responseMessage) => {
   }
 };
 
-export const multiCast = (users, packetType, message) => {
+export const multiCast = async (users, packetType, message) => {
   if (users[0] instanceof User) {
     users.forEach((user) => {
       if (user.id) {

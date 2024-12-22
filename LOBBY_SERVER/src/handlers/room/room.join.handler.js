@@ -38,27 +38,16 @@ export const joinRoomHandler = async (socket, payload) => {
     }
 
     socket.roomId = roomId;
+    socket.gameIp = `${config.server.host}:${roomPort}`;
     joinRoomResponse = {
       success: true,
       room: room,
       failCode: failCode.NONE_FAILCODE,
     };
-    const joinRoomNotification = { joinUser: user };
-
-    notification = [
-      usersInRoomWithoutMe,
-      PACKET_TYPE.JOIN_ROOM_NOTIFICATION,
-      {
-        joinRoomNotification,
-      },
-    ];
 
     sendResponsePacket(socket, PACKET_TYPE.JOIN_ROOM_RESPONSE, {
       joinRoomResponse,
     });
-
-    // 서버를 옮김
-    serverSwitch(socket, config.server.host, Number(roomPort));
   } catch (error) {
     console.error(error);
 

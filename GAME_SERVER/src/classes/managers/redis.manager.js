@@ -24,11 +24,12 @@ export const redisManager = {
       return user;
     },
 
-    delete: async (token) => {
+    delete: async (token, roomId) => {
       const userId = await redisClient.hget(token, 'id');
       const pipeline = redisClient.pipeline();
       pipeline.del(token);
       pipeline.srem('users', userId);
+      pipeline.hdel(`${roomId}:users`, userId);
       await pipeline.exec();
     },
 

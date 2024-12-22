@@ -1,23 +1,22 @@
 import { PACKET_TYPE } from '../../constants/header.js';
 import sendResponsePacket from '../../utils/response/createResponse.js';
 
-const PING_TIMEOUT = 10000; // 타임아웃 시간 10초 (10000ms)
-let lastPingTime = Date.now(); // 마지막 ping 시간을 기록
+const PING_TIMEOUT = 10000; // 타임아웃 시간 10초 (1000ms)
+let lastPingTime; // 마지막 ping 시간을 기록
 
 // 클라이언트 연결이 끊어진다고 가정한 타이머
 let pingTimeout;
-
+let pongResponse;
 export const heartBeatHandler = async (socket, payload) => {
-  let pongResponse;
   try {
     const { message, timestamp } = payload;
     const combinedTimestamp = timestamp.toNumber();
     const localTime = new Date().getTime();
     const timeDifference = localTime - combinedTimestamp;
 
-    console.log(`클라가 ping보낸 시간 : ${combinedTimestamp}`);
-    console.log(`현재시간 : ${localTime}`);
-    console.log(`시간 차이 : ${timeDifference}`);
+    console.log(`Ping 전송 시간 : ${combinedTimestamp}`);
+    console.log(`Ping 수신 시간 : ${localTime}`);
+    console.log(`Ping 응답 시간 (지연) : ${timeDifference}`);
 
     // 클라이언트로부터 ping을 받은 시간 업데이트
     lastPingTime = Date.now();
@@ -33,14 +32,14 @@ export const heartBeatHandler = async (socket, payload) => {
     });
 
     // ping 응답 후 타이머 리셋
-    resetPingTimeout();
+    resetPingTimeout(socket);
   } catch (err) {
     console.error('하트비트 에러');
   }
 };
 
 // 클라이언트로부터 일정 시간동안 ping이 오지 않으면 연결 끊기
-const resetPingTimeout = () => {
+const resetPingTimeout = (socket) => {
   clearTimeout(pingTimeout); // 이전 타이머 클리어
 
   pingTimeout = setTimeout(() => {
@@ -52,11 +51,21 @@ const resetPingTimeout = () => {
       console.log(
         `클라이언트가 일정 시간 동안 응답하지 않아 연결을 종료합니다.`,
       );
+      pongResponse = {
+        message: 'fail',
+      };
       // 실패 메시지 전송 후 연결 종료
       sendResponsePacket(socket, PACKET_TYPE.PONG_RESPONSE, {
-        message: 'fail',
+        pongResponse,
       });
-      socket.disconnect(); // 연결 종료
     }
   }, PING_TIMEOUT); // 타임아웃 시간만큼 대기
+
+  socket.setTimeout(PING_TIMEOUT, () => {
+    socket.end(); // 타임아웃 시 연결 종료
+    socket.destroy();
+    console.log(
+      '소켓 타임아웃: 클라이언트 응답이 없습니다. 연결을 종료합니다.',
+    );
+  });
 };

@@ -9,40 +9,32 @@ import { getFailCode } from '../../utils/response/failCode.js';
 
 export const verifyTokenHandler = async (socket, payload) => {
   const failCode = getFailCode();
-  const { token } = payload;
+  const { token } = payload; // 그 유저의 토큰을 가져옴
   let verifyTokenResponse;
   try {
+    // 토큰 확인
+    console.log('[verifyToken] token:', token);
+    // 토큰 기반으로 레디스에서 유저정보를 가져옴
     const user = await redisManager.users.get(token);
-    if (!Object.keys(user).length) {
+    // 유저를 못찾으면 오류
+    if (!user || !Object.keys(user).length) {
       console.error('[verifyToken] token:', token);
-      console.error('user', user);
+      console.error('Returned user object:', user);
       throw new Error('유효하지 않은 토큰');
     }
+    // 잘들고왔는지 확인함
     console.log('verifyToken user:', user);
-    const roomId = user.roomId;
-    if (roomId) {
-      throw new Error('방에 속한 유저');
-    }
 
+    // 새로 연결됬으므로 소켓에 토큰 다시 넣어줌
     socket.token = token;
-    socket.roomId = roomId;
+    // 로비서버로 돌아왔으므로 clients 세션에 유저를 넣어줌
     clients.set(Number(user.id), socket);
-
-    // const room = await redisManager.rooms.getRoom(roomId);
-    // 방장이 아니라면 참가를 알림
-    const usersInRoom = await redisManager.rooms.getUsers(roomId);
-    const joinRoomNotification = {
-      joinUser: new User(Number(user.id), user.nickname),
-    };
-    multiCast(usersInRoom, PACKET_TYPE.JOIN_ROOM_NOTIFICATION, {
-      joinRoomNotification,
-    });
 
     verifyTokenResponse = {
       success: true,
       failCode: failCode.NONE_FAILCODE,
     };
-    console.log('다시 연결됨!');
+    console.log('로비서버로 다시 연결됨!');
   } catch (error) {
     verifyTokenResponse = {
       success: false,

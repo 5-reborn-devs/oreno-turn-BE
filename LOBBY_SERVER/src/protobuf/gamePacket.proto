@@ -112,14 +112,15 @@ message GamePacket {
         S2CEveningDistributionNotification eveningDistributionNotification = 52;
 
         // 게임 서버 연결
-        S2CGameServerSwitchNotification gameServerSwitchNotification = 53;
-
-        // 게임 서버 연결 뒤 토큰 확인
-        C2SVerifyTokenRequest verifyTokenRequest = 54;
-        S2CVerifyTokenResponse verifyTokenResponse = 55;
-
-        // 하트 비트
-        C2SPingRequest pingRequest = 56;
-        S2CPongResponse pongResponse = 57;
+	    C2SSwitchRequest switchRequest = 53;
+		S2CSwitchResponse switchResponse = 54;
+        
+        // 게임 서버 연결 후 토큰 전송
+        C2SVerifyTokenRequest verifyTokenRequest = 55;
+        S2CVerifyTokenResponse verifyTokenResponse = 56;
+	       
+	    // 하트 비트
+        C2SPingRequest pingRequest = 57;
+        S2CPongResponse pongResponse = 58;
     }
 }

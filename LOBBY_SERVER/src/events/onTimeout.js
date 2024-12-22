@@ -8,8 +8,8 @@ import { releaseRoomId } from '../session/room.session.js';
 import { redisManager } from '../classes/managers/redis.manager.js';
 import { redisClient } from '../init/redisConnect.js';
 
-export const onEnd = (socket) => async () => {
-  console.log('온엔드로들어오는지확인용');
+export const onTimeout = (socket) => async () => {
+  console.log('[LOBBY SERVER ON TIME OUT]');
   if (socket.isEndIgnore) {
     console.log('[서버 이동] Lobby -> Game'); // onEnd 무시됨.
     return;

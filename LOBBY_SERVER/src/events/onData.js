@@ -1,7 +1,7 @@
 import { config } from '../config/config.js';
 import { TOTAL_LENGTH } from '../constants/header.js';
-import { getHandlerByPacketType } from '../handlers/index.js';
 import { decoder } from '../utils/response/decoder.js';
+import { getHandlerByPacketType } from '../handlers/index.js';
 
 export const onData = (socket) => async (data) => {
   socket.buffer = Buffer.concat([socket.buffer, data]);
@@ -30,18 +30,16 @@ export const onData = (socket) => async (data) => {
 
       // 남은 데이터는 다시 버퍼 데이터에 추가
       socket.buffer = socket.buffer.subarray(requiredLength);
+      if (packetType !== 23) {
+        console.log('클라가 보낸 패킷타입 request', packetType);
+      }
 
       try {
         // 모든 패킷을 게임패킷으로 처리 가능하다고 한다
         const decodedPacket = decoder(payload);
 
-        // 인자로 받을 패킷 타입 전송
         const handler = getHandlerByPacketType(packetType);
-        if (packetType !== 23) {
-          console.log('클라가 보낸 패킷타입 request', packetType);
-        }
-
-        await handler(socket, decodedPacket);
+        socket.queue.addRequest(socket, packetType, decodedPacket, handler);
       } catch (err) {
         console.error(err);
         console.error(`패킷처리 에러 : ${err}, packeyType : ${packetType}`);

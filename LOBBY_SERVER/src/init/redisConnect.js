@@ -2,12 +2,14 @@ import Redis from 'ioredis';
 import dotenv from 'dotenv';
 import { config } from '../config/config.js';
 
-dotenv.config();
 
-// redis 초기화
+dotenv.config();  
+
+// redis 초기화 
 export const redisClient = new Redis(
   `redis://${config.redis.host}:${config.redis.port}`,
 );
+// 리퀘스트 큐, 리스폰스 큐 초기화
 
 // redis 연결 오류가 발생한 경우 서버를 종료함.
 redisClient.on('error', (err) => {
@@ -38,6 +40,7 @@ export const connectRedis = async () => {
       console.log('redisClient.status => ', redisClient.status);
       await redisClient.connect();
       console.log('Redis에 연결되었습니다.');
+
     } else {
       console.log('레디스 현재 상태 => ', redisClient.status);
     }
@@ -47,3 +50,4 @@ export const connectRedis = async () => {
 };
 
 await connectRedis();
+
