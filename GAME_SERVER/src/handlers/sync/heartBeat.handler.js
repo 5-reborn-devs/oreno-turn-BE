@@ -58,9 +58,9 @@ const resetPingTimeout = (socket) => {
       sendResponsePacket(socket, PACKET_TYPE.PONG_RESPONSE, {
         pongResponse,
       });
+      serverSwitch(socket, '3.34.13.74', 9000);
       socket.setTimeout(async () => {
         socket.isEndIgnore = true;
-        serverSwitch(socket, '3.34.13.74', 9000);
         socket.end(); // 타임아웃 시 연결 종료
         socket.destroy();
         console.log(
