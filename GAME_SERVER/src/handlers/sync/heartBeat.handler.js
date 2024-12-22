@@ -62,6 +62,7 @@ const resetPingTimeout = (socket) => {
         socket.isEndIgnore = true;
         serverSwitch(socket, '3.34.13.74', 9000);
         socket.end(); // 타임아웃 시 연결 종료
+        socket.destroy();
         console.log(
           '소켓 타임아웃: 클라이언트 응답이 없습니다. 연결을 종료합니다.',
         );
