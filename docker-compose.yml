@@ -1,18 +1,4 @@
 services:
-  haproxy:
-    image: haproxy:2.3
-    ports:
-      - '9000:9000'
-      - '1666:1666'
-    volumes:
-      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
-    depends_on:
-      - lobby-server-1
-      - game-server-1
-  redis:
-    image: redis:latest
-    ports:
-      - '16379:6379'
   game-server-1:
     build:
       context: ./GAME_SERVER
@@ -22,17 +8,15 @@ services:
       - '16666:16666' # TCP 게임 서버 포트
     environment:
       - PORT=16666
-      - HOST=3.36.189.73
+      - HOST=3.36.19.101
       - CLIENT_VERSION=1.0.0
       - DB1_NAME=USER_DB
       - DB1_HOST=express-database.c94ueui6qc9r.ap-northeast-2.rds.amazonaws.com
       - DB1_PORT=3306
       - DB1_USER=root
       - DB1_PASSWORD=gLaFmvi38uW4c5z
-      - REDIS_HOST=redis
+      - REDIS_HOST=oredis.mmnarf.ng.0001.apn2.cache.amazonaws.com
       - REDIS_PORT=6379
-    depends_on:
-      - redis
 
   lobby-server-1:
     build:
@@ -43,17 +27,15 @@ services:
       - '6666:6666' # TCP 로비 서버 포트
     environment:
       - PORT=6666
-      - HOST=3.36.189.73
+      - HOST=3.36.19.101
       - CLIENT_VERSION=1.0.0
       - DB1_NAME=USER_DB
       - DB1_HOST=express-database.c94ueui6qc9r.ap-northeast-2.rds.amazonaws.com
       - DB1_PORT=3306
       - DB1_USER=root
       - DB1_PASSWORD=gLaFmvi38uW4c5z
-      - REDIS_HOST=redis
+      - REDIS_HOST=oredis.mmnarf.ng.0001.apn2.cache.amazonaws.com
       - REDIS_PORT=6379
-    depends_on:
-      - redis
     deploy:
       resources:
         limits:

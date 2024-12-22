@@ -15,7 +15,7 @@ class Queue {
   // RequestQueue push 함수 : 중복 방지
   addRequest(socket, packetType, payload, task) {
     if (this.recentTasks.has(packetType)) {
-      console.log(`Task ${packetType} 중복 스킵!!`);
+      //console.log(`Task ${packetType} 중복 스킵!!`);
       return;
     }
 
@@ -30,7 +30,7 @@ class Queue {
         //설정 시간 뒤에 set 데이터 제거
         setTimeout(() => {
           this.recentTasks.delete(packetType);
-          console.log(`Task ${packetType} 제거!`);
+          //console.log(`Task ${packetType} 제거!`);
         }, this.setTime);
       }
     });
