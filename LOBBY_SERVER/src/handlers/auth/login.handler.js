@@ -52,7 +52,6 @@ export const loginHandler = async (socket, payload) => {
     socket.token = token;
 
     const user = new User(dbUser.userId, dbUser.nickname);
-    console.log('테스트용', user);
     //클라이언트 세션 추가
     addClient(socket, dbUser.userId);
     loginResponse = {
