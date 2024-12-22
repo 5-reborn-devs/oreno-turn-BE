@@ -31,6 +31,8 @@ services:
       - DB1_PASSWORD=gLaFmvi38uW4c5z
       - REDIS_HOST=redis
       - REDIS_PORT=6397
+    depends_on:
+      - redis
 
   lobby-server-1:
     build:
@@ -50,6 +52,8 @@ services:
       - DB1_PASSWORD=gLaFmvi38uW4c5z
       - REDIS_HOST=redis
       - REDIS_PORT=6397
+    depends_on:
+      - redis
     deploy:
       resources:
         limits:
