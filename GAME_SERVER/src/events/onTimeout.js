@@ -1,24 +1,35 @@
-import { rooms, users } from '../session/session.js';
+import { clients, rooms, users } from '../session/session.js';
 import { PACKET_TYPE } from '../constants/header.js';
 import sendResponsePacket, {
   multiCast,
 } from '../utils/response/createResponse.js';
 import { getFailCode } from '../utils/response/failCode.js';
-import { releaseRoomId } from '../session/room.session.js';
+import { getUsersWithoutMe, releaseRoomId } from '../session/room.session.js';
 import { redisManager } from '../classes/managers/redis.manager.js';
 import { redisClient } from '../init/redisConnect.js';
+import { serverSwitch } from '../utils/notification/notification.serverSwitch.js';
+import { config } from '../config/config.js';
+import { setUsersServerMove } from '../session/user.session.js';
+import { winMultiCast } from '../utils/notification/notification.win.js';
+import { leaveRoomHandler } from '../handlers/room/room.leave.handler.js';
 
 export const onTimeout = (socket) => async () => {
-  console.log('[GAME SERVER ON TIME OUT]');
-  if (socket.isEndIgnore) {
-    console.log('[서버 이동] Lobby -> Game'); // onEnd 무시됨.
+  const token = socket.token;
+  let user = users.get(token);
+  if (user && user.isEndIgnore) {
+    // 내부 데이터 삭제
+    users.delete(socket.token);
+    clients.delete(Number(user.id));
+
+    // 레디스 데이터 삭제
+    await redisManager.users.delRoomId(token);
+    console.log(`[서버 이동] (${user.nickname}) Game -> Lobby`); // onEnd 무시됨.
     return;
   }
 
   const roomId = socket.roomId;
   const room = rooms.get(roomId);
-  const token = socket.token;
-  let user = await redisManager.users.get(token);
+  user = await redisManager.users.get(token);
   const userIds = await redisManager.rooms.getUsers(roomId);
   const failCode = getFailCode();
   const leaveRoomResponse = {
@@ -26,7 +37,7 @@ export const onTimeout = (socket) => async () => {
     failCode: failCode.NONE_FAILCODE,
   };
   let message = `유저 ${user.nickname}가 방에서 연결이 종료되었습니다.`;
-  const leaveRoomNotification = {
+  let leaveRoomNotification = {
     userId: user.id,
   };
 
@@ -35,12 +46,12 @@ export const onTimeout = (socket) => async () => {
     if (!roomId) {
       message = `유저 ${user.nickname}이 로비에서 연결이 종료되었습니다.`;
     }
-    // 방에 아무도 없을 경우
-    else if (!userIds.length) {
+    // 방에 자신 이외에 아무도 없을 경우
+    else if (userIds.length <= 1) {
       redisManager.rooms.delete(roomId);
       releaseRoomId(roomId);
+    } else if (!room) {
     }
-
     // 게임 안에 있는 경우 (탈주)
     else if (room.state == 2) {
       user = users.get(token);
@@ -49,27 +60,10 @@ export const onTimeout = (socket) => async () => {
         userUpdateNotification: { user: room.users },
       });
 
-      message = `유저 ${user.id}가 게임을 나갔습니다.`;
+      message = `유저 ${user.nickname}가 게임을 나갔습니다.`;
 
-      const survivers = room.users.filter((user) => user.character.hp > 0);
-
-      // 만약 남은 유저의 탈주로 인해 생존자가 한 명일 경우
-      if (survivers.length === 1) {
-        const winner = survivers[0];
-
-        const gameEndNotification = {
-          winners: [winner.id],
-          winType: 2, // 배틀로얄이라 사이코 밖에 없음.
-        };
-
-        multiCast(room.users, PACKET_TYPE.GAME_END_NOTIFICATION, {
-          gameEndNotification,
-        });
-
-        room.stopCustomInterval();
-        room.removeUserById(user.id); //방에서 유저 제거
-        redisManager.rooms.delete(room.id);
-      }
+      // 승리 확인
+      winMultiCast(room);
     }
 
     // 방에 유저가 남아있는데 방장이 종료할 경우
@@ -80,11 +74,11 @@ export const onTimeout = (socket) => async () => {
       multiCast(userIds, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
         leaveRoomResponse,
       });
-
-      multiCast(userIds, PACKET_TYPE.LEAVE_ROOM_NOTIFICATION, {
-        leaveRoomNotification, // 방안에있는 다른유저들에게도 알려줌
-      });
     }
+
+    multiCast(userIds, PACKET_TYPE.LEAVE_ROOM_NOTIFICATION, {
+      leaveRoomNotification, // 방안에있는 다른유저들에게도 알려줌
+    });
 
     users.delete(token);
     redisManager.users.delete(token);
@@ -92,6 +86,7 @@ export const onTimeout = (socket) => async () => {
   } catch (err) {
     console.error('클라이언트 연결 종료 처리 중 오류 발생', err);
     console.error(`token:${socket.token} roomId:${socket.roomId}`);
+    console.error(`room data:\n${room}`);
   }
   sendResponsePacket(socket, PACKET_TYPE.LEAVE_ROOM_RESPONSE, {
     leaveRoomResponse,
