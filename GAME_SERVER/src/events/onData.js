@@ -2,46 +2,6 @@ import { config } from '../config/config.js';
 import { TOTAL_LENGTH } from '../constants/header.js';
 import { getHandlerByPacketType } from '../handlers/index.js';
 import { decoder } from '../utils/response/decoder.js';
-import fastq from 'fastq';
-
-//최근 작업을 넣어두는 객체
-const recentTasks = new Set();
-
-//RequestWorker : Request큐에 데이터가 들어오는대로 뺴주는 곳.
-const RequestWorker = async (task, cb) => {
-  const handler = getHandlerByPacketType(task.packetType);
-  await handler(task.socket, task.decodedPacket);
-
-  //2초뒤에 set 데이터 제거
-  setTimeout(() => {
-    recentTasks.delete(task.packetType);
-    console.log(`Task ${task.packetType} 제거!`);
-  }, 2000);
-  cb(null); // 작업 완료 후 콜백 호출
-};
-
-//RequestQueue 큐 생성 (worker, 동시 실행 수 1)
-const RequestQueue = fastq(RequestWorker, 1);
-
-// RequestQueue push 함수 : 중복 방지
-const addRequest = (task) => {
-  if (recentTasks.has(task.packetType)) {
-    console.log(`Task ${task.packetType} 중복 스킵!!`);
-    return;
-  }
-
-  // 최근 작업에 추가
-  if (task.packetType !== 33 || task.packetType !== 56) {
-    recentTasks.add(task.packetType);
-  }
-  RequestQueue.push(task, (err, result) => {
-    if (err) {
-      console.error('Task failed:', err);
-    } else {
-      console.log(result);
-    }
-  });
-};
 
 export const onData = (socket) => async (data) => {
   socket.buffer = Buffer.concat([socket.buffer, data]);
