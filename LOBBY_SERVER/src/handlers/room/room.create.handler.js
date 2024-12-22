@@ -25,7 +25,7 @@ export const createRoomHandler = async (socket, payloadData) => {
 
     // 여기서 방 번호 가져와서 방 번호 할당
     const roomId = await getNextRoomId();
-
+    console.log('룸아이디', roomId);
     const room = {
       id: roomId,
       ownerId: user.id,
