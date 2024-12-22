@@ -16,6 +16,7 @@ export const verifyTokenHandler = async (socket, payload) => {
   try {
     // 이거 됨
     const userRoomPort = socket._server._connectionKey; // 소켓에서 유저 host port 뽑아 옴
+    // 토큰을 가져와서 redis에서 유저정보를 가져온다. 검증됨
     console.log('verify에서 userRoomPort : ', userRoomPort);
     const roomPort = userRoomPort.split(':').pop(); // 포트만 가져옴
     console.log('분리된 roomPort : ', roomPort);

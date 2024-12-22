@@ -6,14 +6,14 @@ package enum;
     실패 코드
 */
 enum GlobalFailCode {
-    NONE_FAILCODE = 0; 
-    UNKNOWN_ERROR = 1; 
-    INVALID_REQUEST = 2; 
-    AUTHENTICATION_FAILED = 3; 
-    CREATE_ROOM_FAILED = 4;
+    NONE_FAILCODE = 0; // 사용
+    UNKNOWN_ERROR = 1;  // 사용
+    INVALID_REQUEST = 2;  // 사용
+    AUTHENTICATION_FAILED = 3; // 사용
+    CREATE_ROOM_FAILED = 4; 
     JOIN_ROOM_FAILED = 5;
     LEAVE_ROOM_FAILED = 6;
-    REGISTER_FAILED = 7;
+    REGISTER_FAILED = 7; // 로비서버에서 이메일 중복 검사할때 사용
     ROOM_NOT_FOUND = 8;
     CHARACTER_NOT_FOUND = 9;
     CHARACTER_STATE_ERROR = 10;
@@ -21,8 +21,8 @@ enum GlobalFailCode {
     INVALID_ROOM_STATE = 12;
     NOT_ROOM_OWNER = 13;
     ALREADY_USED_BBANG = 14;
-    INVALID_PHASE = 15;
-    CHARACTER_CONTAINED = 16;
+    INVALID_PHASE = 15; // 로비서버에서 회원가입 - 닉네임 유효성 검증 실패코드
+    CHARACTER_CONTAINED = 16; // 로비서버에서 회원가입 - 이메일 유효성 검증 실패코드
 }
 
 enum WarningType {
