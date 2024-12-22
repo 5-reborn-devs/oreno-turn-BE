@@ -29,6 +29,7 @@ export const redisManager = {
       const pipeline = redisClient.pipeline();
       pipeline.del(token);
       pipeline.srem('users', userId);
+      pipeline.hdel(`${roomId}:users`, userId);
       await pipeline.exec();
     },
 

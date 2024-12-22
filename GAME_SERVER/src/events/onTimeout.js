@@ -16,16 +16,16 @@ import { leaveRoomHandler } from '../handlers/room/room.leave.handler.js';
 export const onTimeout = (socket) => async () => {
   const token = socket.token;
   let user = users.get(token);
-  if (user && user.isEndIgnore) {
-    // 내부 데이터 삭제
-    users.delete(socket.token);
-    clients.delete(Number(user.id));
+  // if (user && user.isEndIgnore) {
+  //   // 내부 데이터 삭제
+  //   users.delete(socket.token);
+  //   clients.delete(Number(user.id));
 
-    // 레디스 데이터 삭제
-    await redisManager.users.delRoomId(token);
-    console.log(`[서버 이동] (${user.nickname}) Game -> Lobby`); // onEnd 무시됨.
-    return;
-  }
+  //   // 레디스 데이터 삭제
+  //   await redisManager.users.delRoomId(token);
+  //   console.log(`[서버 이동] (${user.nickname}) Game -> Lobby`); // onEnd 무시됨.
+  //   return;
+  // }
 
   const roomId = socket.roomId;
   const room = rooms.get(roomId);
