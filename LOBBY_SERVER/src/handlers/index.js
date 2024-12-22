@@ -20,6 +20,7 @@ import {
 } from './sync/market.handler.js';
 import { rerollHandler } from './card/card.reroll.handler.js';
 import { verifyTokenHandler } from './auth/verifyToken.handler.js';
+import { heartBeatHandler } from './sync/heartBeat.handler.js';
 
 const handlers = {
   [PACKET_TYPE.REGISTER_REQUEST]: {
@@ -93,6 +94,10 @@ const handlers = {
   [PACKET_TYPE.VERIFY_TOKEN_REQUEST]: {
     handler: verifyTokenHandler,
     protoType: 'request.C2SVerifyTokenReqeset',
+  },
+  [PACKET_TYPE.PING_REQUEST]: {
+    handler: heartBeatHandler,
+    protoType: 'request.C2SPingRequest',
   },
 };
 

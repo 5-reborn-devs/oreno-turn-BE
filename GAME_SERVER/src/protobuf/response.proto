@@ -191,3 +191,9 @@ message S2CVerifyTokenResponse
   bool success = 1;
   GlobalFailCode failCode = 2;
 }
+
+message S2CPongResponse
+{
+  string message = 1;
+  int64 timestamp = 2;
+}

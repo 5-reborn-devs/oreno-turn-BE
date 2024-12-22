@@ -14,7 +14,6 @@ export const sendResponsePacket = (socket, packetType, responseMessage) => {
 
     // 정규화 과정을 통해 패킷 제작
     const serializedPacket = serializer(gamePacketBuffer, packetType);
-
     //클라이언트에게 패킷 전송
     socket.write(serializedPacket);
 
