@@ -3,24 +3,6 @@ import { PACKET_NUMBER } from '../../constants/header.js';
 import { getProtoMessages } from '../../init/loadProto.js';
 import { clients } from '../../session/session.js';
 import { serializer } from '../serilaizer.js';
-import fastq  from 'fastq';
-
-//ResponseWorker : Response큐에 데이터가 들어오는대로 뺴주는 곳.
-const ResponseWorker = async (task, cb) => {
-  // console.log(`Processing task: ${task.name}`);
-  await task.socket.write(task.serializedPacket);
-   cb(null);  // 작업 완료 후 콜백 호출
- };
-
-//ResponseQueue 큐 생성 
-const ResponseQueue = fastq(ResponseWorker, 1);
-
-console.log('Waiting tasks:', ResponseQueue.length());  // 현재 큐에 쌓인 작업 수
-console.log('Running tasks:', ResponseQueue.running());  // 현재 실행 중인 작업 수
-
-ResponseQueue.drain = () => {
-  console.log('All tasks completed!');
-};
 
 export const sendResponsePacket = (socket, packetType, responseMessage) => {
   try {
@@ -34,10 +16,7 @@ export const sendResponsePacket = (socket, packetType, responseMessage) => {
     const serializedPacket = serializer(gamePacketBuffer, packetType);
 
     // //클라이언트에게 패킷 전송
-    // socket.write(serializedPacket);
-
-    //리스폰스 큐에 데이터 삽입
-    ResponseQueue.push({socket,serializedPacket});
+    socket.write(serializedPacket);
 
     // console.log(`Send packet of type ${PACKET_NUMBER[packetType]} to client.`);
   } catch (error) {
