@@ -2,7 +2,7 @@ import { PACKET_TYPE } from '../../constants/header.js';
 import { serverSwitch } from '../../utils/notification/notification.serverSwitch.js';
 import sendResponsePacket from '../../utils/response/createResponse.js';
 
-const PING_TIMEOUT = 1000; // 타임아웃 시간 10초 (10000ms)
+const PING_INTERVAL = 5000; // 5초 (5000ms) 마다 ping 전송
 let lastPingTime = Date.now(); // 마지막 ping 시간을 기록
 
 // 클라이언트 연결이 끊어진다고 가정한 타이머
@@ -48,7 +48,7 @@ const resetPingTimeout = (socket) => {
     const timeElapsed = currentTime - lastPingTime;
 
     // 제한 시간을 초과하면 연결 끊기
-    if (timeElapsed > PING_TIMEOUT) {
+    if (timeElapsed > PING_INTERVAL) {
       console.log(
         `클라이언트가 일정 시간 동안 응답하지 않아 연결을 종료합니다.`,
       );
@@ -62,5 +62,5 @@ const resetPingTimeout = (socket) => {
       }, 1000);
       //socket.disconnect();
     }
-  }, PING_TIMEOUT); // 타임아웃 시간만큼 대기
+  }, PING_INTERVAL); // 타임아웃 시간만큼 대기
 };
