@@ -38,10 +38,8 @@ export const onData = (socket) => async (data) => {
         // 모든 패킷을 게임패킷으로 처리 가능하다고 한다
         const decodedPacket = decoder(payload);
 
-        // 인자로 받을 패킷 타입 전송
         const handler = getHandlerByPacketType(packetType);
-
-        await handler(socket, decodedPacket);
+        socket.queue.addRequest(socket, packetType, decodedPacket, handler);
       } catch (err) {
         console.error(err);
         console.error(

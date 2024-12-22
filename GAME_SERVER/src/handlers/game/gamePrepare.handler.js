@@ -58,10 +58,11 @@ export const gamePrepare = async (socket) => {
       user.character.roleType =
         protoMessages.enum.RoleType.values['PSYCHOPATH'];
       user.character.characterType = shuffledCharacters[index];
-    });
 
-    // 방 유저들에게 초기 카드를 분배
-    // room.distributeCards();
+      // User들의 Queue 중복 시간을 2000-> 100으로 줄임.
+      const client = clients.get(user.id);
+      client.queue.setTime = 100;
+    });
 
     const gamePrepareNotification = { room: room };
 
