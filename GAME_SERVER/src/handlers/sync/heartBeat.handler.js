@@ -14,9 +14,9 @@ export const heartBeatHandler = async (socket, payload) => {
     const localTime = new Date().getTime();
     const timeDifference = localTime - combinedTimestamp;
 
-    console.log(`클라가 ping보낸 시간 : ${combinedTimestamp}`);
-    console.log(`현재시간 : ${localTime}`);
-    console.log(`시간 차이 : ${timeDifference}`);
+    console.log(`Ping 전송 시간 : ${combinedTimestamp}`);
+    console.log(`Ping 수신 시간 : ${localTime}`);
+    console.log(`Ping 응답 시간 (지연) : ${timeDifference}`);
 
     // 클라이언트로부터 ping을 받은 시간 업데이트
     lastPingTime = Date.now();
