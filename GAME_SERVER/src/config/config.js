@@ -66,8 +66,8 @@ export const config = {
   },
 
   page: {
-    afternoon: 40000,
+    afternoon: 54000,
     evening: 10000,
-    night: 40000,
+    night: 54000,
   },
 };

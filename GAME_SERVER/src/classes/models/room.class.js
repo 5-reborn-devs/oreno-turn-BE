@@ -80,8 +80,8 @@ class Room {
   // }
 
   startCustomInterval(nextPhaseAt) {
-    //진수님 거
-    const intervals = [18000, 12000, 18000]; // afternoon, evening, night
+    //진수님 거 18000
+    const intervals = [54000, 12000, 54000]; // afternoon, evening, night
     let currentIndex = 0;
     const room = this;
     function runInterval() {
