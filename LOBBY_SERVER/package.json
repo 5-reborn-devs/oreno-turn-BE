@@ -11,13 +11,13 @@
     "dev": "node ./src/server.js",
     "migrate": "node ./src/db/migrations/createSchema.js",
     "test": "node ./src/tests/test.function.js",
-    "game": "node ./GAME_SERVER/src/server.js",
-    "lobby": "node ./LOBBY_SERVER/src/server.js"
+    "lobby": "node ./src/server.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
     "bull": "^4.16.5",
     "dotenv": "^16.4.5",
+    "fastq": "^1.17.1",
     "ioredis": "^5.4.1",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
