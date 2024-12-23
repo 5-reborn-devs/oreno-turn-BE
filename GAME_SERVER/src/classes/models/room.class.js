@@ -58,7 +58,7 @@ class Room {
     const room = this;
     this.positionIntervalid = setInterval(function () {
       room.positionUpdateOn();
-    }, 33);
+    }, 16);
     // 함수를 전달
   }
 
