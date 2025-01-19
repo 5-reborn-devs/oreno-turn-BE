@@ -1,8 +1,10 @@
 ## 🃏ORENO-TURN!
-### 프로젝트
-<img src ="https://github.com/user-attachments/assets/0cc72ac1-f81f-42a6-971f-880a845b84fa" width = 320>
+### 🏆수상
+<img src = "https://github.com/user-attachments/assets/8848ea0e-9e7c-4bd6-ba9f-de88e866d053" width = 640>
 
-### 게임 개요
+## 🧪프로젝트 소개
+<img src ="https://github.com/user-attachments/assets/0cc72ac1-f81f-42a6-971f-880a845b84fa" width = 320></br>
+### 🗜게임 개요
 > #### ORENO-TURN! : 너, 나와.
 
 ```
@@ -12,6 +14,7 @@
 ```
 ### 📆프로젝트 기간
 #### 2024.11.13(수) ~ 2024.12.23(월)
+<br>
 
 ## 🗜핵심 기능
 <img src = "https://github.com/user-attachments/assets/84303409-bb15-43ee-bfaa-c0f7f2531fdc" width = 320>
@@ -20,15 +23,19 @@
 
 ## 📈Flow Chart
 - #### 로비 흐름도</br>
-<img src = "https://github.com/user-attachments/assets/07892b42-88e8-48ea-957c-eb55237c62c2" width = 640> </br>
+<img src = "https://github.com/user-attachments/assets/07892b42-88e8-48ea-957c-eb55237c62c2" width = 640> </br></br>
 - #### 게임 흐름도</br>
-<img src = "https://github.com/user-attachments/assets/c40862e1-a005-4cae-b06d-3acc775b717f" width = 640></br>
+<img src = "https://github.com/user-attachments/assets/c40862e1-a005-4cae-b06d-3acc775b717f" width = 640></br></br>
 
 ## 🏗아키텍처
+</br>
 <img src ="https://github.com/user-attachments/assets/debc63d4-b0c4-4fc2-9d5b-61a7f8e5b21e" width = 640>
+</br>
 
 ## ⚙기술스택
+</br>
 <img src = "https://github.com/user-attachments/assets/acfd2a4b-cada-4757-88cf-fb4e58dc57f4" width = 640>
+</br>
 
 ## 🚧트러블슈팅
 - [HAproxy - 서버 분산 문제](https://www.notion.so/teamsparta/HAproxy-e0b7ccd3c7c5446c8916b60a46fc98e2) </br>
@@ -37,7 +44,6 @@
 ## 💻참고 링크
 - [팀 노션](https://www.notion.so/teamsparta/aa5b439a52784f428692ef6e0d40ddf0)
 - [프로젝트 브로셔](https://www.notion.so/teamsparta/ORENO-TURN-3a9173c2b5db4a9faa0bb055d0520814#15e2dc3ef5148100b380e7c14cfc2c48)
-- [시연영상 유튜브](https://www.youtube.com/watch?v=_s7O8UoN9UM)
 
 ## 👥팀 소개
 ![5reborn_notion_background](https://github.com/user-attachments/assets/15219b85-3d80-4233-a940-4d52ef45f438)
