@@ -1,4 +1,17 @@
 services:
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: orenodb
+      MYSQL_DATABASE: USER_DB
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - '8886:3306'
+  redis:
+    image: redis:latest
+    ports:
+      - '16379:6379'
   game-server-1:
     build:
       context: ./GAME_SERVER
@@ -8,7 +21,7 @@ services:
       - '16666:16666' # TCP 게임 서버 포트
     environment:
       - PORT=16666
-      - HOST=3.36.19.101
+      - HOST=127.0.0.1
       - CLIENT_VERSION=1.0.0
       - DB1_HOST=mysql
       - DB1_PORT=3306
@@ -28,7 +41,7 @@ services:
       - '6666:6666' # TCP 로비 서버 포트
     environment:
       - PORT=6666
-      - HOST=3.36.19.101
+      - HOST=127.0.0.1
       - CLIENT_VERSION=1.0.0
       - DB1_NAME=USER_DB
       - DB1_HOST=mysql
