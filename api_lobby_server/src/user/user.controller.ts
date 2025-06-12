@@ -21,6 +21,12 @@ export class UserController {
     return await this.userService.login(loginDto.email, loginDto.password);
   }
 
+  @UseGuards(AuthGuard('jwt'))
+  @Post('logout')
+  async logout(@UserInfo() user: User) {
+    return await this.userService.logout(user.id);
+  }
+
   @Post('gest')
   async gest() {
     return await this.userService.gest();

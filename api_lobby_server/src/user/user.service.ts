@@ -7,12 +7,16 @@ import {
   Injectable,
   UnauthorizedException,
   Inject,
+  UseGuards,
+  Get,
+  Req,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { User } from './entities/user.entity';
 import Redis from 'ioredis';
+import { validate } from 'class-validator';
 
 @Injectable()
 export class UserService {
@@ -52,23 +56,38 @@ export class UserService {
       throw new UnauthorizedException('비밀번호를 확인해주세요.');
     }
 
-    if (await this.redis.sismember('users', user.id)) {
+    if (await this.redis.hlen(`id:${user.id}`)) {
       throw new UnauthorizedException('이미 로그인된 유저입니다.');
     }
 
     const payload = { email, sub: user.id };
     const token = this.jwtService.sign(payload);
 
-    this.redis.hmset(token, { id: user.id, nickname: 'a' });
-    this.redis.sadd('users', user.id);
+    await this.redis.hmset(`id:${user.id}`, {
+      id: user.id,
+      email: user.email,
+      nickname: 'a',
+    });
+    // this.redis.sadd('users', user.id);
 
     return {
       access_token: token,
     };
   }
 
+  async logout(id: number) {
+    await this.redis.del(`id:${id}`);
+    return {
+      user: id,
+    };
+  }
+
   async findByEmail(email: string) {
     return await this.userRepository.findOneBy({ email });
+  }
+
+  async findById(id: number) {
+    return await this.redis.hgetall(`id:${id}`);
   }
 
   async gest() {
