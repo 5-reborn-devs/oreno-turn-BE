@@ -6,6 +6,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { LoginDto } from './dto/login.dto';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
+import { SessionUser } from 'src/auth/models/session-user.model';
 
 @Controller('user')
 export class UserController {
@@ -23,8 +24,8 @@ export class UserController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post('logout')
-  async logout(@UserInfo() user: User) {
-    return await this.userService.logout(user.id);
+  async logout(@UserInfo() user: SessionUser) {
+    return await this.userService.logout(user.sessionId);
   }
 
   @Post('gest')

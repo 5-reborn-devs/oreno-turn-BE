@@ -16,7 +16,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { User } from './entities/user.entity';
 import Redis from 'ioredis';
-import { validate } from 'class-validator';
+import { randomBytes } from 'crypto';
 
 @Injectable()
 export class UserService {
@@ -60,10 +60,11 @@ export class UserService {
       throw new UnauthorizedException('이미 로그인된 유저입니다.');
     }
 
-    const payload = { email, sub: user.id };
+    const sessionId = randomBytes(16).toString('hex');
+    const payload = { email, sub: user.id, sessionId };
     const token = this.jwtService.sign(payload);
 
-    await this.redis.hmset(`id:${user.id}`, {
+    await this.redis.hmset(`session:${sessionId}`, {
       id: user.id,
       email: user.email,
       nickname: 'a',
@@ -75,10 +76,10 @@ export class UserService {
     };
   }
 
-  async logout(id: number) {
-    await this.redis.del(`id:${id}`);
+  async logout(sessionId: string) {
+    await this.redis.del(`session:${sessionId}`);
     return {
-      user: id,
+      user: sessionId,
     };
   }
 
@@ -86,8 +87,8 @@ export class UserService {
     return await this.userRepository.findOneBy({ email });
   }
 
-  async findById(id: number) {
-    return await this.redis.hgetall(`id:${id}`);
+  async findBySessionId(sessionId: string) {
+    return await this.redis.hgetall(`session:${sessionId}`);
   }
 
   async gest() {
